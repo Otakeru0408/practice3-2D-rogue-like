@@ -2,6 +2,7 @@
 #include "TitleState.h"
 #include "InGameState.h"
 #include "DxLib.h"
+
 #include <Windows.h>
 
 void TitleState::Init() {
@@ -9,9 +10,21 @@ void TitleState::Init() {
 	//ご使用のパソコンに一時的にFontを読み込ませる
 	AddFontResourceEx("Data/YDWaosagi.otf", FR_PRIVATE, 0);
 	m_titleFontHandle = CreateFontToHandle("YDW あおさぎ R", 30, 3);
+
+	//UIを作成する
+	auto button = std::make_shared<UIButton>(
+		GameData::windowWidth / 2, GameData::windowHeight / 2, 100, 50,
+		"Start",
+		[]() {
+			SetBackgroundColor(255, 100, 100);
+		});
+
+	button->OnFocusEnter = []() {SetBackgroundColor(100, 255, 100); };
+	m_uiManager->AddElement(button);
 }
 
 SceneTransition* TitleState::Update(const InputState* input, float deltaTime) {
+	IGameState::Update(input, deltaTime);
 
 	//Spaceを押したときはゲームシーンへ移行する
 	if (input->IsKeyDown(KEY_INPUT_SPACE)) {
@@ -28,6 +41,8 @@ void TitleState::Draw() {
 	SetFontSize(30);
 	GameData::DrawStringWithAnchor(GameData::windowWidth / 2, GameData::windowHeight / 2,
 		0.5f, 0.5f, GetColor(255, 255, 255), "Space : Game Start");
+
+	IGameState::Draw();
 }
 
 void TitleState::Terminate() {

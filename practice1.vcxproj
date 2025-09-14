@@ -147,8 +147,11 @@
     <ClInclude Include="IGameState.h" />
     <ClInclude Include="InGameState.h" />
     <ClInclude Include="InputState.h" />
+    <ClInclude Include="IUIElement.h" />
     <ClInclude Include="ResultState.h" />
     <ClInclude Include="TitleState.h" />
+    <ClInclude Include="UIButton.h" />
+    <ClInclude Include="UIManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

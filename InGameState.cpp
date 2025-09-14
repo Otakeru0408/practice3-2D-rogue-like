@@ -11,6 +11,8 @@ void InGameState::Init() {
 }
 
 SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
+	IGameState::Update(input, deltaTime);
+
 	//Spaceを押したときはゲームシーンへ移行する
 	if (input->IsKeyDown(KEY_INPUT_SPACE)) {
 		SceneTransition* trans = new SceneTransition{ TransitionType::Change,
@@ -25,6 +27,8 @@ SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
 void InGameState::Draw() {
 	GameData::DrawStringWithAnchor(100, GameData::windowHeight / 2, 0, 0.5f,
 		GetColor(255, 255, 255), m_gameFontHandle, "Press Space \nto See Result");
+
+	IGameState::Draw();
 }
 
 void InGameState::Terminate() {
