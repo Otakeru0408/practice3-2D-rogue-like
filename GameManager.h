@@ -7,8 +7,8 @@ class TitleState;
 class InGameState;
 class ResultState;
 
-class GameManager{
-	public:
+class GameManager {
+public:
 	GameManager();
 	~GameManager();
 
@@ -30,10 +30,11 @@ class GameManager{
 		m_isGameFinished = true;
 	}
 
-	private:
+private:
 	std::unique_ptr<IGameState> m_currentState;
 	bool m_isGameFinished; // ★追加: ゲーム終了フラグ
 	InputState m_inputState;
+	float m_prevTime = 0;
 
 	void UpdateInputState();
 };

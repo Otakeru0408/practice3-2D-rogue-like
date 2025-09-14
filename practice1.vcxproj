@@ -142,6 +142,7 @@
     <ClCompile Include="TitleState.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameData.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="IGameState.h" />
     <ClInclude Include="InGameState.h" />
