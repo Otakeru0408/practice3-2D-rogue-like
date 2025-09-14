@@ -13,13 +13,13 @@ void TitleState::Init() {
 
 	//UIを作成する
 	auto button = std::make_shared<UIButton>(
-		GameData::windowWidth / 2, GameData::windowHeight / 2, 100, 50,
+		GameData::windowWidth / 2, GameData::windowHeight * 0.8f, 200, 100,
 		"Start",
-		[]() {
-			SetBackgroundColor(255, 100, 100);
+		[this]() {
+			moveState = true;
 		});
 
-	button->OnFocusEnter = []() {SetBackgroundColor(100, 255, 100); };
+	//button->OnFocusEnter = [button]() {button->SetColor(GetColor(50, 50, 50)); };
 	m_uiManager->AddElement(button);
 }
 
@@ -27,7 +27,7 @@ SceneTransition* TitleState::Update(const InputState* input, float deltaTime) {
 	IGameState::Update(input, deltaTime);
 
 	//Spaceを押したときはゲームシーンへ移行する
-	if (input->IsKeyDown(KEY_INPUT_SPACE)) {
+	if (input->IsKeyDown(KEY_INPUT_SPACE) || moveState) {
 		SceneTransition* trans = new SceneTransition{ TransitionType::Change,
 			std::make_unique<InGameState>(m_gameManager) };
 		return trans;

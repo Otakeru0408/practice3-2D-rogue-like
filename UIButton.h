@@ -8,6 +8,9 @@
 class UIButton : public IUIElement {
 private:
 	RECT m_rect;
+	int nowColor = GetColor(255, 255, 255);
+	int unSelectedColor = GetColor(255, 255, 255);
+	int selectedColor = GetColor(200, 200, 200);
 	std::string m_text;
 	std::function<void()> m_onClick;
 	bool m_visible;
@@ -24,11 +27,13 @@ public:
 	void Update() override {
 		if (!m_visible) return;
 
-		POINT mouse;
-		GetCursorPos(&mouse);
-		ScreenToClient(GetActiveWindow(), &mouse);
+		int x, y;
+		GetMousePoint(&x, &y);
 
-		bool hovering = PtInRect(&m_rect, mouse);
+		bool hovering = HitTest(x, y);
+
+		//ボタンの色を更新する
+		nowColor = hovering ? selectedColor : unSelectedColor;
 
 		// フォーカス処理
 		if (hovering && !m_focused) {
@@ -53,12 +58,18 @@ public:
 		if (!m_visible) return;
 		int w = m_rect.right - m_rect.left;
 		DrawBox(m_rect.left, m_rect.top, m_rect.right, m_rect.bottom,
-			m_focused ? GetColor(255, 255, 0) : GetColor(255, 255, 255), TRUE);
+			nowColor, TRUE);
 		GameData::DrawStringWithAnchor((m_rect.left + m_rect.right) / 2, (m_rect.top + m_rect.bottom) / 2,
 			0.5f, 0.5f, GetColor(0, 0, 0), m_text.c_str());
-		//DrawString(m_rect.left + m_rect.right / 2, m_rect.top + 5, m_text.c_str(), GetColor(0, 0, 0));
 	}
 
 	bool IsVisible() const override { return m_visible; }
 	void SetVisible(bool v) { m_visible = v; }
+	void SetColor(int c) { nowColor = c; }
+	void SetSelectedColor(int c) { selectedColor = c; }
+	void SetUnSelectedColor(int c) { unSelectedColor = c; }
+
+	bool HitTest(int mx, int my) {
+		return (m_rect.left <= mx && m_rect.right >= mx && m_rect.top <= my && m_rect.bottom >= my);
+	}
 };

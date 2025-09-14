@@ -17,4 +17,5 @@ public:
 private:
 	int m_titleFontHandle;
 	int m_imageHandle;
+	bool moveState = false;
 };
