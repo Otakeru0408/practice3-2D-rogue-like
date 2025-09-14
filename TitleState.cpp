@@ -5,18 +5,23 @@
 #include <Windows.h>
 
 void TitleState::Init() {
-	SetBackgroundColor(0, 0, 150);
+	SetBackgroundColor(100, 100, 100);
 	//ご使用のパソコンに一時的にFontを読み込ませる
 	AddFontResourceEx("Data/YDWaosagi.otf", FR_PRIVATE, 0);
 	m_titleFontHandle = CreateFontToHandle("YDW あおさぎ R", 30, 3);
 }
 
-void TitleState::Update(const InputState* input, float deltaTime) {
-	// キー入力検出
+SceneTransition* TitleState::Update(const InputState* input, float deltaTime) {
+
+	//Spaceを押したときはゲームシーンへ移行する
 	if (input->IsKeyDown(KEY_INPUT_SPACE)) {
-		// スペースキーまたは左クリックでゲーム開始フェーズへ遷移
-		m_gameManager->ChangeState(std::make_unique<InGameState>(m_gameManager));
+		SceneTransition* trans = new SceneTransition{ TransitionType::Change,
+			std::make_unique<InGameState>(m_gameManager) };
+		return trans;
 	}
+
+	SceneTransition* trans = new SceneTransition{ TransitionType::None, nullptr };
+	return trans;
 }
 
 void TitleState::Draw() {

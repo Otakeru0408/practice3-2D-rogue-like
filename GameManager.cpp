@@ -4,7 +4,7 @@
 #include "InGameState.h"
 #include "ResultState.h"
 
-GameManager::GameManager() : m_currentState(nullptr), m_isGameFinished(false) {
+GameManager::GameManager() :m_isGameFinished(false) {
 	memset(m_inputState.key, 0, sizeof(m_inputState.key));
 	memset(m_inputState.prevKey, 0, sizeof(m_inputState.prevKey));
 }
@@ -19,11 +19,9 @@ void GameManager::Initialize() {
 	}
 	SetDrawScreen(DX_SCREEN_BACK);
 
-	ChangeState(std::make_unique<TitleState>(this));
-
-	if (m_currentState) {
-		m_currentState->Init();
-	}
+	//ChangeState(std::make_unique<TitleState>(this));
+	PushState(std::make_unique<TitleState>(this));
+	currentState()->Init();
 
 	m_prevTime = GetNowCount();
 }
@@ -40,38 +38,42 @@ void GameManager::Update() {
 	float deltaTime = (nowTime - m_prevTime) / 1000.0f;
 	m_prevTime = nowTime;
 
-	if (m_currentState) {
-		m_currentState->Update(&m_inputState, deltaTime);
+	//Scene‚ÌUpdate
+	SceneTransition* transition = m_currentState.top()->Update(&m_inputState, deltaTime);
+	if (transition->type == TransitionType::Change) {
+		m_currentState.top() = std::move(transition->nextState);
+		m_currentState.top()->Init();
+	}
+	else if (transition->type == TransitionType::Popup) {
+		PushState(std::move(transition->nextState));
+		currentState()->Init();
+	}
+	else if (transition->type == TransitionType::Resume) {
+		if (!m_currentState.empty())
+			PopState();
+		//Initialize‚Í‚µ‚È‚¢B‰æ–Ê‚ªŒ³‚É–ß‚é
 	}
 }
 
 void GameManager::Draw() {
 	ClearDrawScreen();
 
-	if (m_currentState) {
-		m_currentState->Draw();
+	if (!m_currentState.empty())m_currentState.top()->Draw();
+	else {
+		DrawString(100, 100, "current Scene not exist", GetColor(0, 0, 0));
 	}
+
+	int x, y;
+	GetMousePoint(&x, &y);
+	DrawFormatString(10, 10, GetColor(0, 0, 0), "x:%d y:%d", x, y);
 
 	ScreenFlip();
 }
 
-void GameManager::ChangeState(std::unique_ptr<IGameState> newState) {
-	if (m_currentState) {
-		m_currentState->Terminate();
-	}
-
-	m_currentState = std::move(newState);
-	if (m_currentState) {
-		m_currentState->Init();
-	}
-}
-
 void GameManager::Finalize() {
-	if (m_currentState) {
-		m_currentState->Terminate();
+	while (!m_currentState.empty()) {
+		m_currentState.pop();
 	}
-
-	m_currentState.reset();
 
 	DxLib_End();
 }

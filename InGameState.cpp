@@ -4,18 +4,22 @@
 #include "DxLib.h"
 
 void InGameState::Init() {
-	SetBackgroundColor(0, 150, 0);
+	SetBackgroundColor(200, 200, 200);
 	//ご使用のパソコンに一時的にFontを読み込ませる
 	AddFontResourceEx("Data/YDWaosagi.otf", FR_PRIVATE, 0);
 	m_gameFontHandle = CreateFontToHandle("YDW あおさぎ R", 25, 3);
 }
 
-void InGameState::Update(const InputState* input, float deltaTime) {
-	// キー入力検出
+SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
+	//Spaceを押したときはゲームシーンへ移行する
 	if (input->IsKeyDown(KEY_INPUT_SPACE)) {
-		// スペースキーまたは左クリックでゲーム開始フェーズへ遷移
-		m_gameManager->ChangeState(std::make_unique<ResultState>(m_gameManager));
+		SceneTransition* trans = new SceneTransition{ TransitionType::Change,
+			std::make_unique<ResultState>(m_gameManager) };
+		return trans;
 	}
+
+	SceneTransition* trans = new SceneTransition{ TransitionType::None, nullptr };
+	return trans;
 }
 
 void InGameState::Draw() {

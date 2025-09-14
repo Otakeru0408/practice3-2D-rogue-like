@@ -1,5 +1,6 @@
 #pragma once
 #include "IGameState.h"
+#include "InGameState.h"
 
 class GameManager;
 
@@ -9,7 +10,7 @@ public:
 	~ResultState() override = default;
 
 	void Init()override;
-	void Update(const InputState* input, float deltaTime)override;
+	SceneTransition* Update(const InputState* input, float deltaTime)override;
 	void Draw()override;
 	void Terminate()override;
 

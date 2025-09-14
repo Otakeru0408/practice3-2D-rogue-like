@@ -12,8 +12,8 @@ public:
 	GameData& operator=(const GameData&) = delete;
 
 	// --- ゲーム用データ ---
-	static const int windowWidth = 600;
-	static const int windowHeight = 600;
+	static const int windowWidth = 1280;
+	static const int windowHeight = 720;
 
 	static int DrawStringWithAnchor(int x, int y, float rateX, float rateY, unsigned int Color, int fontHandle, const char* fmt, ...) {
 		// 可変引数処理
