@@ -20,6 +20,11 @@ void InGameState::Init() {
 SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
 	IGameState::Update(input, deltaTime);
 
+	if (input->IsKeyDown(KEY_INPUT_A)) {
+		m_playerData.hp += 10;
+		m_playerData.name = "hage";
+	}
+
 	//Spaceを押したときはゲームシーンへ移行する
 	if (input->IsKeyDown(KEY_INPUT_SPACE)) {
 		SceneTransition* trans = new SceneTransition{ TransitionType::Change,
@@ -35,6 +40,9 @@ void InGameState::Draw() {
 	GameData::DrawStringWithAnchor(100, GameData::windowHeight / 2, 0, 0.5f,
 		GetColor(0, 0, 0), m_gameFontHandle, "Press Space \nto See Result");
 
+	GameData::DrawStringWithAnchor(100, 600, 0, 0.5f,
+		GetColor(0, 0, 0), m_gameFontHandle, m_playerData.ToCSV().c_str());
+
 	GameData::DrawStringWithAnchor(GameData::windowWidth / 2, GameData::windowHeight / 2, 0.5f, 0.5f,
 		GetColor(0, 0, 0), "name:%s,HP:%d", m_playerData.name.c_str(), m_playerData.hp);
 
@@ -44,22 +52,26 @@ void InGameState::Draw() {
 void InGameState::Terminate() {
 	//読み込ませたフォントを開放する
 	RemoveFontResourceEx("Data/YDWaosagi.otf", FR_PRIVATE, 0);
+
+	SavePlayer(m_playerData, "Data/savedata1.csv");
 }
 
-//プレイヤーのデータを保存する
+//プレイヤーのデータをよみこむ
 bool InGameState::LoadPlayer(const std::string& filename) {
 	std::ifstream file(filename);
 	if (!file) {
 		std::cerr << "読み込み失敗: " << filename << std::endl;
+		file.close();
 		return false;
 	}
 	std::string line;
 	std::getline(file, line);
 	m_playerData = PlayerData::FromCSV(line);
+	file.close();
 	return true;
 }
 
-//プレイヤーのデータをよみこむ
+//プレイヤーのデータを保存する
 void InGameState::SavePlayer(const PlayerData& player, const std::string& filename) {
 	std::ofstream file(filename);
 	if (!file) {
@@ -67,4 +79,5 @@ void InGameState::SavePlayer(const PlayerData& player, const std::string& filena
 		return;
 	}
 	file << player.ToCSV() << "\n";
+	file.close();
 }

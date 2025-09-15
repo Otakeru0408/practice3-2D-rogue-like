@@ -29,7 +29,7 @@ SceneTransition* TitleState::Update(const InputState* input, float deltaTime) {
 	IGameState::Update(input, deltaTime);
 
 	//Spaceを押したときはゲームシーンへ移行する
-	if (input->IsKeyDown(KEY_INPUT_SPACE) || moveState) {
+	if (moveState) {
 		SceneTransition* trans = new SceneTransition{ TransitionType::Change,
 			std::make_unique<InGameState>(m_gameManager) };
 		return trans;

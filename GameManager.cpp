@@ -71,6 +71,7 @@ void GameManager::Draw() {
 }
 
 void GameManager::Finalize() {
+	m_currentState.top()->Terminate();
 	while (!m_currentState.empty()) {
 		m_currentState.pop();
 	}
