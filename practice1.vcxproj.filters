@@ -24,6 +24,12 @@
     <Filter Include="6_UI">
       <UniqueIdentifier>{4c2f7bf4-196a-4e4f-a4c9-1e04a25af06c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="7_Component">
+      <UniqueIdentifier>{b75d01e8-b583-4aea-91f2-fd7c5833fdfa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="8_Entity">
+      <UniqueIdentifier>{87c25e6f-57b7-485a-9c15-86fc728c13e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -75,6 +81,12 @@
     </ClInclude>
     <ClInclude Include="PlayerData.h">
       <Filter>2_Stateインタフェース</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>8_Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>7_Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

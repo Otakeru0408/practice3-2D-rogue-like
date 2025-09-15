@@ -15,18 +15,23 @@ void InGameState::Init() {
 	if (!isLoaded) {
 		m_playerData = { "Hero",100,10,GameData::windowWidth / 2,GameData::windowHeight / 2 };
 	}
+
+	//UIを作成する
+	auto button = std::make_shared<UIButton>(
+		100, 100, 200, 100,
+		"Start",
+		[this]() {
+			moveState = true;
+		});
+
+	m_uiManager->AddElement(button);
 }
 
 SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
 	IGameState::Update(input, deltaTime);
 
-	if (input->IsKeyDown(KEY_INPUT_A)) {
-		m_playerData.hp += 10;
-		m_playerData.name = "hage";
-	}
-
 	//Spaceを押したときはゲームシーンへ移行する
-	if (input->IsKeyDown(KEY_INPUT_SPACE)) {
+	if (moveState) {
 		SceneTransition* trans = new SceneTransition{ TransitionType::Change,
 			std::make_unique<ResultState>(m_gameManager) };
 		return trans;
@@ -37,15 +42,9 @@ SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
 }
 
 void InGameState::Draw() {
-	GameData::DrawStringWithAnchor(100, GameData::windowHeight / 2, 0, 0.5f,
-		GetColor(0, 0, 0), m_gameFontHandle, "Press Space \nto See Result");
-
-	GameData::DrawStringWithAnchor(100, 600, 0, 0.5f,
-		GetColor(0, 0, 0), m_gameFontHandle, m_playerData.ToCSV().c_str());
-
-	GameData::DrawStringWithAnchor(GameData::windowWidth / 2, GameData::windowHeight / 2, 0.5f, 0.5f,
-		GetColor(0, 0, 0), "name:%s,HP:%d", m_playerData.name.c_str(), m_playerData.hp);
-
+	GameData::DrawStringWithAnchor(GameData::windowWidth / 2, 100, 0.5f, 0.5f, GetColor(0, 0, 0),
+		m_gameFontHandle, "This is Game Scene");
+	//UIを表示するので最後に表示
 	IGameState::Draw();
 }
 

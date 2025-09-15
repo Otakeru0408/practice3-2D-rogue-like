@@ -34,6 +34,7 @@ private:
 	bool m_isGameFinished; // ★追加: ゲーム終了フラグ
 	InputState m_inputState;
 	float m_prevTime = 0;
+	bool isDisplayMousePos = false;
 
 	void UpdateInputState();
 

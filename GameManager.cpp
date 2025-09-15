@@ -53,6 +53,11 @@ void GameManager::Update() {
 			PopState();
 		//Initializeはしない。画面が元に戻る
 	}
+
+	//デバッグ用
+	if (m_inputState.IsKeyStay(KEY_INPUT_LSHIFT) && m_inputState.IsKeyDown(KEY_INPUT_1)) {
+		isDisplayMousePos = !isDisplayMousePos;
+	}
 }
 
 void GameManager::Draw() {
@@ -63,9 +68,12 @@ void GameManager::Draw() {
 		DrawString(100, 100, "current Scene not exist", GetColor(0, 0, 0));
 	}
 
-	int x, y;
-	GetMousePoint(&x, &y);
-	DrawFormatString(10, 10, GetColor(0, 0, 0), "x:%d y:%d", x, y);
+	if (isDisplayMousePos) {
+		int x, y;
+		GetMousePoint(&x, &y);
+		DrawFormatString(10, 10, GetColor(0, 0, 0), "x:%d y:%d", x, y);
+	}
+
 
 	ScreenFlip();
 }

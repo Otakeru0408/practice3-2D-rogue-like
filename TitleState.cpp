@@ -12,7 +12,6 @@ void TitleState::Init() {
 	m_titleFontHandle = CreateFontToHandle("YDW ‚ ‚¨‚³‚¬ R", 100, 30);
 
 
-
 	//UI‚ğì¬‚·‚é
 	auto button = std::make_shared<UIButton>(
 		GameData::windowWidth / 2, GameData::windowHeight * 0.8f, 200, 100,

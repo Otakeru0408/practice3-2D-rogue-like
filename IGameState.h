@@ -2,6 +2,7 @@
 #include "DxLib.h"
 #include "GameData.h"
 #include "UIManager.h"
+#include "UIButton.h"
 
 #include <string>
 #include <cstdarg>
@@ -54,4 +55,5 @@ public:
 protected:
 	GameManager* m_gameManager;
 	std::shared_ptr<UIManager> m_uiManager;
+	bool moveState = false;	//‚±‚ê‚ªtrue‚É‚È‚Á‚½‚çŸ‚ÌƒV[ƒ“‚É‘JˆÚ‚·‚é‚æ‚¤‚É‚·‚é
 };

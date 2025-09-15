@@ -1,6 +1,5 @@
 #pragma once
 #include "IGameState.h"
-#include "UIButton.h"
 
 class GameManager;
 
@@ -17,5 +16,4 @@ public:
 private:
 	int m_titleFontHandle;
 	int m_imageHandle;
-	bool moveState = false;
 };
