@@ -1,5 +1,6 @@
 #pragma once
 #include "IGameState.h"
+#include "PlayerData.h"
 
 class GameManager;
 
@@ -13,7 +14,11 @@ public:
 	void Draw()override;
 	void Terminate()override;
 
+	bool LoadPlayer(const std::string& filename);
+	void SavePlayer(const PlayerData& player, const std::string& filename);
+
 private:
 	int m_gameGraphHandle;
 	int m_gameFontHandle;
+	PlayerData m_playerData;
 };

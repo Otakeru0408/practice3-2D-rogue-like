@@ -73,5 +73,8 @@
     <ClInclude Include="UIManager.h">
       <Filter>2_Stateインタフェース</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerData.h">
+      <Filter>2_Stateインタフェース</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

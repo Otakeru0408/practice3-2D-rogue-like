@@ -148,6 +148,7 @@
     <ClInclude Include="InGameState.h" />
     <ClInclude Include="InputState.h" />
     <ClInclude Include="IUIElement.h" />
+    <ClInclude Include="PlayerData.h" />
     <ClInclude Include="ResultState.h" />
     <ClInclude Include="TitleState.h" />
     <ClInclude Include="UIButton.h" />
