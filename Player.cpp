@@ -33,7 +33,7 @@ Player::Player(PlayerData data)
 	}
 	AddComponent(anim);
 
-	AddComponent(std::make_shared<InputComponent>(this, 10));
+	AddComponent(std::make_shared<InputComponent>(this, 100));
 }
 
 

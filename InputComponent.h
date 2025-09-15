@@ -15,17 +15,15 @@ public:
 	void Update(const InputState* input, float deltaTime) override {
 		transform->vx = 0;
 		transform->vy = 0;
-		if (input->IsKeyStay(KEY_INPUT_A)) {
-			transform->vx -= moveSpeed * deltaTime;
-		}
-		if (input->IsKeyStay(KEY_INPUT_D)) {
-			transform->vx += moveSpeed * deltaTime;
-		}
-		if (input->IsKeyStay(KEY_INPUT_W)) {
-			transform->vy -= moveSpeed * deltaTime;
-		}
-		if (input->IsKeyStay(KEY_INPUT_S)) {
-			transform->vy += moveSpeed * deltaTime;
+
+		if (input->IsMouseStay(0)) {
+			//キャラの位置とマウスの位置を計算
+			VECTOR tPos = VGet(transform->x, transform->y, 0);
+			VECTOR mPos = VGet(input->mouseX, input->mouseY, 0);
+			VECTOR moveVec = VNorm(VSub(mPos, tPos));
+			//それぞれのベクトルから移動量を計算
+			transform->vx = moveVec.x * deltaTime * moveSpeed;
+			transform->vy = moveVec.y * deltaTime * moveSpeed;
 		}
 	}
 };

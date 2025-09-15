@@ -11,10 +11,10 @@ private:
 	std::shared_ptr<TransformComponent> transform;
 	int frame = 0;
 	float frameCount = 0;
-	float frameSpeed = 0.5f; // 何フレームで次に進むか
+	float frameSpeed = 0.5f; // 何秒でアニメーションが進むか
 
 public:
-	float scale = 0.1f;
+	float scale = 0.05f;
 
 	AnimationComponent(Entity* e)
 		:Component(e) {
@@ -29,7 +29,7 @@ public:
 		if (!transform) return;
 
 
-		bool moving = input->mousePressed;
+		bool moving = input->IsMouseStay(0);
 
 		if (moving) {
 			frameCount += deltaTime;

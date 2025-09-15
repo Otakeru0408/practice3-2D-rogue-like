@@ -23,15 +23,15 @@ struct InputState {
 
 	bool IsMouseDown(int key_code)const
 	{
-		return key[key_code] >= 1 && prevKey[key_code] == 0;
+		return mouseVal[key_code] >= 1 && prevMouseVal[key_code] == 0;
 	}
 	bool IsMouseStay(int key_code)const
 	{
-		return key[key_code] >= 1 && prevKey[key_code] >= 1;
+		return mouseVal[key_code] >= 1 && prevMouseVal[key_code] >= 1;
 	}
 	bool IsMouseUp(int key_code)const
 	{
-		return key[key_code] == 0 && prevKey[key_code] >= 1;
+		return mouseVal[key_code] == 0 && prevMouseVal[key_code] >= 1;
 	}
 
 	int GetMouseX()const { return mouseX; }
