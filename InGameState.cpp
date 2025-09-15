@@ -13,12 +13,14 @@ void InGameState::Init() {
 	//プレイヤーのデータを設定
 	bool isLoaded = LoadPlayer("Data/savedata1.csv");
 	if (!isLoaded) {
-		m_playerData.name = "hero";
 		m_playerData.hp = 100;
 		m_playerData.mp = 100;
 		m_playerData.posX = GameData::windowWidth / 2;
 		m_playerData.posY = GameData::windowHeight / 2;
 	}
+
+	//PlayerをPlayerDataから作成する
+	player = std::make_shared<Player>(m_playerData);
 
 	//UIを作成する
 	auto button = std::make_shared<UIButton>(
@@ -34,6 +36,12 @@ void InGameState::Init() {
 SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
 	IGameState::Update(input, deltaTime);
 
+	//このシーンに存在する全てのEntityの更新をする
+	player->Update(input, deltaTime);
+	for (auto entity : entities) {
+		entity->Update(input, deltaTime);
+	}
+
 	//Spaceを押したときはゲームシーンへ移行する
 	if (moveState) {
 		SceneTransition* trans = new SceneTransition{ TransitionType::Change,
@@ -48,6 +56,11 @@ SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
 void InGameState::Draw() {
 	GameData::DrawStringWithAnchor(GameData::windowWidth / 2, 100, 0.5f, 0.5f, GetColor(0, 0, 0),
 		m_gameFontHandle, "This is Game Scene");
+
+	player->Draw();
+	for (auto entity : entities) {
+		entity->Draw();
+	}
 	//UIを表示するので最後に表示
 	IGameState::Draw();
 }
@@ -56,6 +69,9 @@ void InGameState::Terminate() {
 	//読み込ませたフォントを開放する
 	RemoveFontResourceEx("Data/YDWaosagi.otf", FR_PRIVATE, 0);
 
+	if (player) {
+		m_playerData = player->SavePlayerData();
+	}
 	SavePlayer(m_playerData, "Data/savedata1.csv");
 }
 

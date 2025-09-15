@@ -5,16 +5,17 @@
 #include <string>
 #include <vector>
 
+//Playerのセーブ用構造体
 struct PlayerData {
-	std::string name;
 	int hp;
+	int maxHp;
 	int mp;
 	float posX;
 	float posY;
 
 	PlayerData() {
-		name = "";
 		hp = 0;
+		maxHp = 0;
 		mp = 0;
 		posX = 0;
 		posY = 0;
@@ -23,7 +24,7 @@ struct PlayerData {
 	// CSV形式に変換
 	std::string ToCSV() const {
 		std::ostringstream oss;
-		oss << name << "," << hp << "," << mp << "," << posX << "," << posY;
+		oss << hp << "," << maxHp << "," << mp << "," << posX << "," << posY;
 		return oss.str();
 	}
 
@@ -33,10 +34,11 @@ struct PlayerData {
 		std::istringstream ss(line);
 		std::string cell;
 
-		std::getline(ss, data.name, ',');  // string
-
 		std::getline(ss, cell, ',');
 		data.hp = std::stoi(cell);
+
+		std::getline(ss, cell, ',');
+		data.maxHp = std::stoi(cell);
 
 		std::getline(ss, cell, ',');
 		data.mp = std::stoi(cell);

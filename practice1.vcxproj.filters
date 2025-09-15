@@ -48,7 +48,7 @@
       <Filter>5_ResultState</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>0_メインファイル</Filter>
+      <Filter>8_Entity</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -96,6 +96,18 @@
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>8_Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthComponent.h">
+      <Filter>2_Stateインタフェース</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationComponent.h">
+      <Filter>2_Stateインタフェース</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionComponent.h">
+      <Filter>2_Stateインタフェース</Filter>
+    </ClInclude>
+    <ClInclude Include="InputComponent.h">
+      <Filter>2_Stateインタフェース</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

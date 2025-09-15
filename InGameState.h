@@ -1,6 +1,8 @@
 #pragma once
 #include "IGameState.h"
 #include "PlayerData.h"
+#include "Entity.h"
+#include "Player.h"
 
 class GameManager;
 
@@ -23,4 +25,6 @@ private:
 	int m_gameGraphHandle;
 	int m_gameFontHandle;
 	PlayerData m_playerData;
+	std::shared_ptr<Player> player;
+	std::vector<std::shared_ptr<Entity>> entities;
 };

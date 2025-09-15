@@ -143,12 +143,16 @@
     <ClCompile Include="TitleState.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimationComponent.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="DirectionComponent.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameData.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="IGameState.h" />
     <ClInclude Include="InGameState.h" />
+    <ClInclude Include="InputComponent.h" />
     <ClInclude Include="InputState.h" />
     <ClInclude Include="IUIElement.h" />
     <ClInclude Include="Player.h" />

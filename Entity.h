@@ -2,8 +2,10 @@
 #include <vector>
 #include <memory>
 
+#include "DxLib.h"
 #include "Component.h"
 #include "InputState.h"
+#include "GameData.h"
 
 class Entity {
 private:
@@ -29,6 +31,18 @@ public:
 
 	void AddComponent(std::shared_ptr<Component> component) {
 		components.emplace_back(component);
+	}
+
+	template <typename T>
+	std::shared_ptr<T> GetComponent() {
+		for (const auto& comp : components) {
+			std::shared_ptr<T> typedComp = std::dynamic_pointer_cast<T>(comp);
+			if (typedComp) {
+				return typedComp;
+			}
+		}
+
+		return nullptr;
 	}
 
 	template <typename S>

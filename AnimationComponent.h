@@ -1,0 +1,51 @@
+#pragma once
+#include "Component.h"
+#include "DirectionComponent.h"
+
+#include <map>
+
+class AnimationComponent : public Component {
+private:
+	std::map<Direction, std::vector<int>> animations; // 方向ごとのフレーム画像
+	std::shared_ptr<DirectionComponent> direction;
+	std::shared_ptr<TransformComponent> transform;
+	int frame = 0;
+	float frameCount = 0;
+	float frameSpeed = 1.0f; // 何フレームで次に進むか
+
+public:
+	float scale = 0.1f;
+
+	AnimationComponent(Entity* e)
+		:Component(e) {
+		direction = owner->GetComponent<DirectionComponent>();
+		transform = owner->GetComponent<TransformComponent>();
+	}
+	void AddAnimation(Direction dir, const std::vector<int>& frames) {
+		animations[dir] = frames;
+	}
+
+	void Update(const InputState* input, float deltaTime) override {
+		if (!transform) return;
+
+		bool moving = (fabs(transform->vx) > 0.01f || fabs(transform->vy) > 0.01f);
+
+		if (moving || !moving) {
+			frameCount += deltaTime;
+			if (frameCount >= frameSpeed) {
+				frameCount = 0;
+				frame = (frame + 1) % animations[direction->dir].size();
+			}
+		}
+		else {
+			frame = 0; // 停止中は最初のフレーム
+		}
+	}
+
+	void Draw() override {
+		if (!direction || !transform)return;
+		const auto& frames = animations[direction->dir];
+		DrawRotaGraph((int)transform->x, (int)transform->y, scale, 0.0f, frames[frame], TRUE);
+		DrawFormatString(10, 300, GetColor(0, 0, 0), "deltaTime:%.2f", frameCount);
+	}
+};
