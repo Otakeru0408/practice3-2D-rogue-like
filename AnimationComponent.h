@@ -11,7 +11,7 @@ private:
 	std::shared_ptr<TransformComponent> transform;
 	int frame = 0;
 	float frameCount = 0;
-	float frameSpeed = 1.0f; // 何フレームで次に進むか
+	float frameSpeed = 0.5f; // 何フレームで次に進むか
 
 public:
 	float scale = 0.1f;
@@ -28,9 +28,10 @@ public:
 	void Update(const InputState* input, float deltaTime) override {
 		if (!transform) return;
 
-		bool moving = (fabs(transform->vx) > 0.01f || fabs(transform->vy) > 0.01f);
 
-		if (moving || !moving) {
+		bool moving = input->mousePressed;
+
+		if (moving) {
 			frameCount += deltaTime;
 			if (frameCount >= frameSpeed) {
 				frameCount = 0;

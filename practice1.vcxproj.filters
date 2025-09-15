@@ -97,17 +97,17 @@
     <ClInclude Include="Player.h">
       <Filter>8_Entity</Filter>
     </ClInclude>
-    <ClInclude Include="HealthComponent.h">
-      <Filter>2_Stateインタフェース</Filter>
-    </ClInclude>
     <ClInclude Include="AnimationComponent.h">
-      <Filter>2_Stateインタフェース</Filter>
+      <Filter>7_Component</Filter>
     </ClInclude>
     <ClInclude Include="DirectionComponent.h">
-      <Filter>2_Stateインタフェース</Filter>
+      <Filter>7_Component</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthComponent.h">
+      <Filter>7_Component</Filter>
     </ClInclude>
     <ClInclude Include="InputComponent.h">
-      <Filter>2_Stateインタフェース</Filter>
+      <Filter>7_Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

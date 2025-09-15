@@ -91,8 +91,10 @@ void GameManager::UpdateInputState()
 {
 	// 現在のキー状態を前フレームのキー状態として保存
 	memcpy(m_inputState.prevKey, m_inputState.key, sizeof(m_inputState.key));
+	memcpy(m_inputState.prevMouseVal, m_inputState.mouseVal, sizeof(m_inputState.mouseVal));
 
 	char tmpKey[256];
+
 	// Dxライブラリから現在のキー状態を取得
 	GetHitKeyStateAll(tmpKey);
 	for (int i = 0; i < 256; i++) {
@@ -105,4 +107,33 @@ void GameManager::UpdateInputState()
 	}
 
 	// TODO: マウスやゲームパッドの入力もここに追加
+	int input = GetMouseInput();
+
+	//左クリック
+	if ((input & MOUSE_INPUT_LEFT) != 0) {
+		m_inputState.mouseVal[0]++;
+	}
+	else {
+		m_inputState.mouseVal[0] = 0;
+	}
+	//右クリック
+	if ((input & MOUSE_INPUT_RIGHT) != 0) {
+		m_inputState.mouseVal[1]++;
+	}
+	else {
+		m_inputState.mouseVal[1] = 0;
+	}
+	//真ん中クリックはいらない？
+
+	//もしどこかのマウスボタンが押されていたら
+	if (input != 0) {
+		m_inputState.mousePressed = true;
+		int x, y;
+		GetMousePoint(&x, &y);
+		m_inputState.mouseX = x;
+		m_inputState.mouseY = y;
+	}
+	else {
+		m_inputState.mousePressed = false;
+	}
 }
