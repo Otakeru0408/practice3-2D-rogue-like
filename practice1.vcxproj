@@ -138,6 +138,7 @@
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="InGameState.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="ResultState.cpp" />
     <ClCompile Include="TitleState.cpp" />
   </ItemGroup>
@@ -150,9 +151,11 @@
     <ClInclude Include="InGameState.h" />
     <ClInclude Include="InputState.h" />
     <ClInclude Include="IUIElement.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerData.h" />
     <ClInclude Include="ResultState.h" />
     <ClInclude Include="TitleState.h" />
+    <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="UIButton.h" />
     <ClInclude Include="UIManager.h" />
   </ItemGroup>

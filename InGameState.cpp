@@ -13,7 +13,11 @@ void InGameState::Init() {
 	//プレイヤーのデータを設定
 	bool isLoaded = LoadPlayer("Data/savedata1.csv");
 	if (!isLoaded) {
-		m_playerData = { "Hero",100,10,GameData::windowWidth / 2,GameData::windowHeight / 2 };
+		m_playerData.name = "hero";
+		m_playerData.hp = 100;
+		m_playerData.mp = 100;
+		m_playerData.posX = GameData::windowWidth / 2;
+		m_playerData.posY = GameData::windowHeight / 2;
 	}
 
 	//UIを作成する

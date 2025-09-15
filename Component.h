@@ -9,7 +9,7 @@ protected:
 	Entity* owner;
 	bool isActive;
 public:
-	Component(Entity* o) : owner(o) {}
+	Component(Entity* o) : owner(o), isActive(true) {}
 	virtual ~Component() {}
 
 	virtual void Update(const InputState* input, float deltaTime) {}

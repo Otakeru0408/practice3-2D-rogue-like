@@ -6,7 +6,7 @@ class GameManager;
 
 class ResultState : public IGameState {
 public:
-	ResultState(GameManager* gameManager) :IGameState(gameManager) {}
+	ResultState(GameManager* gameManager) :IGameState(gameManager), m_resultFontHandle(0) {}
 	~ResultState() override = default;
 
 	void Init()override;

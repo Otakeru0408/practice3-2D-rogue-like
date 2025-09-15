@@ -12,6 +12,14 @@ struct PlayerData {
 	float posX;
 	float posY;
 
+	PlayerData() {
+		name = "";
+		hp = 0;
+		mp = 0;
+		posX = 0;
+		posY = 0;
+	}
+
 	// CSVŒ`Ž®‚É•ÏŠ·
 	std::string ToCSV() const {
 		std::ostringstream oss;
