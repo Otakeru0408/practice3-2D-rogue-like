@@ -44,9 +44,9 @@ void Player::Update(const InputState* input, float deltaTime) {
 void Player::Draw() {
 	SetFontSize(20);
 	PlayerData data = SavePlayerData();
-	DrawFormatString(10, 500, GetColor(0, 0, 0),
+	/*DrawFormatString(10, 500, GetColor(0, 0, 0),
 		"hp:%d,maxHp;%d,mp:%d,posX:%.2f,posY:%.2f",
-		data.hp, data.maxHp, data.mp, data.posX, data.posY);
+		data.hp, data.maxHp, data.mp, data.posX, data.posY);*/
 	Entity::Draw();
 }
 

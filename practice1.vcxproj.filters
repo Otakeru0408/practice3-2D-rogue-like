@@ -50,6 +50,9 @@
     <ClCompile Include="Player.cpp">
       <Filter>8_Entity</Filter>
     </ClCompile>
+    <ClCompile Include="StageManager.cpp">
+      <Filter>0_メインファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TitleState.h">
@@ -108,6 +111,12 @@
     </ClInclude>
     <ClInclude Include="InputComponent.h">
       <Filter>7_Component</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomData.h">
+      <Filter>2_Stateインタフェース</Filter>
+    </ClInclude>
+    <ClInclude Include="StageManager.h">
+      <Filter>2_Stateインタフェース</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

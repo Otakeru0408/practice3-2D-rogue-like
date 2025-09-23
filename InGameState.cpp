@@ -9,6 +9,8 @@ void InGameState::Init() {
 	AddFontResourceEx("Data/YDWaosagi.otf", FR_PRIVATE, 0);
 	m_gameFontHandle = CreateFontToHandle("YDW あおさぎ R", 25, 3);
 
+	m_stageManager = std::make_shared<StageManager>(GameData::windowWidth, GameData::windowHeight);
+	m_stageManager->Init();
 
 	//プレイヤーのデータを設定
 	bool isLoaded = LoadPlayer("Data/savedata1.csv");
@@ -23,6 +25,7 @@ void InGameState::Init() {
 	player = std::make_shared<Player>(m_playerData);
 
 	//UIを作成する
+	/*
 	auto button = std::make_shared<UIButton>(
 		100, 100, 200, 100,
 		"Start",
@@ -31,6 +34,7 @@ void InGameState::Init() {
 		});
 
 	m_uiManager->AddElement(button);
+	*/
 }
 
 SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
@@ -54,8 +58,8 @@ SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
 }
 
 void InGameState::Draw() {
-	GameData::DrawStringWithAnchor(GameData::windowWidth / 2, 100, 0.5f, 0.5f, GetColor(0, 0, 0),
-		m_gameFontHandle, "This is Game Scene");
+
+	//m_stageManager->Draw();
 
 	player->Draw();
 	for (auto entity : entities) {

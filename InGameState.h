@@ -3,6 +3,7 @@
 #include "PlayerData.h"
 #include "Entity.h"
 #include "Player.h"
+#include "StageManager.h"
 
 class GameManager;
 
@@ -27,4 +28,5 @@ private:
 	PlayerData m_playerData;
 	std::shared_ptr<Player> player;
 	std::vector<std::shared_ptr<Entity>> entities;
+	std::shared_ptr<StageManager> m_stageManager;
 };

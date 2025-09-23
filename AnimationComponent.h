@@ -46,7 +46,9 @@ public:
 	void Draw() override {
 		if (!direction || !transform)return;
 		const auto& frames = animations[direction->dir];
-		DrawRotaGraph((int)transform->x, (int)transform->y, scale, 0.0f, frames[frame], TRUE);
-		DrawFormatString(10, 300, GetColor(0, 0, 0), "deltaTime:%.2f", frameCount);
+
+		//ƒJƒƒ‰ˆÊ’u‚ÌŒvZ
+		DrawRotaGraph(GameData::windowWidth / 2, GameData::windowHeight / 2, scale, 0.0f, frames[frame], TRUE);
+		//DrawFormatString(10, 300, GetColor(0, 0, 0), "deltaTime:%.2f", frameCount);
 	}
 };
