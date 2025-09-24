@@ -21,6 +21,16 @@ public:
 	void Update(const InputState* input, float deltaTime)override;
 	void Draw()override;
 
+	float GetX() {
+		std::shared_ptr<TransformComponent> trans = GetComponent<TransformComponent>();
+		return trans ? trans->x : 0;
+	}
+
+	float GetY() {
+		std::shared_ptr<TransformComponent> trans = GetComponent<TransformComponent>();
+		return trans ? trans->y : 0;
+	}
+
 	PlayerData SavePlayerData();
 private:
 	int mp;

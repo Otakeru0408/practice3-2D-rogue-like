@@ -1,7 +1,9 @@
 // StageManager.h
 #pragma once
 #include <vector>
+#include<memory>
 #include "RoomData.h"
+#include "Player.h"
 
 class StageManager
 {
@@ -9,6 +11,8 @@ public:
 	StageManager(int width, int height);
 	void Init();    // BSPでダンジョンを生成
 	void Draw();    // DXライブラリで描画
+
+	std::shared_ptr<Player> m_player;
 
 private:
 	struct Node {
@@ -34,4 +38,6 @@ private:
 	RoomData GetRoom(Node* node);
 
 	int stageWidth, stageHeight;
+	int roomColor;
+	int pathColor;
 };

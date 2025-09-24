@@ -6,6 +6,7 @@
 
 StageManager::StageManager(int width, int height)
 	: stageWidth(width), stageHeight(height), root(nullptr)
+	, roomColor(GetColor(100, 100, 100)), pathColor(GetColor(0, 255, 0))
 {
 	std::srand((unsigned int)std::time(nullptr));
 }
@@ -13,7 +14,7 @@ StageManager::StageManager(int width, int height)
 void StageManager::Init()
 {
 	// ルートノード作成
-	root = new Node(0, 0, stageWidth, stageHeight);
+	root = new Node(0, 0, stageWidth * 10, stageHeight * 10);
 	/*
 	ノード自体は最初は箱を持たずに、関係性だけ。
 	そこから２分木のように分かれていき、最後の葉っぱだけに箱を描画する
@@ -164,6 +165,15 @@ void StageManager::ConnectChildren(Node* node)
 
 void StageManager::Draw()
 {
+	//プレイヤーの位置を取得
+	int px = 0;
+	int py = 0;
+
+	if (m_player) {
+		px = m_player->GetX();
+		py = m_player->GetY();
+	}
+
 	int thick = 10;
 	// 通路
 	for (size_t i = 0; i < corridors.size() - 2; i += 3)
@@ -171,13 +181,13 @@ void StageManager::Draw()
 		auto p1 = corridors[i];
 		auto p2 = corridors[i + 1];
 		auto p3 = corridors[i + 2];
-		DrawLine(p1.first, p1.second, p2.first, p2.second, GetColor(0, 255, 0), thick);
-		DrawLine(p2.first, p2.second, p3.first, p3.second, GetColor(0, 255, 0), thick);
+		DrawLine(p1.first - px, p1.second - py, p2.first - px, p2.second - py, pathColor, thick);
+		DrawLine(p2.first - px, p2.second - py, p3.first - px, p3.second - py, pathColor, thick);
 	}
 
 	//部屋
 	for (auto& r : rooms)
 	{
-		DrawBox(r.x, r.y, r.x + r.w, r.y + r.h, GetColor(0, 0, 0), TRUE);
+		DrawBox(r.x - px, r.y - py, r.x + r.w - px, r.y + r.h - py, roomColor, TRUE);
 	}
 }

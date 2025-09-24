@@ -24,6 +24,7 @@ void InGameState::Init() {
 	//Player‚ğPlayerData‚©‚çì¬‚·‚é
 	player = std::make_shared<Player>(m_playerData);
 
+	m_stageManager->m_player = player;
 	//UI‚ğì¬‚·‚é
 	/*
 	auto button = std::make_shared<UIButton>(
@@ -59,7 +60,7 @@ SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
 
 void InGameState::Draw() {
 
-	//m_stageManager->Draw();
+	m_stageManager->Draw();
 
 	player->Draw();
 	for (auto entity : entities) {

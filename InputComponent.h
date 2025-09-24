@@ -18,7 +18,7 @@ public:
 
 		if (input->IsMouseStay(0)) {
 			//キャラの位置とマウスの位置を計算
-			VECTOR tPos = VGet(transform->x, transform->y, 0);
+			VECTOR tPos = VGet(GameData::windowWidth / 2, GameData::windowHeight / 2, 0);
 			VECTOR mPos = VGet(input->mouseX, input->mouseY, 0);
 			VECTOR moveVec = VNorm(VSub(mPos, tPos));
 			//それぞれのベクトルから移動量を計算

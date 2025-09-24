@@ -94,9 +94,6 @@
     <ClInclude Include="Component.h">
       <Filter>7_Component</Filter>
     </ClInclude>
-    <ClInclude Include="TransformComponent.h">
-      <Filter>7_Component</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>8_Entity</Filter>
     </ClInclude>
@@ -117,6 +114,9 @@
     </ClInclude>
     <ClInclude Include="StageManager.h">
       <Filter>2_Stateインタフェース</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformComponent.h">
+      <Filter>7_Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
