@@ -71,5 +71,7 @@ void Player::LoadPlayerData(PlayerData data) {
 	auto trans = std::make_shared<TransformComponent>(this, GameData::windowWidth / 2, GameData::windowHeight / 2);
 	AddComponent(trans);
 
+	m_Trans = trans;
+
 	mp = data.mp;
 }

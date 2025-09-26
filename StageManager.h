@@ -10,6 +10,7 @@ class StageManager
 public:
 	StageManager(int width, int height);
 	void Init();    // BSPでダンジョンを生成
+	void Update();
 	void Draw();    // DXライブラリで描画
 
 	std::shared_ptr<Player> m_player;
@@ -36,6 +37,9 @@ private:
 	void CollectRooms(Node* node);
 	void ConnectChildren(Node* node);
 	RoomData GetRoom(Node* node);
+
+	//プレイヤーのスタート地点を決める
+	void SetPlayerStartPos();
 
 	int stageWidth, stageHeight;
 	int roomColor;

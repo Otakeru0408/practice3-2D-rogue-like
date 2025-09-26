@@ -14,14 +14,15 @@ StageManager::StageManager(int width, int height)
 void StageManager::Init()
 {
 	// ƒ‹[ƒgƒm[ƒhì¬
-	root = new Node(0, 0, stageWidth * 10, stageHeight * 10);
+	int scale = 1;
+	root = new Node(0, 0, stageWidth * scale, stageHeight * scale);
 	/*
 	ƒm[ƒh©‘Ì‚ÍÅ‰‚Í” ‚ğ‚½‚¸‚ÉAŠÖŒW«‚¾‚¯B
 	‚»‚±‚©‚ç‚Q•ª–Ø‚Ì‚æ‚¤‚É•ª‚©‚ê‚Ä‚¢‚«AÅŒã‚Ì—t‚Á‚Ï‚¾‚¯‚É” ‚ğ•`‰æ‚·‚é
 	*/
 
 	// Ä‹A“I‚É•ªŠ„
-	Split(root, 4); // [‚³4‚­‚ç‚¢‚Ü‚Å•ªŠ„
+	Split(root, 1); // [‚³4‚­‚ç‚¢‚Ü‚Å•ªŠ„
 
 	// •”‰®‚Ì¶¬
 	CreateRoom(root);
@@ -29,6 +30,12 @@ void StageManager::Init()
 	// •”‰®ƒŠƒXƒgûW
 	rooms.clear();
 	CollectRooms(root);
+
+	SetPlayerStartPos();
+}
+
+void StageManager::Update() {
+
 }
 
 StageManager::Node* StageManager::Split(Node* node, int depth)
@@ -170,8 +177,8 @@ void StageManager::Draw()
 	int py = 0;
 
 	if (m_player) {
-		px = m_player->GetX();
-		py = m_player->GetY();
+		px = m_player->GetX() - GameData::windowWidth / 2;
+		py = m_player->GetY() - GameData::windowHeight / 2;
 	}
 
 	int thick = 10;
@@ -190,4 +197,10 @@ void StageManager::Draw()
 	{
 		DrawBox(r.x - px, r.y - py, r.x + r.w - px, r.y + r.h - py, roomColor, TRUE);
 	}
+}
+
+void StageManager::SetPlayerStartPos() {
+	RoomData data = rooms[0];
+	m_player->SetX(data.x + data.w / 2);
+	m_player->SetY(data.y + data.h / 2);
 }

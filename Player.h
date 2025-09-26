@@ -22,13 +22,23 @@ public:
 	void Draw()override;
 
 	float GetX() {
-		std::shared_ptr<TransformComponent> trans = GetComponent<TransformComponent>();
-		return trans ? trans->x : 0;
+		return m_Trans ? m_Trans->x : 0;
 	}
 
 	float GetY() {
-		std::shared_ptr<TransformComponent> trans = GetComponent<TransformComponent>();
-		return trans ? trans->y : 0;
+		return m_Trans ? m_Trans->y : 0;
+	}
+
+	void SetX(float x) {
+		if (m_Trans) {
+			m_Trans->x = x;
+		}
+	}
+
+	void SetY(float y) {
+		if (m_Trans) {
+			m_Trans->y = y;
+		}
 	}
 
 	PlayerData SavePlayerData();
@@ -36,4 +46,5 @@ private:
 	int mp;
 
 	void LoadPlayerData(PlayerData data);
+	std::shared_ptr<TransformComponent> m_Trans;
 };
