@@ -42,10 +42,20 @@ private:
 	//プレイヤーの移動判定をするための関数
 	int CanMove();
 
+	//廊下を描画するための関数
+	void DrawCorridor(const std::pair<int, int>& a, const std::pair<int, int>& b,
+		int px, int py, int thick, int color);
+
+	//ミニマップを描画するための関数
+	void DrawMiniMap();
+
 	//プレイヤーのスタート地点を決める
 	void SetPlayerStartPos();
 
 	int stageWidth, stageHeight;
 	int roomColor;
 	int pathColor;
+	int pathThick;
+
+	float wholeScale;
 };

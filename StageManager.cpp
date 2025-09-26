@@ -7,6 +7,7 @@
 StageManager::StageManager(int width, int height)
 	: stageWidth(width), stageHeight(height), root(nullptr)
 	, roomColor(GetColor(100, 100, 100)), pathColor(GetColor(0, 255, 0))
+	, pathThick(50), wholeScale(4)
 {
 	std::srand((unsigned int)std::time(nullptr));
 }
@@ -14,8 +15,7 @@ StageManager::StageManager(int width, int height)
 void StageManager::Init()
 {
 	// ƒ‹[ƒgƒm[ƒhì¬
-	int scale = 3;
-	root = new Node(0, 0, stageWidth * scale, stageHeight * scale);
+	root = new Node(0, 0, stageWidth * wholeScale, stageHeight * wholeScale);
 	/*
 	ƒm[ƒh©‘Ì‚ÍÅ‰‚Í” ‚ğ‚½‚¸‚ÉAŠÖŒW«‚¾‚¯B
 	‚»‚±‚©‚ç‚Q•ª–Ø‚Ì‚æ‚¤‚É•ª‚©‚ê‚Ä‚¢‚«AÅŒã‚Ì—t‚Á‚Ï‚¾‚¯‚É” ‚ğ•`‰æ‚·‚é
@@ -210,15 +210,14 @@ void StageManager::Draw()
 		py = m_player->GetY() - GameData::windowHeight / 2;
 	}
 
-	int thick = 10;
 	// ’Ê˜H
 	for (size_t i = 0; i < corridors.size() - 2; i += 3)
 	{
 		auto p1 = corridors[i];
 		auto p2 = corridors[i + 1];
 		auto p3 = corridors[i + 2];
-		DrawLine(p1.first - px, p1.second - py, p2.first - px, p2.second - py, pathColor, thick);
-		DrawLine(p2.first - px, p2.second - py, p3.first - px, p3.second - py, pathColor, thick);
+		DrawCorridor(p1, p2, px, py, pathThick * wholeScale, pathColor);
+		DrawCorridor(p2, p3, px, py, pathThick * wholeScale, pathColor);
 	}
 
 	//•”‰®
@@ -227,7 +226,7 @@ void StageManager::Draw()
 		DrawBox(r.x - px, r.y - py, r.x + r.w - px, r.y + r.h - py, roomColor, TRUE);
 	}
 
-	DrawFormatString(100, 100, GetColor(0, 0, 0), "value:%d", CanMove());
+	DrawMiniMap();
 }
 
 void StageManager::SetPlayerStartPos() {
@@ -235,4 +234,38 @@ void StageManager::SetPlayerStartPos() {
 	m_player->SetX(data.x + data.w / 2);
 	m_player->SetY(data.y + data.h / 2);
 	nowRoom = data;
+}
+
+// 2“_ŠÔ‚Ì’Ê˜H‚ğ•`‰æ‚·‚éŠÖ”
+void StageManager::DrawCorridor(const std::pair<int, int>& a, const std::pair<int, int>& b, int px, int py, int thick, int color) {
+	if (a.first == b.first) {
+		// c•ûŒü
+		int x = a.first - px;
+		int y1 = a.second - py;
+		int y2 = b.second - py;
+		if (y1 > y2) std::swap(y1, y2);
+		DrawBox(x - thick / 2, y1 - thick / 2, x + thick / 2, y2 + thick / 2, color, TRUE);
+	}
+	else if (a.second == b.second) {
+		// ‰¡•ûŒü
+		int y = a.second - py;
+		int x1 = a.first - px;
+		int x2 = b.first - px;
+		if (x1 > x2) std::swap(x1, x2);
+		DrawBox(x1 - thick / 2, y - thick / 2, x2 + thick / 2, y + thick / 2, color, TRUE);
+	}
+}
+
+void StageManager::DrawMiniMap() {
+	float nowScale = 0.05f;
+	int startPosX = 10;
+	int startPosY = 10;
+	for (auto& r : rooms)
+	{
+		DrawBox(startPosX + r.x * nowScale, startPosY + r.y * nowScale,
+			startPosX + (r.x + r.w) * nowScale, startPosY + (r.y + r.h) * nowScale,
+			GetColor(0, 0, 0), FALSE);
+	}
+	DrawCircle(startPosX + m_player->GetX() * nowScale, startPosY + m_player->GetY() * nowScale,
+		5, GetColor(255, 0, 0), TRUE);
 }
