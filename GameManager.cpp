@@ -14,10 +14,10 @@ GameManager::~GameManager() {
 }
 
 void GameManager::Initialize() {
+	SetDrawScreen(DX_SCREEN_BACK);
 	if (DxLib_Init() == -1) {
 		return;
 	}
-	SetDrawScreen(DX_SCREEN_BACK);
 
 	//ChangeState(std::make_unique<TitleState>(this));
 	PushState(std::make_unique<TitleState>(this));

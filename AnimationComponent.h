@@ -14,10 +14,11 @@ private:
 	float frameSpeed = 0.5f; // 何秒でアニメーションが進むか
 
 public:
+	//Playerで設定する値
 	float scale = 0.05f;
 
-	AnimationComponent(Entity* e)
-		:Component(e) {
+	AnimationComponent(Entity* e, float _scale)
+		:Component(e), scale(_scale) {
 		direction = owner->GetComponent<DirectionComponent>();
 		transform = owner->GetComponent<TransformComponent>();
 	}

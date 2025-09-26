@@ -14,7 +14,7 @@ StageManager::StageManager(int width, int height)
 void StageManager::Init()
 {
 	// ルートノード作成
-	int scale = 1;
+	int scale = 3;
 	root = new Node(0, 0, stageWidth * scale, stageHeight * scale);
 	/*
 	ノード自体は最初は箱を持たずに、関係性だけ。
@@ -22,7 +22,7 @@ void StageManager::Init()
 	*/
 
 	// 再帰的に分割
-	Split(root, 1); // 深さ4くらいまで分割
+	Split(root, 3); // 深さ4くらいまで分割
 
 	// 部屋の生成
 	CreateRoom(root);
@@ -35,7 +35,36 @@ void StageManager::Init()
 }
 
 void StageManager::Update() {
+	//部屋の当たり判定を設定する
+	/*
+	やること
+	・プレイヤーがどこかの部屋にいるかを確認
+	・部屋の中なら外に出さないようにする
+	・部屋の外なら渡り廊下の領域から離れないようにする
+	・当たり判定の関数　X軸に対して離れているなら0, Y軸に対して離れているなら1みたいにする
+	*/
+	switch (CanMove())
+	{
+	case 1:m_player->SetVX(0); break;
+	case 2:m_player->SetVY(0); break;
+	case 3:m_player->SetVX(0); m_player->SetVY(0); break;
+	default:
+		break;
+	}
+}
 
+int StageManager::CanMove() {
+	int nextX = m_player->GetX() + m_player->GetVX();
+	int nextY = m_player->GetY() + m_player->GetVY();
+
+	bool outX = (nextX - m_player->GetW() / 2 < nowRoom.x) || (nextX + m_player->GetW() / 2 > nowRoom.x + nowRoom.w);
+	bool outY = (nextY - m_player->GetH() / 2 < nowRoom.y) || (nextY + m_player->GetH() / 2 > nowRoom.y + nowRoom.h);
+
+	if (outX && outY) return 3; // 両方はみ出す
+	if (outX) return 1;         // X方向はみ出し
+	if (outY) return 2;         // Y方向はみ出し
+
+	return 0; // 収まっている
 }
 
 StageManager::Node* StageManager::Split(Node* node, int depth)
@@ -197,10 +226,13 @@ void StageManager::Draw()
 	{
 		DrawBox(r.x - px, r.y - py, r.x + r.w - px, r.y + r.h - py, roomColor, TRUE);
 	}
+
+	DrawFormatString(100, 100, GetColor(0, 0, 0), "value:%d", CanMove());
 }
 
 void StageManager::SetPlayerStartPos() {
 	RoomData data = rooms[0];
 	m_player->SetX(data.x + data.w / 2);
 	m_player->SetY(data.y + data.h / 2);
+	nowRoom = data;
 }

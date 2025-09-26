@@ -27,6 +27,7 @@ private:
 		}
 	};
 
+	RoomData nowRoom;
 	std::vector<RoomData> rooms;
 	std::vector<std::pair<int, int>> corridors; // 通路を線分として管理
 
@@ -37,6 +38,9 @@ private:
 	void CollectRooms(Node* node);
 	void ConnectChildren(Node* node);
 	RoomData GetRoom(Node* node);
+
+	//プレイヤーの移動判定をするための関数
+	int CanMove();
 
 	//プレイヤーのスタート地点を決める
 	void SetPlayerStartPos();

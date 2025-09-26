@@ -1,11 +1,11 @@
 #include "Player.h"
 
 Player::Player(PlayerData data)
-	:mp(0)
+	:mp(0), w(0), h(0), scale(0.05f)
 {
 	LoadPlayerData(data);
 	AddComponent(std::make_shared<DirectionComponent>(this));
-	auto anim = std::make_shared<AnimationComponent>(this);
+	auto anim = std::make_shared<AnimationComponent>(this, scale);
 
 	//アニメーション画像をInputする
 	{
@@ -30,10 +30,14 @@ Player::Player(PlayerData data)
 		animVec.emplace_back(LoadGraph("Data/Mowarm-left1.png"));
 		animVec.emplace_back(LoadGraph("Data/Mowarm-left2.png"));
 		anim->AddAnimation(Direction::Left, animVec);
+
+		GetGraphSize(animVec[0], &w, &h);
 	}
 	AddComponent(anim);
 
-	AddComponent(std::make_shared<InputComponent>(this, 100));
+	AddComponent(std::make_shared<InputComponent>(this, 200));
+
+
 }
 
 
@@ -48,6 +52,10 @@ void Player::Draw() {
 		"hp:%d,maxHp;%d,mp:%d,posX:%.2f,posY:%.2f",
 		data.hp, data.maxHp, data.mp, data.posX, data.posY);*/
 	Entity::Draw();
+
+	DrawBox(GameData::windowWidth / 2 - w * scale / 2, GameData::windowHeight / 2 - h * scale / 2,
+		GameData::windowWidth / 2 + w * scale / 2, GameData::windowHeight / 2 + h * scale / 2,
+		GetColor(255, 0, 0), false);
 }
 
 PlayerData Player::SavePlayerData() {

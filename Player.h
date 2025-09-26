@@ -21,6 +21,7 @@ public:
 	void Update(const InputState* input, float deltaTime)override;
 	void Draw()override;
 
+	//X, Y, VX, VY‚ðŽæ“¾‚·‚éŠÖ”
 	float GetX() {
 		return m_Trans ? m_Trans->x : 0;
 	}
@@ -29,6 +30,24 @@ public:
 		return m_Trans ? m_Trans->y : 0;
 	}
 
+	float GetVX() {
+		return m_Trans ? m_Trans->vx : 0;
+	}
+
+	float GetVY() {
+		return m_Trans ? m_Trans->vy : 0;
+	}
+
+	//W, H‚ðŽæ“¾‚·‚éŠÖ”
+	float GetW() {
+		return w * scale;
+	}
+
+	float GetH() {
+		return h * scale;
+	}
+
+	//X, Y, VX, VY‚ðÝ’è‚·‚éŠÖ”
 	void SetX(float x) {
 		if (m_Trans) {
 			m_Trans->x = x;
@@ -41,9 +60,25 @@ public:
 		}
 	}
 
+	void SetVX(float vx) {
+		if (m_Trans) {
+			m_Trans->vx = vx;
+		}
+	}
+
+	void SetVY(float vy) {
+		if (m_Trans) {
+			m_Trans->vy = vy;
+		}
+	}
+
+
 	PlayerData SavePlayerData();
 private:
 	int mp;
+	int w;
+	int h;
+	float scale;
 
 	void LoadPlayerData(PlayerData data);
 	std::shared_ptr<TransformComponent> m_Trans;
