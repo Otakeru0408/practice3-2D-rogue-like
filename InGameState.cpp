@@ -48,7 +48,7 @@ SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
 		entity->Update(input, deltaTime);
 	}
 
-	m_stageManager->Update();
+	//m_stageManager->Update();
 
 	//Spaceを押したときはゲームシーンへ移行する
 	if (moveState) {
