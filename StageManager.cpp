@@ -31,6 +31,12 @@ void StageManager::Init()
 	//Še•”‰®‚Ì—×ÚƒŠƒXƒg‚©‚ç’Ê˜H‚ðì¬‚·‚é
 }
 
+void StageManager::Update(const InputState* input) {
+	if (input->IsKeyDown(KEY_INPUT_RETURN)) {
+		nowRoomIndex = (nowRoomIndex + 1) % rooms.size();
+	}
+}
+
 StageManager::Node* StageManager::Split(Node* node, int depth)
 {
 	if (depth <= 0) return node;
@@ -79,8 +85,8 @@ void StageManager::CreateRoom(Node* node)
 		int rx = node->x + std::rand() % (node->w - rw + 1);
 		int ry = node->y + std::rand() % (node->h - rh + 1);
 
-		//node->room = RoomData(rx, ry, rw, rh, node->x, node->y, node->w, node->h);
-		node->room = RoomData(node->x, node->y, node->w, node->h, node->x, node->y, node->w, node->h);
+		node->room = RoomData(rx, ry, rw, rh, node->x, node->y, node->w, node->h);
+		//node->room = RoomData(node->x, node->y, node->w, node->h, node->x, node->y, node->w, node->h);
 	}
 }
 

@@ -3,12 +3,14 @@
 #include <vector>
 #include "RoomData.h"
 #include "Player.h"
+#include "InputState.h"
 
 class StageManager
 {
 public:
 	StageManager(int width, int height);
 	void Init();    // BSPでダンジョンを生成
+	void Update(const InputState* input);
 	void Draw();    // DXライブラリで描画
 
 	std::shared_ptr<Player> m_player;
