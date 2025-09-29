@@ -16,7 +16,7 @@ void StageManager::Init()
 	root = new Node(0, 0, stageWidth, stageHeight);
 
 	// 再帰的に分割
-	Split(root, 4); // 深さ4くらいまで分割
+	Split(root, 3); // 深さ4くらいまで分割
 
 	// 部屋の生成
 	CreateRoom(root);
@@ -24,6 +24,9 @@ void StageManager::Init()
 	// 部屋リスト収集
 	rooms.clear();
 	CollectRooms(root);
+
+	//各部屋の隣接リストを収集
+	CollectNextRooms();
 }
 
 StageManager::Node* StageManager::Split(Node* node, int depth)
@@ -74,7 +77,8 @@ void StageManager::CreateRoom(Node* node)
 		int rx = node->x + std::rand() % (node->w - rw + 1);
 		int ry = node->y + std::rand() % (node->h - rh + 1);
 
-		node->room = RoomData(rx, ry, rw, rh);
+		node->room = RoomData(rx, ry, rw, rh, node->x, node->y, node->w, node->h);
+		//node->room = RoomData(node->x, node->y, node->w, node->h, node->x, node->y, node->w, node->h);
 	}
 }
 
@@ -93,10 +97,76 @@ void StageManager::CollectRooms(Node* node)
 	}
 }
 
+void StageManager::CollectNextRooms() {
+
+	//各部屋に対して隣接する部屋を探す
+	for (auto& main : rooms) {
+		main.nextRooms = std::vector<RoomData>();
+		for (auto& other : rooms) {
+			//参照のアドレスをみて自分自身かどうか判定する
+			if (&main == &other)continue;
+
+			//この部屋がmainと隣接しているかどうか
+			//左右で隣接
+			if (main.maxX == other.maxX + other.maxW
+				&& !(main.maxY + main.maxH <= other.maxY || main.maxY >= other.maxY + other.maxH)) {
+				main.nextRooms.emplace_back(other);
+				continue;
+			}
+			if (main.maxX + main.maxW == other.maxX
+				&& !(other.maxY + other.maxH <= main.maxY || other.maxY >= main.maxY + main.maxH)) {
+				main.nextRooms.emplace_back(other);
+				continue;
+			}
+
+			//上下で隣接
+			if (main.maxY == other.maxY + other.maxH
+				&& !(main.maxX + main.maxH <= other.maxX || main.maxX >= other.maxX + other.maxH)) {
+				main.nextRooms.emplace_back(other);
+				continue;
+			}
+			if (main.maxY + main.maxH == other.maxY
+				&& !(other.maxX + other.maxH <= main.maxX || other.maxX >= main.maxX + main.maxH)) {
+				main.nextRooms.emplace_back(other);
+				continue;
+			}
+		}
+	}
+}
+
 void StageManager::Draw()
 {
+	int px = 0;
+	int py = 0;
+
+	if (m_player) {
+		px = m_player->GetX() - GameData::windowWidth / 2;
+		py = m_player->GetY() - GameData::windowHeight / 2;
+	}
+
+	int count = 0;
 	for (auto& r : rooms)
 	{
-		DrawBox(r.x, r.y, r.x + r.w, r.y + r.h, GetColor(100, 100, 100), TRUE);
+		DrawBox(r.x - px, r.y - py, r.x + r.w - px, r.y + r.h - py,
+			GetColor(100, 100, 100), TRUE);
+		DrawBox(r.x - px, r.y - py, r.x + r.w - px, r.y + r.h - py,
+			GetColor(0, 0, 0), FALSE);
+
+		if (count == 0) {
+			DrawBox(r.x - px, r.y - py, r.x + r.w - px, r.y + r.h - py,
+				GetColor(100, 100, 255), TRUE);
+			DrawBox(r.x - px, r.y - py, r.x + r.w - px, r.y + r.h - py,
+				GetColor(0, 0, 0), FALSE);
+		}
+		count++;
 	}
+
+	for (auto& r : rooms[0].nextRooms) {
+		DrawBox(r.x - px, r.y - py, r.x + r.w - px, r.y + r.h - py,
+			GetColor(255, 100, 100), TRUE);
+		DrawBox(r.x - px, r.y - py, r.x + r.w - px, r.y + r.h - py,
+			GetColor(0, 0, 0), FALSE);
+	}
+
+	DrawFormatString(50, 50, GetColor(0, 255, 0), "NextNum:%d", rooms[0].nextRooms.size());
 }

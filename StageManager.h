@@ -33,4 +33,5 @@ private:
 	Node* Split(Node* node, int depth);
 	void CreateRoom(Node* node);
 	void CollectRooms(Node* node);
+	void CollectNextRooms();
 };
