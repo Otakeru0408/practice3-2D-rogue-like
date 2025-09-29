@@ -34,4 +34,7 @@ private:
 	void CreateRoom(Node* node);
 	void CollectRooms(Node* node);
 	void CollectNextRooms();
+	void ConnectRooms();
+
+	int nowRoomIndex = 5;
 };

@@ -16,7 +16,7 @@ void StageManager::Init()
 	root = new Node(0, 0, stageWidth, stageHeight);
 
 	// 再帰的に分割
-	Split(root, 3); // 深さ4くらいまで分割
+	Split(root, 4); // 深さ4くらいまで分割
 
 	// 部屋の生成
 	CreateRoom(root);
@@ -27,6 +27,8 @@ void StageManager::Init()
 
 	//各部屋の隣接リストを収集
 	CollectNextRooms();
+
+	//各部屋の隣接リストから通路を作成する
 }
 
 StageManager::Node* StageManager::Split(Node* node, int depth)
@@ -77,8 +79,8 @@ void StageManager::CreateRoom(Node* node)
 		int rx = node->x + std::rand() % (node->w - rw + 1);
 		int ry = node->y + std::rand() % (node->h - rh + 1);
 
-		node->room = RoomData(rx, ry, rw, rh, node->x, node->y, node->w, node->h);
-		//node->room = RoomData(node->x, node->y, node->w, node->h, node->x, node->y, node->w, node->h);
+		//node->room = RoomData(rx, ry, rw, rh, node->x, node->y, node->w, node->h);
+		node->room = RoomData(node->x, node->y, node->w, node->h, node->x, node->y, node->w, node->h);
 	}
 }
 
@@ -106,32 +108,43 @@ void StageManager::CollectNextRooms() {
 			//参照のアドレスをみて自分自身かどうか判定する
 			if (&main == &other)continue;
 
-			//この部屋がmainと隣接しているかどうか
-			//左右で隣接
-			if (main.maxX == other.maxX + other.maxW
-				&& !(main.maxY + main.maxH <= other.maxY || main.maxY >= other.maxY + other.maxH)) {
+			// a の境界
+			int aLeft = main.maxX;
+			int aRight = main.maxX + main.maxW;
+			int aTop = main.maxY;
+			int aBottom = main.maxY + main.maxH;
+
+			// b の境界
+			int bLeft = other.maxX;
+			int bRight = other.maxX + other.maxW;
+			int bTop = other.maxY;
+			int bBottom = other.maxY + other.maxH;
+
+			// 左右で隣接（垂直に重なっている範囲がある）
+			if (aRight == bLeft && !(aBottom <= bTop || aTop >= bBottom)) {
 				main.nextRooms.emplace_back(other);
 				continue;
 			}
-			if (main.maxX + main.maxW == other.maxX
-				&& !(other.maxY + other.maxH <= main.maxY || other.maxY >= main.maxY + main.maxH)) {
+			if (bRight == aLeft && !(bBottom <= aTop || bTop >= aBottom)) {
 				main.nextRooms.emplace_back(other);
 				continue;
 			}
 
-			//上下で隣接
-			if (main.maxY == other.maxY + other.maxH
-				&& !(main.maxX + main.maxH <= other.maxX || main.maxX >= other.maxX + other.maxH)) {
+			// 上下で隣接（水平に重なっている範囲がある）
+			if (aBottom == bTop && !(aRight <= bLeft || aLeft >= bRight)) {
 				main.nextRooms.emplace_back(other);
 				continue;
 			}
-			if (main.maxY + main.maxH == other.maxY
-				&& !(other.maxX + other.maxH <= main.maxX || other.maxX >= main.maxX + main.maxH)) {
+			if (bBottom == aTop && !(bRight <= aLeft || bLeft >= aRight)) {
 				main.nextRooms.emplace_back(other);
 				continue;
 			}
 		}
 	}
+}
+
+void StageManager::ConnectRooms() {
+
 }
 
 void StageManager::Draw()
@@ -152,7 +165,7 @@ void StageManager::Draw()
 		DrawBox(r.x - px, r.y - py, r.x + r.w - px, r.y + r.h - py,
 			GetColor(0, 0, 0), FALSE);
 
-		if (count == 0) {
+		if (count == nowRoomIndex) {
 			DrawBox(r.x - px, r.y - py, r.x + r.w - px, r.y + r.h - py,
 				GetColor(100, 100, 255), TRUE);
 			DrawBox(r.x - px, r.y - py, r.x + r.w - px, r.y + r.h - py,
@@ -161,12 +174,12 @@ void StageManager::Draw()
 		count++;
 	}
 
-	for (auto& r : rooms[0].nextRooms) {
+	for (auto& r : rooms[nowRoomIndex].nextRooms) {
 		DrawBox(r.x - px, r.y - py, r.x + r.w - px, r.y + r.h - py,
 			GetColor(255, 100, 100), TRUE);
 		DrawBox(r.x - px, r.y - py, r.x + r.w - px, r.y + r.h - py,
 			GetColor(0, 0, 0), FALSE);
 	}
 
-	DrawFormatString(50, 50, GetColor(0, 255, 0), "NextNum:%d", rooms[0].nextRooms.size());
+	DrawFormatString(50, 50, GetColor(0, 255, 0), "NextNum:%d", rooms[nowRoomIndex].nextRooms.size());
 }
