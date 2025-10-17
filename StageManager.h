@@ -44,7 +44,7 @@ private:
 	void ConnectRooms();
 
 	int nowRoomIndex = 0;
-	int corridorWidth = 10;
+	int corridorWidth = 50;
 	bool displayMaxRoomSize = false;
 	float wholeScale;
 };

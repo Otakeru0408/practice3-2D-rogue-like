@@ -163,6 +163,9 @@ void StageManager::ConnectRooms() {
 	int aRight = main.x + main.w;
 	int aTop = main.y;
 	int aBottom = main.y + main.h;
+	//通路データがなければ作成する
+	bool hasCorridor = false;
+	if (main.corridors.size() > 0)hasCorridor = true;
 
 	for (auto& next : main.nextRooms) {
 		// 隣接する部屋を一つずつ検証
@@ -178,15 +181,14 @@ void StageManager::ConnectRooms() {
 		// 重なっているとしたら
 		if (overlapY1 < overlapY2) {
 			int centerY = (overlapY1 + overlapY2) / 2.0f;
-			/*int rightX = (main.x + main.w / 2) >= (next.x + next.w / 2)
+			int rightX = (main.x + main.w / 2) >= (next.x + next.w / 2)
 				? (main.x + main.w / 2) : (next.x + next.w / 2);
 			int leftX = (main.x + main.w / 2) < (next.x + next.w / 2)
 				? (main.x + main.w / 2) : (next.x + next.w / 2);
 			corridors.emplace_back(rightX, centerY);
-			corridors.emplace_back(leftX, centerY);*/
-			corridors.emplace_back((main.x + main.w / 2), centerY);
-			corridors.emplace_back((next.x + next.w / 2), centerY);
-			//main.corridors.emplace_back(new CorridorData());
+			corridors.emplace_back(leftX, centerY);
+			if (!hasCorridor)
+				main.corridors.emplace_back(CorridorData(leftX, centerY - (corridorWidth * wholeScale) / 2, (rightX - leftX), (corridorWidth * wholeScale)));
 		}
 
 		// 縦方向の重なり区間を計算
@@ -196,8 +198,12 @@ void StageManager::ConnectRooms() {
 		// 重なっているとしたら
 		if (overlapX1 < overlapX2) {
 			int centerX = (overlapX1 + overlapX2) / 2.0f;
-			corridors.emplace_back(centerX, main.y + main.h / 2);
-			corridors.emplace_back(centerX, next.y + next.h / 2);
+			int topY = (main.y + main.h / 2) >= (next.y + next.h / 2) ? (main.y + main.h / 2) : (next.y + next.h / 2);
+			int bottomY = (main.y + main.h / 2) < (next.y + next.h / 2) ? (main.y + main.h / 2) : (next.y + next.h / 2);
+			corridors.emplace_back(centerX, topY);
+			corridors.emplace_back(centerX, bottomY);
+			if (!hasCorridor)
+				main.corridors.emplace_back(CorridorData(centerX - (corridorWidth * wholeScale) / 2, topY, (corridorWidth * wholeScale), (bottomY - topY)));
 		}
 
 	}
@@ -218,6 +224,13 @@ void StageManager::Draw()
 		DrawLine(corridors[i].first - px, corridors[i].second - py,
 			corridors[i + 1].first - px, corridors[i + 1].second - py,
 			GetColor(0, 255, 0));
+	}
+
+	if (rooms[nowRoomIndex].corridors.size() > 0) {
+		for (int i = 0; i < rooms[nowRoomIndex].corridors.size(); i++) {
+			CorridorData data = rooms[nowRoomIndex].corridors[i];
+			DrawBox(data.x - px, data.y - py, data.x + data.w - px, data.y + data.h - py, GetColor(150, 150, 150), TRUE);
+		}
 	}
 
 	//もし2が押されたら部屋の元サイズを表示する
