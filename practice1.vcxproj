@@ -146,6 +146,7 @@
   <ItemGroup>
     <ClInclude Include="AnimationComponent.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="CorridorData.h" />
     <ClInclude Include="DirectionComponent.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameData.h" />

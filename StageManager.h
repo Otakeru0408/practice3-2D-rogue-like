@@ -5,6 +5,7 @@
 #include <cmath>
 #include <algorithm>
 #include "RoomData.h"
+#include "CorridorData.h"
 #include "Player.h"
 #include "InputState.h"
 

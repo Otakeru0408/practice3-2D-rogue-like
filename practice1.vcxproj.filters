@@ -118,5 +118,8 @@
     <ClInclude Include="TransformComponent.h">
       <Filter>7_Component</Filter>
     </ClInclude>
+    <ClInclude Include="CorridorData.h">
+      <Filter>2_Stateインタフェース</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -5,7 +5,7 @@
 #include <ctime>
 
 StageManager::StageManager(int width, int height)
-	: stageWidth(width), stageHeight(height), wholeScale(2.0f), root(nullptr)
+	: stageWidth(width), stageHeight(height), wholeScale(1.0f), root(nullptr)
 {
 	std::srand((unsigned int)std::time(nullptr));
 }
@@ -157,9 +157,7 @@ void StageManager::CollectNextRooms() {
 
 void StageManager::ConnectRooms() {
 	corridors = std::vector<std::pair<int, int>>();
-
-	//for (auto& main : rooms) {
-		// a の境界
+	//現在注目中の部屋に対して
 	auto& main = rooms[nowRoomIndex];
 	int aLeft = main.x;
 	int aRight = main.x + main.w;
@@ -167,14 +165,11 @@ void StageManager::ConnectRooms() {
 	int aBottom = main.y + main.h;
 
 	for (auto& next : main.nextRooms) {
-		// b の境界
+		// 隣接する部屋を一つずつ検証
 		int bLeft = next.x;
 		int bRight = next.x + next.w;
 		int bTop = next.y;
 		int bBottom = next.y + next.h;
-
-		////////////////////////やり直し
-
 
 		// 横方向の重なり区間を計算
 		int overlapY1 = max(aTop, bTop);
@@ -183,13 +178,20 @@ void StageManager::ConnectRooms() {
 		// 重なっているとしたら
 		if (overlapY1 < overlapY2) {
 			int centerY = (overlapY1 + overlapY2) / 2.0f;
-			corridors.emplace_back(main.x + main.w / 2, centerY);
-			corridors.emplace_back(next.x + next.w / 2, centerY);
+			/*int rightX = (main.x + main.w / 2) >= (next.x + next.w / 2)
+				? (main.x + main.w / 2) : (next.x + next.w / 2);
+			int leftX = (main.x + main.w / 2) < (next.x + next.w / 2)
+				? (main.x + main.w / 2) : (next.x + next.w / 2);
+			corridors.emplace_back(rightX, centerY);
+			corridors.emplace_back(leftX, centerY);*/
+			corridors.emplace_back((main.x + main.w / 2), centerY);
+			corridors.emplace_back((next.x + next.w / 2), centerY);
+			//main.corridors.emplace_back(new CorridorData());
 		}
 
 		// 縦方向の重なり区間を計算
 		int overlapX1 = max(aLeft, bLeft);
-		int overlapX2 = min(aRight, aRight);
+		int overlapX2 = min(aRight, bRight);
 
 		// 重なっているとしたら
 		if (overlapX1 < overlapX2) {
@@ -198,48 +200,7 @@ void StageManager::ConnectRooms() {
 			corridors.emplace_back(centerX, next.y + next.h / 2);
 		}
 
-
-		////////////////////////
-	/*
-		//左右の場合
-		if (main.maxX == next.maxX + next.maxH || main.maxX + main.maxW == next.maxX) {
-			//aの上にbパターン
-			if (aTop < bBottom && aTop >= bTop) {
-				if (bBottom - aTop >= corridorWidth) {
-					//スタートポイント　まずはmainの中心Xと重なっているところの真ん中
-					//　　　　　　　　　そしてnextの中心Xと重なっているところの真ん中
-					corridors.emplace_back(main.x + main.w / 2, (aTop + bBottom) / 2);
-					corridors.emplace_back(next.x + next.w / 2, (aTop + bBottom) / 2);
-				}
-			}
-			//aの下にbパターン
-			else if (aBottom > bTop && aBottom <= bBottom) {
-				if (aBottom - bTop >= corridorWidth) {
-					corridors.emplace_back(main.x + main.w / 2, (aTop + bBottom) / 2);
-					corridors.emplace_back(next.x + next.w / 2, (aTop + bBottom) / 2);
-				}
-			}
-		}
-	//上下の場合
-		else if (main.maxY == next.maxY + next.maxH || next.maxY == main.maxY + main.maxH) {
-			//aの左にbパターン
-			if (aLeft < bRight && aLeft >= bLeft) {
-				if (bRight - aLeft >= corridorWidth) {
-					corridors.emplace_back((aLeft + bRight) / 2, main.y + main.h / 2);
-					corridors.emplace_back((aLeft + bRight) / 2, next.y + next.h / 2);
-				}
-				//aの右にbパターン
-				else if (aRight > bLeft && aRight <= bRight) {
-					if (aRight - bLeft >= corridorWidth) {
-						corridors.emplace_back((aLeft + bRight) / 2, main.y + main.h / 2);
-						corridors.emplace_back((aLeft + bRight) / 2, next.y + next.h / 2);
-					}
-				}
-			}
-		}
-		*/
 	}
-	//}
 }
 
 void StageManager::Draw()
