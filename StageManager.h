@@ -45,4 +45,5 @@ private:
 	int nowRoomIndex = 0;
 	int corridorWidth = 10;
 	bool displayMaxRoomSize = false;
+	float wholeScale;
 };

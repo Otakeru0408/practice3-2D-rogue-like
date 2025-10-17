@@ -5,7 +5,7 @@
 #include <ctime>
 
 StageManager::StageManager(int width, int height)
-	: stageWidth(width), stageHeight(height), root(nullptr)
+	: stageWidth(width), stageHeight(height), wholeScale(2.0f), root(nullptr)
 {
 	std::srand((unsigned int)std::time(nullptr));
 }
@@ -13,10 +13,10 @@ StageManager::StageManager(int width, int height)
 void StageManager::Init()
 {
 	// ƒ‹[ƒgƒm[ƒhì¬
-	root = new Node(0, 0, stageWidth, stageHeight);
+	root = new Node(0, 0, stageWidth * wholeScale, stageHeight * wholeScale);
 
 	// Ä‹A“I‚É•ªŠ„
-	Split(root, 2); // [‚³4‚­‚ç‚¢‚Ü‚Å•ªŠ„
+	Split(root, 4); // [‚³4‚­‚ç‚¢‚Ü‚Å•ªŠ„
 
 	// •”‰®‚Ì¶¬
 	CreateRoom(root);
@@ -36,6 +36,7 @@ void StageManager::Update(const InputState* input) {
 	//Enter‚Å’–Úƒ‹[ƒ€‚ð•ÏX‚Å‚«‚é
 	if (input->IsKeyDown(KEY_INPUT_RETURN)) {
 		nowRoomIndex = (nowRoomIndex + 1) % rooms.size();
+		ConnectRooms();
 	}
 	if (input->IsKeyDown(KEY_INPUT_2)) {
 		displayMaxRoomSize = !displayMaxRoomSize;
@@ -155,9 +156,11 @@ void StageManager::CollectNextRooms() {
 }
 
 void StageManager::ConnectRooms() {
+	corridors = std::vector<std::pair<int, int>>();
+
 	//for (auto& main : rooms) {
 		// a ‚Ì‹«ŠE
-	auto& main = rooms[0];
+	auto& main = rooms[nowRoomIndex];
 	int aLeft = main.x;
 	int aRight = main.x + main.w;
 	int aTop = main.y;
