@@ -16,7 +16,7 @@ void StageManager::Init()
 	root = new Node(0, 0, stageWidth, stageHeight);
 
 	// 再帰的に分割
-	Split(root, 4); // 深さ4くらいまで分割
+	Split(root, 2); // 深さ4くらいまで分割
 
 	// 部屋の生成
 	CreateRoom(root);
@@ -29,11 +29,16 @@ void StageManager::Init()
 	CollectNextRooms();
 
 	//各部屋の隣接リストから通路を作成する
+	ConnectRooms();
 }
 
 void StageManager::Update(const InputState* input) {
+	//Enterで注目ルームを変更できる
 	if (input->IsKeyDown(KEY_INPUT_RETURN)) {
 		nowRoomIndex = (nowRoomIndex + 1) % rooms.size();
+	}
+	if (input->IsKeyDown(KEY_INPUT_2)) {
+		displayMaxRoomSize = !displayMaxRoomSize;
 	}
 }
 
@@ -150,7 +155,88 @@ void StageManager::CollectNextRooms() {
 }
 
 void StageManager::ConnectRooms() {
+	//for (auto& main : rooms) {
+		// a の境界
+	auto& main = rooms[0];
+	int aLeft = main.x;
+	int aRight = main.x + main.w;
+	int aTop = main.y;
+	int aBottom = main.y + main.h;
 
+	for (auto& next : main.nextRooms) {
+		// b の境界
+		int bLeft = next.x;
+		int bRight = next.x + next.w;
+		int bTop = next.y;
+		int bBottom = next.y + next.h;
+
+		////////////////////////やり直し
+
+
+		// 横方向の重なり区間を計算
+		int overlapY1 = max(aTop, bTop);
+		int overlapY2 = min(aBottom, bBottom);
+
+		// 重なっているとしたら
+		if (overlapY1 < overlapY2) {
+			int centerY = (overlapY1 + overlapY2) / 2.0f;
+			corridors.emplace_back(main.x + main.w / 2, centerY);
+			corridors.emplace_back(next.x + next.w / 2, centerY);
+		}
+
+		// 縦方向の重なり区間を計算
+		int overlapX1 = max(aLeft, bLeft);
+		int overlapX2 = min(aRight, aRight);
+
+		// 重なっているとしたら
+		if (overlapX1 < overlapX2) {
+			int centerX = (overlapX1 + overlapX2) / 2.0f;
+			corridors.emplace_back(centerX, main.y + main.h / 2);
+			corridors.emplace_back(centerX, next.y + next.h / 2);
+		}
+
+
+		////////////////////////
+	/*
+		//左右の場合
+		if (main.maxX == next.maxX + next.maxH || main.maxX + main.maxW == next.maxX) {
+			//aの上にbパターン
+			if (aTop < bBottom && aTop >= bTop) {
+				if (bBottom - aTop >= corridorWidth) {
+					//スタートポイント　まずはmainの中心Xと重なっているところの真ん中
+					//　　　　　　　　　そしてnextの中心Xと重なっているところの真ん中
+					corridors.emplace_back(main.x + main.w / 2, (aTop + bBottom) / 2);
+					corridors.emplace_back(next.x + next.w / 2, (aTop + bBottom) / 2);
+				}
+			}
+			//aの下にbパターン
+			else if (aBottom > bTop && aBottom <= bBottom) {
+				if (aBottom - bTop >= corridorWidth) {
+					corridors.emplace_back(main.x + main.w / 2, (aTop + bBottom) / 2);
+					corridors.emplace_back(next.x + next.w / 2, (aTop + bBottom) / 2);
+				}
+			}
+		}
+	//上下の場合
+		else if (main.maxY == next.maxY + next.maxH || next.maxY == main.maxY + main.maxH) {
+			//aの左にbパターン
+			if (aLeft < bRight && aLeft >= bLeft) {
+				if (bRight - aLeft >= corridorWidth) {
+					corridors.emplace_back((aLeft + bRight) / 2, main.y + main.h / 2);
+					corridors.emplace_back((aLeft + bRight) / 2, next.y + next.h / 2);
+				}
+				//aの右にbパターン
+				else if (aRight > bLeft && aRight <= bRight) {
+					if (aRight - bLeft >= corridorWidth) {
+						corridors.emplace_back((aLeft + bRight) / 2, main.y + main.h / 2);
+						corridors.emplace_back((aLeft + bRight) / 2, next.y + next.h / 2);
+					}
+				}
+			}
+		}
+		*/
+	}
+	//}
 }
 
 void StageManager::Draw()
@@ -161,6 +247,24 @@ void StageManager::Draw()
 	if (m_player) {
 		px = m_player->GetX() - GameData::windowWidth / 2;
 		py = m_player->GetY() - GameData::windowHeight / 2;
+	}
+
+	//通路を描画する
+	for (int i = 0; i < corridors.size(); i += 2) {
+		DrawLine(corridors[i].first - px, corridors[i].second - py,
+			corridors[i + 1].first - px, corridors[i + 1].second - py,
+			GetColor(0, 255, 0));
+	}
+
+	//もし2が押されたら部屋の元サイズを表示する
+	if (displayMaxRoomSize) {
+		for (auto& r : rooms)
+		{
+			DrawBox(r.maxX - px, r.maxY - py, r.maxX + r.maxW - px, r.maxY + r.maxH - py,
+				GetColor(100, 100, 100), TRUE);
+			DrawBox(r.maxX - px, r.maxY - py, r.maxX + r.maxW - px, r.maxY + r.maxH - py,
+				GetColor(0, 0, 0), FALSE);
+		}
 	}
 
 	int count = 0;
@@ -188,4 +292,6 @@ void StageManager::Draw()
 	}
 
 	DrawFormatString(50, 50, GetColor(0, 255, 0), "NextNum:%d", rooms[nowRoomIndex].nextRooms.size());
+
+
 }

@@ -1,6 +1,9 @@
 // StageManager.h
 #pragma once
 #include <vector>
+#include <utility>
+#include <cmath>
+#include <algorithm>
 #include "RoomData.h"
 #include "Player.h"
 #include "InputState.h"
@@ -31,6 +34,7 @@ private:
 	int stageWidth, stageHeight;
 	std::vector<RoomData> rooms;
 	Node* root;
+	std::vector<std::pair<int, int>> corridors;
 
 	Node* Split(Node* node, int depth);
 	void CreateRoom(Node* node);
@@ -38,5 +42,7 @@ private:
 	void CollectNextRooms();
 	void ConnectRooms();
 
-	int nowRoomIndex = 5;
+	int nowRoomIndex = 0;
+	int corridorWidth = 10;
+	bool displayMaxRoomSize = false;
 };
