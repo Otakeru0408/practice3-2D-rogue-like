@@ -5,7 +5,7 @@
 #include <ctime>
 
 StageManager::StageManager(int width, int height)
-	: stageWidth(width), stageHeight(height), wholeScale(1.0f), root(nullptr)
+	: stageWidth(width), stageHeight(height), wholeScale(3.0f), root(nullptr)
 {
 	std::srand((unsigned int)std::time(nullptr));
 }
@@ -86,8 +86,8 @@ void StageManager::CreateRoom(Node* node)
 		int rh = std::max(4, node->h - (std::rand() % (node->h / 2 + 1)));*/
 		int randW = node->w - (std::rand() % (node->w / 2 + 1));
 		int randH = node->h - (std::rand() % (node->h / 2 + 1));
-		int rw = randW > 4 ? randW : 4;
-		int rh = randH > 4 ? randH : 4;
+		int rw = randW > corridorWidth ? randW : corridorWidth;
+		int rh = randH > corridorWidth ? randH : corridorWidth;
 		int rx = node->x + std::rand() % (node->w - rw + 1);
 		int ry = node->y + std::rand() % (node->h - rh + 1);
 
@@ -156,7 +156,6 @@ void StageManager::CollectNextRooms() {
 }
 
 void StageManager::ConnectRooms() {
-	corridors = std::vector<std::pair<int, int>>();
 	//Œ»İ’–Ú’†‚Ì•”‰®‚É‘Î‚µ‚Ä
 	auto& main = rooms[nowRoomIndex];
 	int aLeft = main.x;
@@ -164,8 +163,7 @@ void StageManager::ConnectRooms() {
 	int aTop = main.y;
 	int aBottom = main.y + main.h;
 	//’Ê˜Hƒf[ƒ^‚ª‚È‚¯‚ê‚Îì¬‚·‚é
-	bool hasCorridor = false;
-	if (main.corridors.size() > 0)hasCorridor = true;
+	if (rooms[nowRoomIndex].corridors.size() > 0)return;
 
 	for (auto& next : main.nextRooms) {
 		// —×Ú‚·‚é•”‰®‚ğˆê‚Â‚¸‚ÂŒŸØ
@@ -179,16 +177,13 @@ void StageManager::ConnectRooms() {
 		int overlapY2 = min(aBottom, bBottom);
 
 		// d‚È‚Á‚Ä‚¢‚é‚Æ‚µ‚½‚ç
-		if (overlapY1 < overlapY2) {
+		if (overlapY1 < overlapY2 && (overlapY2 - overlapY1) >= corridorWidth) {
 			int centerY = (overlapY1 + overlapY2) / 2.0f;
 			int rightX = (main.x + main.w / 2) >= (next.x + next.w / 2)
 				? (main.x + main.w / 2) : (next.x + next.w / 2);
 			int leftX = (main.x + main.w / 2) < (next.x + next.w / 2)
 				? (main.x + main.w / 2) : (next.x + next.w / 2);
-			corridors.emplace_back(rightX, centerY);
-			corridors.emplace_back(leftX, centerY);
-			if (!hasCorridor)
-				main.corridors.emplace_back(CorridorData(leftX, centerY - (corridorWidth * wholeScale) / 2, (rightX - leftX), (corridorWidth * wholeScale)));
+			main.corridors.emplace_back(CorridorData(leftX, centerY - (corridorWidth * wholeScale) / 2, (rightX - leftX), (corridorWidth * wholeScale)));
 		}
 
 		// c•ûŒü‚Ìd‚È‚è‹æŠÔ‚ğŒvZ
@@ -196,14 +191,11 @@ void StageManager::ConnectRooms() {
 		int overlapX2 = min(aRight, bRight);
 
 		// d‚È‚Á‚Ä‚¢‚é‚Æ‚µ‚½‚ç
-		if (overlapX1 < overlapX2) {
+		if (overlapX1 < overlapX2 && (overlapX2 - overlapX1) >= corridorWidth) {
 			int centerX = (overlapX1 + overlapX2) / 2.0f;
 			int topY = (main.y + main.h / 2) >= (next.y + next.h / 2) ? (main.y + main.h / 2) : (next.y + next.h / 2);
 			int bottomY = (main.y + main.h / 2) < (next.y + next.h / 2) ? (main.y + main.h / 2) : (next.y + next.h / 2);
-			corridors.emplace_back(centerX, topY);
-			corridors.emplace_back(centerX, bottomY);
-			if (!hasCorridor)
-				main.corridors.emplace_back(CorridorData(centerX - (corridorWidth * wholeScale) / 2, topY, (corridorWidth * wholeScale), (bottomY - topY)));
+			main.corridors.emplace_back(CorridorData(centerX - (corridorWidth * wholeScale) / 2, topY, (corridorWidth * wholeScale), (bottomY - topY)));
 		}
 
 	}
@@ -217,13 +209,6 @@ void StageManager::Draw()
 	if (m_player) {
 		px = m_player->GetX() - GameData::windowWidth / 2;
 		py = m_player->GetY() - GameData::windowHeight / 2;
-	}
-
-	//’Ê˜H‚ğ•`‰æ‚·‚é
-	for (int i = 0; i < corridors.size(); i += 2) {
-		DrawLine(corridors[i].first - px, corridors[i].second - py,
-			corridors[i + 1].first - px, corridors[i + 1].second - py,
-			GetColor(0, 255, 0));
 	}
 
 	if (rooms[nowRoomIndex].corridors.size() > 0) {
