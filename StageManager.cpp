@@ -12,6 +12,9 @@ StageManager::StageManager(int width, int height)
 
 void StageManager::Init()
 {
+
+	nowRoomIndex = 4;
+
 	// ルートノード作成
 	root = new Node(0, 0, stageWidth * wholeScale, stageHeight * wholeScale);
 
@@ -30,6 +33,10 @@ void StageManager::Init()
 
 	//各部屋の隣接リストから通路を作成する
 	ConnectRooms();
+
+	//プレイヤーの初期位置を設定する
+	m_player->SetX(rooms[nowRoomIndex].x + rooms[nowRoomIndex].w / 2);
+	m_player->SetY(rooms[nowRoomIndex].y + rooms[nowRoomIndex].h / 2);
 }
 
 void StageManager::Update(const InputState* input) {
@@ -41,6 +48,50 @@ void StageManager::Update(const InputState* input) {
 	if (input->IsKeyDown(KEY_INPUT_2)) {
 		displayMaxRoomSize = !displayMaxRoomSize;
 	}
+
+	HitCheck();
+}
+
+void StageManager::HitCheck() {
+
+	int px = m_player->GetX();
+	int py = m_player->GetY();
+	int pw = m_player->GetW();
+	int ph = m_player->GetH();
+	int pvx = m_player->GetVX();
+	int pvy = m_player->GetVY();
+
+	//横方向のはみ出しを防ぐ
+	if (px - pw / 2 + pvx <= rooms[nowRoomIndex].x
+		|| px + pw / 2 + pvx >= rooms[nowRoomIndex].x + rooms[nowRoomIndex].w) {
+		//この部屋につながる通路を通ろうとしているか
+		for (int i = 0; i < rooms[nowRoomIndex].corridors.size(); i++) {
+			CorridorData data = rooms[nowRoomIndex].corridors[i];
+			if (px - pw / 2 + pvx > data.x && px + pw / 2 + pvx < data.x + data.w
+				&& py - ph / 2 + pvy > data.y && py + ph / 2 + pvy < data.y + data.h) {
+
+				return;
+			}
+		}
+		m_player->SetVX(0);
+	}
+
+
+	//縦の方向のはみ出しを防ぐ
+	if (py - ph / 2 + pvy <= rooms[nowRoomIndex].y
+		|| py + ph / 2 + pvy >= rooms[nowRoomIndex].y + rooms[nowRoomIndex].h) {
+		//この部屋につながる通路を通ろうとしているか
+		for (int i = 0; i < rooms[nowRoomIndex].corridors.size(); i++) {
+			CorridorData data = rooms[nowRoomIndex].corridors[i];
+			if (px - pw / 2 + pvx > data.x && px + pw / 2 + pvx < data.x + data.w
+				&& py - ph / 2 + pvy > data.y && py + ph / 2 + pvy < data.y + data.h) {
+
+				return;
+			}
+		}
+		m_player->SetVY(0);
+	}
+
 }
 
 StageManager::Node* StageManager::Split(Node* node, int depth)
@@ -183,7 +234,14 @@ void StageManager::ConnectRooms() {
 				? (main.x + main.w / 2) : (next.x + next.w / 2);
 			int leftX = (main.x + main.w / 2) < (next.x + next.w / 2)
 				? (main.x + main.w / 2) : (next.x + next.w / 2);
-			main.corridors.emplace_back(CorridorData(leftX, centerY - (corridorWidth * wholeScale) / 2, (rightX - leftX), (corridorWidth * wholeScale)));
+			main.corridors.emplace_back(
+				CorridorData(
+					leftX,
+					centerY - (corridorWidth * wholeScale) / 2,
+					(rightX - leftX),
+					(corridorWidth * wholeScale)
+				)
+			);
 		}
 
 		// 縦方向の重なり区間を計算
@@ -195,7 +253,14 @@ void StageManager::ConnectRooms() {
 			int centerX = (overlapX1 + overlapX2) / 2.0f;
 			int topY = (main.y + main.h / 2) >= (next.y + next.h / 2) ? (main.y + main.h / 2) : (next.y + next.h / 2);
 			int bottomY = (main.y + main.h / 2) < (next.y + next.h / 2) ? (main.y + main.h / 2) : (next.y + next.h / 2);
-			main.corridors.emplace_back(CorridorData(centerX - (corridorWidth * wholeScale) / 2, topY, (corridorWidth * wholeScale), (bottomY - topY)));
+			main.corridors.emplace_back(
+				CorridorData(
+					centerX - (corridorWidth * wholeScale) / 2,
+					topY,
+					(corridorWidth * wholeScale),
+					(topY - bottomY)
+				)
+			);
 		}
 
 	}
@@ -211,13 +276,6 @@ void StageManager::Draw()
 		py = m_player->GetY() - GameData::windowHeight / 2;
 	}
 
-	if (rooms[nowRoomIndex].corridors.size() > 0) {
-		for (int i = 0; i < rooms[nowRoomIndex].corridors.size(); i++) {
-			CorridorData data = rooms[nowRoomIndex].corridors[i];
-			DrawBox(data.x - px, data.y - py, data.x + data.w - px, data.y + data.h - py, GetColor(150, 150, 150), TRUE);
-		}
-	}
-
 	//もし2が押されたら部屋の元サイズを表示する
 	if (displayMaxRoomSize) {
 		for (auto& r : rooms)
@@ -229,6 +287,7 @@ void StageManager::Draw()
 		}
 	}
 
+	//部屋を描画する
 	int count = 0;
 	for (auto& r : rooms)
 	{
@@ -246,6 +305,7 @@ void StageManager::Draw()
 		count++;
 	}
 
+	//nowRoomIndexの部屋を色付きで表示する
 	for (auto& r : rooms[nowRoomIndex].nextRooms) {
 		DrawBox(r.x - px, r.y - py, r.x + r.w - px, r.y + r.h - py,
 			GetColor(255, 100, 100), TRUE);
@@ -253,7 +313,22 @@ void StageManager::Draw()
 			GetColor(0, 0, 0), FALSE);
 	}
 
-	DrawFormatString(50, 50, GetColor(0, 255, 0), "NextNum:%d", rooms[nowRoomIndex].nextRooms.size());
 
+	//通路を描画する
+	if (rooms[nowRoomIndex].corridors.size() > 0) {
+		for (int i = 0; i < rooms[nowRoomIndex].corridors.size(); i++) {
+			CorridorData data = rooms[nowRoomIndex].corridors[i];
+			DrawBox(data.x - px, data.y - py, data.x + data.w - px, data.y + data.h - py, GetColor(150, 150, 150), TRUE);
+		}
+	}
 
+	/*DrawFormatString(50, 50, GetColor(0, 0, 0), "corridors:%d", rooms[nowRoomIndex].corridors.size());
+	DrawFormatString(50, 100, GetColor(0, 0, 0), "pX:%f, pY;%f", m_player->GetX(), m_player->GetY());
+	DrawFormatString(50, 150, GetColor(0, 0, 0), "rX:%d, rY;%d, rW:%f, rH;%f", rooms[nowRoomIndex].x, rooms[nowRoomIndex].y,
+		rooms[nowRoomIndex].w, rooms[nowRoomIndex].h);
+	for (int i = 0; i < rooms[nowRoomIndex].corridors.size(); i++) {
+		CorridorData d = rooms[nowRoomIndex].corridors[i];
+		DrawFormatString(50, 200 + 50 * i, GetColor(0, 0, 0), "cX:%d, cY;%d, cW:%f, cH;%f",
+			d.x, d.y, d.w, d.h);
+	}*/
 }

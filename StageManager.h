@@ -43,6 +43,8 @@ private:
 	void CollectNextRooms();
 	void ConnectRooms();
 
+	void HitCheck();
+
 	int nowRoomIndex = 0;
 	int corridorWidth = 50;
 	bool displayMaxRoomSize = false;
