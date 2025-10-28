@@ -12,8 +12,10 @@ StageManager::StageManager(int width, int height)
 
 void StageManager::Init()
 {
-
+	//最初にスタートする部屋のインデックスを設定
 	nowRoomIndex = 4;
+	//各部屋にインデックスを持たせるための変数
+	indexVal = 0;
 
 	// ルートノード作成
 	root = new Node(0, 0, stageWidth * wholeScale, stageHeight * wholeScale);
@@ -49,7 +51,14 @@ void StageManager::Update(const InputState* input) {
 		displayMaxRoomSize = !displayMaxRoomSize;
 	}
 
+	//部屋と通路の当たり判定をしている関数
 	HitCheck();
+
+	//nowRoomIndexの部屋から出ているなら
+	if (isRoomLeft) {
+		//隣接する部屋に移動しているか確認する
+		CheckNectRoom();
+	}
 }
 
 void StageManager::HitCheck() {
@@ -61,7 +70,61 @@ void StageManager::HitCheck() {
 	int pvx = m_player->GetVX();
 	int pvy = m_player->GetVY();
 
-	//横方向のはみ出しを防ぐ
+	//nowRoomIndexの部屋から出た状態かどうか
+	//isRoomLeft = false;
+
+	if (!isRoomLeft) {
+
+		//横・縦方向のはみ出し検出 b=trueなら中にいるということ
+		bool vertical = HitTest(px - pw / 2 + pvx, pw, rooms[nowRoomIndex].x, rooms[nowRoomIndex].w);
+		bool horizontal = HitTest(py - ph / 2 + pvy, ph, rooms[nowRoomIndex].y, rooms[nowRoomIndex].h);
+
+		//もしはみ出したときに、何れかの通路の中にいればisRoomLeft=true;
+		if (!vertical || !horizontal) {
+			bool ver_col = true;
+			bool hori_col = true;
+			for (int i = 0; i < rooms[nowRoomIndex].corridors.size(); i++) {
+				CorridorData data = rooms[nowRoomIndex].corridors[i];
+				ver_col = HitTest(px - pw / 2 + pvx, pw, data.x, data.w);
+				hori_col = HitTest(py - ph / 2 + pvy, ph, data.y, data.h);
+
+				//もし縦も横も通路からはみ出していないならその通路にいるということ
+				if (ver_col && hori_col) {
+					isRoomLeft = true;
+					break;
+				}
+			}
+		}
+
+		if (!isRoomLeft) {
+			if (!vertical)m_player->SetVX(0);
+			if (!horizontal)m_player->SetVY(0);
+		}
+
+	}
+	else {
+		for (int i = 0; i < rooms[nowRoomIndex].corridors.size(); i++) {
+			CorridorData data = rooms[nowRoomIndex].corridors[i];
+			//まずその通路にプレイヤーがいるか確認
+			if (OverTest(px - pw / 2 + pvx, pw, data.x, data.w)
+				&& OverTest(py - ph / 2 + pvy, ph, data.y, data.h)) {
+				//次のフレームでプレイヤーが通路からすり抜けるか確認
+				bool ver_col = true;
+				bool hori_col = true;
+				ver_col = HitTest(px - pw / 2 + pvx, pw, data.x, data.w);
+				hori_col = HitTest(py - ph / 2 + pvy, ph, data.y, data.h);
+
+				//すり抜け防止
+				if (!ver_col)m_player->SetVX(0);
+				if (!hori_col)m_player->SetVY(0);
+
+				//もし次のフレームで部屋に入ったらisRoomLeftを解除
+
+			}
+		}
+	}
+	/*
+		//横方向のはみ出しを防ぐ
 	if (px - pw / 2 + pvx <= rooms[nowRoomIndex].x
 		|| px + pw / 2 + pvx >= rooms[nowRoomIndex].x + rooms[nowRoomIndex].w) {
 		//この部屋につながる通路を通ろうとしているか
@@ -69,7 +132,7 @@ void StageManager::HitCheck() {
 			CorridorData data = rooms[nowRoomIndex].corridors[i];
 			if (px - pw / 2 + pvx > data.x && px + pw / 2 + pvx < data.x + data.w
 				&& py - ph / 2 + pvy > data.y && py + ph / 2 + pvy < data.y + data.h) {
-
+				isRoomLeft = true;
 				return;
 			}
 		}
@@ -85,13 +148,62 @@ void StageManager::HitCheck() {
 			CorridorData data = rooms[nowRoomIndex].corridors[i];
 			if (px - pw / 2 + pvx > data.x && px + pw / 2 + pvx < data.x + data.w
 				&& py - ph / 2 + pvy > data.y && py + ph / 2 + pvy < data.y + data.h) {
-
+				isRoomLeft = true;
 				return;
 			}
 		}
 		m_player->SetVY(0);
 	}
+	*/
+}
 
+void StageManager::CheckNectRoom() {
+
+	/*
+	int aLeft = m_player->GetX() - m_player->GetW() / 2;
+	int aRight = m_player->GetX() + m_player->GetW() / 2;
+	int aTop = m_player->GetY() - m_player->GetH() / 2;
+	int aBottom = m_player->GetY() + m_player->GetH() / 2;
+
+	for (auto room : rooms[nowRoomIndex].nextRooms) {
+		int bLeft = room.x;
+		int bRight = room.x + room.w;
+		int bTop = room.y;
+		int bBottom = room.y + room.h;
+
+		// 横方向の重なり区間を計算
+		int overlapY1 = max(aTop, bTop);
+		int overlapY2 = min(aBottom, bBottom);
+
+		// 縦方向の重なり区間を計算
+		int overlapX1 = max(aLeft, bLeft);
+		int overlapX2 = min(aRight, bRight);
+
+		// 重なっているとしたら
+		if (overlapY1 < overlapY2 && overlapX1 < overlapX2) {
+			nowRoomIndex = room.index;
+		}
+	}
+	*/
+
+	int px = m_player->GetX();
+	int py = m_player->GetY();
+	int pw = m_player->GetW();
+	int ph = m_player->GetH();
+	int pvx = m_player->GetVX();
+	int pvy = m_player->GetVY();
+
+	for (auto room : rooms[nowRoomIndex].nextRooms) {
+		//隣接する部屋の範囲内にいたら
+		if (px - pw / 2 + pvx >= room.x && px + pw / 2 + pvx <= room.x + room.w
+			&& py - ph / 2 + pvy >= room.y && py + ph / 2 + pvy <= room.y + room.h) {
+			//その部屋のインデックスを取得する
+			nowRoomIndex = room.index;
+			ConnectRooms();
+			isRoomLeft = false;
+			return;
+		}
+	}
 }
 
 StageManager::Node* StageManager::Split(Node* node, int depth)
@@ -143,6 +255,8 @@ void StageManager::CreateRoom(Node* node)
 		int ry = node->y + std::rand() % (node->h - rh + 1);
 
 		node->room = RoomData(rx, ry, rw, rh, node->x, node->y, node->w, node->h);
+		node->room.index = indexVal;
+		indexVal++;
 		//node->room = RoomData(node->x, node->y, node->w, node->h, node->x, node->y, node->w, node->h);
 	}
 }
@@ -287,6 +401,15 @@ void StageManager::Draw()
 		}
 	}
 
+
+	//通路を描画する
+	if (rooms[nowRoomIndex].corridors.size() > 0) {
+		for (int i = 0; i < rooms[nowRoomIndex].corridors.size(); i++) {
+			CorridorData data = rooms[nowRoomIndex].corridors[i];
+			DrawBox(data.x - px, data.y - py, data.x + data.w - px, data.y + data.h - py, GetColor(150, 150, 150), TRUE);
+		}
+	}
+
 	//部屋を描画する
 	int count = 0;
 	for (auto& r : rooms)
@@ -313,22 +436,24 @@ void StageManager::Draw()
 			GetColor(0, 0, 0), FALSE);
 	}
 
+	//DrawFormatString(50, 50, GetColor(0, 0, 0), "nowRoomIndex:%d", nowRoomIndex);
+	DrawFormatString(50, 75, GetColor(0, 0, 0), "isRoomLeft:%d", isRoomLeft);
 
-	//通路を描画する
-	if (rooms[nowRoomIndex].corridors.size() > 0) {
-		for (int i = 0; i < rooms[nowRoomIndex].corridors.size(); i++) {
-			CorridorData data = rooms[nowRoomIndex].corridors[i];
-			DrawBox(data.x - px, data.y - py, data.x + data.w - px, data.y + data.h - py, GetColor(150, 150, 150), TRUE);
-		}
-	}
+	/*
+	if (px - pw / 2 + pvx > data.x && px + pw / 2 + pvx < data.x + data.w
+				&& py - ph / 2 + pvy > data.y && py + ph / 2 + pvy < data.y + data.h) {
+				isRoomLeft = true;
+				return;
+			}
+			*/
 
-	/*DrawFormatString(50, 50, GetColor(0, 0, 0), "corridors:%d", rooms[nowRoomIndex].corridors.size());
-	DrawFormatString(50, 100, GetColor(0, 0, 0), "pX:%f, pY;%f", m_player->GetX(), m_player->GetY());
+	DrawFormatString(50, 50, GetColor(0, 0, 0), "corridors:%d", rooms[nowRoomIndex].corridors.size());
+	DrawFormatString(50, 100, GetColor(0, 0, 0), "pX:%f, pY;%f, pW:%f, pH:%f", m_player->GetX(), m_player->GetY(), m_player->GetW(), m_player->GetH());
 	DrawFormatString(50, 150, GetColor(0, 0, 0), "rX:%d, rY;%d, rW:%f, rH;%f", rooms[nowRoomIndex].x, rooms[nowRoomIndex].y,
 		rooms[nowRoomIndex].w, rooms[nowRoomIndex].h);
 	for (int i = 0; i < rooms[nowRoomIndex].corridors.size(); i++) {
 		CorridorData d = rooms[nowRoomIndex].corridors[i];
-		DrawFormatString(50, 200 + 50 * i, GetColor(0, 0, 0), "cX:%d, cY;%d, cW:%f, cH;%f",
+		DrawFormatString(50, 200 + 50 * i, GetColor(100, 0, 0), "cX:%d, cY;%d, cW:%f, cH;%f",
 			d.x, d.y, d.w, d.h);
-	}*/
+	}
 }

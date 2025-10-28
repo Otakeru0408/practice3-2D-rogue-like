@@ -43,10 +43,35 @@ private:
 	void CollectNextRooms();
 	void ConnectRooms();
 
+	//部屋と通路の当たり判定をしている関数
 	void HitCheck();
+	void CheckNectRoom();
 
+	int GetRoomIndex(RoomData d) {
+		for (int i = 0; i < rooms.size(); i++) {
+			if (&rooms[i] == &d)return i;
+		}
+	}
+
+	int indexVal = 0;
 	int nowRoomIndex = 0;
 	int corridorWidth = 50;
 	bool displayMaxRoomSize = false;
 	float wholeScale;
+
+	bool isRoomLeft = false;
+
+	//横、または縦方向でp1+w1がp2+w2の範囲内にいるかどうか
+	//True:範囲内にいる　False:はみ出している
+	bool HitTest(float p1, float w1, float p2, float w2) {
+		return p2 < p1 && p1 + w1 < p2 + w2;
+	}
+
+	//横または縦方向で、p1+w1がp2+w2と重なる部分があるかどうか
+	//True:重なっている　False:かさなっていない
+	bool OverTest(float p1, float w1, float p2, float w2) {
+		float overlap1 = max(p1, p2);
+		float overlap2 = min(p1 + w1, p2 + w2);
+		return (overlap1 < overlap2);
+	}
 };
