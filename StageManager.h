@@ -45,7 +45,7 @@ private:
 
 	//•”‰®‚Æ’Ê˜H‚Ì“–‚½‚è”»’è‚ğ‚µ‚Ä‚¢‚éŠÖ”
 	void HitCheck();
-	void CheckNectRoom();
+	void CheckNextRoom();
 
 	int GetRoomIndex(RoomData d) {
 		for (int i = 0; i < rooms.size(); i++) {

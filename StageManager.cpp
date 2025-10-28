@@ -57,7 +57,7 @@ void StageManager::Update(const InputState* input) {
 	//nowRoomIndexの部屋から出ているなら
 	if (isRoomLeft) {
 		//隣接する部屋に移動しているか確認する
-		CheckNectRoom();
+		CheckNextRoom();
 	}
 }
 
@@ -160,7 +160,7 @@ void StageManager::HitCheck() {
 	*/
 }
 
-void StageManager::CheckNectRoom() {
+void StageManager::CheckNextRoom() {
 
 	/*
 	int aLeft = m_player->GetX() - m_player->GetW() / 2;
@@ -347,9 +347,9 @@ void StageManager::ConnectRooms() {
 		// 重なっているとしたら
 		if (overlapY1 < overlapY2 && (overlapY2 - overlapY1) >= corridorWidth) {
 			int centerY = (overlapY1 + overlapY2) / 2.0f;
-			int rightX = (main.x + main.w / 2) >= (next.x + next.w / 2)
-				? (main.x + main.w / 2) : (next.x + next.w / 2);
 			int leftX = (main.x + main.w / 2) < (next.x + next.w / 2)
+				? (main.x + main.w / 2) : (next.x + next.w / 2);
+			int rightX = (main.x + main.w / 2) >= (next.x + next.w / 2)
 				? (main.x + main.w / 2) : (next.x + next.w / 2);
 			main.corridors.emplace_back(
 				CorridorData(
@@ -368,14 +368,14 @@ void StageManager::ConnectRooms() {
 		// 重なっているとしたら
 		if (overlapX1 < overlapX2 && (overlapX2 - overlapX1) >= corridorWidth) {
 			int centerX = (overlapX1 + overlapX2) / 2.0f;
-			int topY = (main.y + main.h / 2) >= (next.y + next.h / 2) ? (main.y + main.h / 2) : (next.y + next.h / 2);
-			int bottomY = (main.y + main.h / 2) < (next.y + next.h / 2) ? (main.y + main.h / 2) : (next.y + next.h / 2);
+			int topY = (main.y + main.h / 2) < (next.y + next.h / 2) ? (main.y + main.h / 2) : (next.y + next.h / 2);
+			int bottomY = (main.y + main.h / 2) >= (next.y + next.h / 2) ? (main.y + main.h / 2) : (next.y + next.h / 2);
 			main.corridors.emplace_back(
 				CorridorData(
 					centerX - (corridorWidth * wholeScale) / 2,
 					topY,
 					(corridorWidth * wholeScale),
-					(topY - bottomY)
+					(bottomY - topY)
 				)
 			);
 		}
