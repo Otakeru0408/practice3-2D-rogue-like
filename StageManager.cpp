@@ -109,17 +109,20 @@ void StageManager::HitCheck() {
 			if (OverTest(px - pw / 2 + pvx, pw, data.x, data.w)
 				&& OverTest(py - ph / 2 + pvy, ph, data.y, data.h)) {
 				//次のフレームでプレイヤーが通路からすり抜けるか確認
-				bool ver_col = true;
-				bool hori_col = true;
-				ver_col = HitTest(px - pw / 2 + pvx, pw, data.x, data.w);
-				hori_col = HitTest(py - ph / 2 + pvy, ph, data.y, data.h);
+				bool ver_col = HitTest(px - pw / 2 + pvx, pw, data.x, data.w);
+				bool hori_col = HitTest(py - ph / 2 + pvy, ph, data.y, data.h);
 
 				//すり抜け防止
 				if (!ver_col)m_player->SetVX(0);
 				if (!hori_col)m_player->SetVY(0);
 
 				//もし次のフレームで部屋に入ったらisRoomLeftを解除
+				bool vertical = HitTest(px - pw / 2 + pvx, pw, rooms[nowRoomIndex].x, rooms[nowRoomIndex].w);
+				bool horizontal = HitTest(py - ph / 2 + pvy, ph, rooms[nowRoomIndex].y, rooms[nowRoomIndex].h);
 
+				if (vertical && horizontal) {
+					isRoomLeft = false;
+				}
 			}
 		}
 	}
