@@ -5,7 +5,7 @@
 #include <ctime>
 
 StageManager::StageManager(int width, int height)
-	: stageWidth(width), stageHeight(height), wholeScale(1.0f), root(nullptr)
+	: stageWidth(width), stageHeight(height), wholeScale(3.0f), root(nullptr)
 {
 	std::srand((unsigned int)std::time(nullptr));
 }
@@ -76,9 +76,22 @@ void StageManager::HitCheck() {
 			rooms[i]->x, rooms[i]->y, rooms[i]->w, rooms[i]->h)) {
 			return;
 		}
+
 		//全部通過したらどこの部屋にもいないということ
 		//通路を確認する
 	}
+
+	for (int i = 0; i < corridors.size(); i++) {
+		//廊下にいるかどうかを確認する
+		if (IsInsideRect(px - pw / 2 + pvx, py - ph / 2 + pvy, pw, ph,
+			corridors[i]->x, corridors[i]->y, corridors[i]->w, corridors[i]->h)) {
+			return;
+		}
+	}
+
+	//全て通り抜けたということは全てのrectからはみ出しているということ
+	m_player->SetVX(0);
+	m_player->SetVY(0);
 }
 
 void StageManager::CheckNextRoom() {
@@ -203,15 +216,18 @@ void StageManager::CollectNextRooms() {
 void StageManager::ConnectRooms() {
 	//全ての部屋に対して
 	corridors.clear();
-	for (int i = 0; i < rooms.size(); i++) {
-		//隣接する部屋に通路を掛けられるかチェック
-		for (int j = i + 1; j < rooms.size(); j++) {
-			//この部屋が隣接する部屋に含まれているか確認
-			if (ContainsRoomPtr(rooms[i]->nextRooms, rooms[j])) {
-				//含まれているなら通路を掛けられるかチェック
-				CheckRoomOverlap(rooms[i], rooms[j]);
-			}
-		}
+	//for (int i = 0; i < rooms.size(); i++) {
+	//	//隣接する部屋に通路を掛けられるかチェック
+	//	for (int j = i + 1; j < rooms.size(); j++) {
+	//		//この部屋が隣接する部屋に含まれているか確認
+	//		if (ContainsRoomPtr(rooms[i]->nextRooms, rooms[j])) {
+	//			//含まれているなら通路を掛けられるかチェック
+	//			CheckRoomOverlap(rooms[i], rooms[j]);
+	//		}
+	//	}
+	//}
+	for (auto& room : rooms[nowRoomIndex]->nextRooms) {
+		CheckRoomOverlap(rooms[nowRoomIndex], room);
 	}
 }
 
@@ -313,25 +329,25 @@ int StageManager::CheckRoomOverlap(const std::shared_ptr<RoomData>& a,
 	int overlapY = bottom - top;
 
 	// X軸方向で十分重なっている
-	if (overlapX > corridorWidth) {
-		int lessY = a->y <= b->y ? a->y : b->y;
-		int moreY = a->y > b->y ? a->y : b->y;
+	if (overlapX > (corridorWidth * wholeScale)) {
+		int lessY = (a->y + a->h / 2) <= (b->y + b->h / 2) ? (a->y + a->h / 2) : (b->y + b->h / 2);
+		int moreY = (a->y + a->h / 2) > (b->y + b->h / 2) ? (a->y + a->h / 2) : (b->y + b->h / 2);
 		corridors.emplace_back(
 			std::make_shared<CorridorData>(
-				left + overlapX / 2 - corridorWidth / 2, lessY,
-				corridorWidth, moreY - lessY
+				left + overlapX / 2 - (corridorWidth * wholeScale) / 2, lessY,
+				(corridorWidth * wholeScale), moreY - lessY
 			)
 		);
 		return 1;
 	}
 	// Y軸方向で十分重なっている
-	else if (overlapY > corridorWidth) {
-		int lessX = a->x <= b->x ? a->x : b->x;
-		int moreX = a->x > b->x ? a->x : b->x;
+	else if (overlapY > (corridorWidth * wholeScale)) {
+		int lessX = (a->x + a->w / 2) <= (b->x + b->w / 2) ? (a->x + a->w / 2) : (b->x + b->w / 2);
+		int moreX = (a->x + a->w / 2) > (b->x + b->w / 2) ? (a->x + a->w / 2) : (b->x + b->w / 2);
 		corridors.emplace_back(
 			std::make_shared<CorridorData>(
-				lessX, top + overlapY / 2 - corridorWidth / 2,
-				moreX - lessX, corridorWidth
+				lessX, top + overlapY / 2 - (corridorWidth * wholeScale) / 2,
+				moreX - lessX, (corridorWidth * wholeScale)
 			)
 		);
 		return 2;
