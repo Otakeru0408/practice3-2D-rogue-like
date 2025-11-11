@@ -51,13 +51,11 @@ void StageManager::Update(const InputState* input) {
 		displayMaxRoomSize = !displayMaxRoomSize;
 	}
 
+	//部屋や通路の壁の当たり判定
 	HitCheck();
-	/*
-	やること
-	通路全ての配列をつくる
-	プレイヤーと部屋と通路のチェックをする関数を作る
-	それにvx,vyのばあいでチェック、それがダメだったらvx=0,vyのときとvx,vy=0でチェックする
-	*/
+
+	//次の部屋に移動したかを検出する
+	CheckNextRoom();
 }
 
 void StageManager::HitCheck() {
@@ -95,8 +93,29 @@ void StageManager::HitCheck() {
 }
 
 void StageManager::CheckNextRoom() {
+	float px = m_player->GetX();
+	float py = m_player->GetY();
+	float pw = m_player->GetW();
+	float ph = m_player->GetH();
+	float pvx = m_player->GetVX();
+	float pvy = m_player->GetVY();
+	if (IsInsideRect(px - pw / 2 + pvx, py - ph / 2 + pvy, pw, ph,
+		rooms[nowRoomIndex]->x, rooms[nowRoomIndex]->y,
+		rooms[nowRoomIndex]->w, rooms[nowRoomIndex]->h)) {
+		//nowRoomIndexの部屋にいるということ。
+		return;
+	}
 
-
+	//ここにつくと、nowRoomIndexの部屋にいないということ
+	for (int i = 0; i < rooms.size(); i++) {
+		//もしどこかの部屋にいたらこれで確認できる.
+		if (IsInsideRect(px - pw / 2 + pvx, py - ph / 2 + pvy, pw, ph,
+			rooms[i]->x, rooms[i]->y, rooms[i]->w, rooms[i]->h)) {
+			nowRoomIndex = i;
+			ConnectRooms();
+			return;
+		}
+	}
 }
 
 StageManager::Node* StageManager::Split(Node* node, int depth)
