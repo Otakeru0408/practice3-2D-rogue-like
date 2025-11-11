@@ -1,4 +1,4 @@
-// StageManager.cpp
+ï»¿// StageManager.cpp
 #include "StageManager.h"
 #include <DxLib.h>
 #include <cstdlib>
@@ -12,37 +12,37 @@ StageManager::StageManager(int width, int height)
 
 void StageManager::Init()
 {
-	//Å‰‚ÉƒXƒ^[ƒg‚·‚é•”‰®‚ÌƒCƒ“ƒfƒbƒNƒX‚ğİ’è
+	//æœ€åˆã«ã‚¹ã‚¿ãƒ¼ãƒˆã™ã‚‹éƒ¨å±‹ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’è¨­å®š
 	nowRoomIndex = 4;
-	//Še•”‰®‚ÉƒCƒ“ƒfƒbƒNƒX‚ğ‚½‚¹‚é‚½‚ß‚Ì•Ï”
+	//å„éƒ¨å±‹ã«ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’æŒãŸã›ã‚‹ãŸã‚ã®å¤‰æ•°
 	indexVal = 0;
 
-	// ƒ‹[ƒgƒm[ƒhì¬
+	// ãƒ«ãƒ¼ãƒˆãƒãƒ¼ãƒ‰ä½œæˆ
 	root = new Node(0, 0, stageWidth * wholeScale, stageHeight * wholeScale);
 
-	// Ä‹A“I‚É•ªŠ„
-	Split(root, 3); // [‚³4‚­‚ç‚¢‚Ü‚Å•ªŠ„
+	// å†å¸°çš„ã«åˆ†å‰²
+	Split(root, 3); // æ·±ã•4ãã‚‰ã„ã¾ã§åˆ†å‰²
 
-	// •”‰®‚Ì¶¬
+	// éƒ¨å±‹ã®ç”Ÿæˆ
 	CreateRoom(root);
 
-	// •”‰®ƒŠƒXƒgûW
+	// éƒ¨å±‹ãƒªã‚¹ãƒˆåé›†
 	rooms.clear();
 	CollectRooms(root);
 
-	//Še•”‰®‚Ì—×ÚƒŠƒXƒg‚ğûW
+	//å„éƒ¨å±‹ã®éš£æ¥ãƒªã‚¹ãƒˆã‚’åé›†
 	CollectNextRooms();
 
-	//Še•”‰®‚Ì—×ÚƒŠƒXƒg‚©‚ç’Ê˜H‚ğì¬‚·‚é
+	//å„éƒ¨å±‹ã®éš£æ¥ãƒªã‚¹ãƒˆã‹ã‚‰é€šè·¯ã‚’ä½œæˆã™ã‚‹
 	ConnectRooms();
 
-	//ƒvƒŒƒCƒ„[‚Ì‰ŠúˆÊ’u‚ğİ’è‚·‚é
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®åˆæœŸä½ç½®ã‚’è¨­å®šã™ã‚‹
 	m_player->SetX(rooms[nowRoomIndex]->x + rooms[nowRoomIndex]->w / 2);
 	m_player->SetY(rooms[nowRoomIndex]->y + rooms[nowRoomIndex]->h / 2);
 }
 
 void StageManager::Update(const InputState* input) {
-	//Enter‚Å’–Úƒ‹[ƒ€‚ğ•ÏX‚Å‚«‚é
+	//Enterã§æ³¨ç›®ãƒ«ãƒ¼ãƒ ã‚’å¤‰æ›´ã§ãã‚‹
 	if (input->IsKeyDown(KEY_INPUT_RETURN)) {
 		nowRoomIndex = (nowRoomIndex + 1) % rooms.size();
 		ConnectRooms();
@@ -51,10 +51,10 @@ void StageManager::Update(const InputState* input) {
 		displayMaxRoomSize = !displayMaxRoomSize;
 	}
 
-	//•”‰®‚â’Ê˜H‚Ì•Ç‚Ì“–‚½‚è”»’è
+	//éƒ¨å±‹ã‚„é€šè·¯ã®å£ã®å½“ãŸã‚Šåˆ¤å®š
 	HitCheck();
 
-	//Ÿ‚Ì•”‰®‚ÉˆÚ“®‚µ‚½‚©‚ğŒŸo‚·‚é
+	//æ¬¡ã®éƒ¨å±‹ã«ç§»å‹•ã—ãŸã‹ã‚’æ¤œå‡ºã™ã‚‹
 	CheckNextRoom();
 }
 
@@ -66,30 +66,66 @@ void StageManager::HitCheck() {
 	float pvx = m_player->GetVX();
 	float pvy = m_player->GetVY();
 
-	//ƒvƒŒƒCƒ„[‚Æ‘S‚Ä‚Ì•”‰®A’Ê˜H‚ğ’²‚×‚ÄAƒvƒŒƒCƒ„[‚ª‚Ç‚ê‚©‚Ì‚È‚©‚É‚¢‚ê‚Îtrue‚ÅA
-	// ˆê‚Â‚à‚¨‚³‚Ü‚Á‚Ä‚¢‚é‚à‚Ì‚ª‚È‚¢‚È‚çfalse
+	//ã‚‚ã—OVERLAP or OUTSIDEãªã‚‰ä½¿ã†ç§»å‹•é‡
+	int _vx = pvx;
+	int _vy = pvy;
+	bool overX = false;
+	bool overY = false;
+
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨å…¨ã¦ã®éƒ¨å±‹ã€é€šè·¯ã‚’èª¿ã¹ã¦ã€ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒã©ã‚Œã‹ã®ãªã‹ã«ã„ã‚Œã°trueã§ã€
+	// ä¸€ã¤ã‚‚ãŠã•ã¾ã£ã¦ã„ã‚‹ã‚‚ã®ãŒãªã„ãªã‚‰false
+	if (isRoomLeft) {
+		for (int i = 0; i < corridors.size(); i++) {
+			//å»Šä¸‹ã«ã„ã‚‹ã‹ã©ã†ã‹ã‚’ç¢ºèªã™ã‚‹
+			CollisionState state = CheckRelation(px - pw / 2 + pvx, py - ph / 2 + pvy, pw, ph,
+				corridors[i]->x, corridors[i]->y, corridors[i]->w, corridors[i]->h, overX, overY);
+			if (state == CollisionState::INSIDE) {
+				return;
+			}
+			else if (state == CollisionState::OVERLAP) {
+				if (overX)m_player->SetVX(0);
+				if (overY)m_player->SetVY(0);
+				break;
+			}
+		}
+	}
+
 	for (int i = 0; i < rooms.size(); i++) {
-		//‚à‚µ‚Ç‚±‚©‚Ì•”‰®‚É‚¢‚½‚ç‚±‚ê‚ÅŠm”F‚Å‚«‚é.
-		if (IsInsideRect(px - pw / 2 + pvx, py - ph / 2 + pvy, pw, ph,
-			rooms[i]->x, rooms[i]->y, rooms[i]->w, rooms[i]->h)) {
+		//ã‚‚ã—ã©ã“ã‹ã®éƒ¨å±‹ã«ã„ãŸã‚‰ã“ã‚Œã§ç¢ºèªã§ãã‚‹.
+		CollisionState state = CheckRelation(px - pw / 2 + pvx, py - ph / 2 + pvy, pw, ph,
+			rooms[i]->x, rooms[i]->y, rooms[i]->w, rooms[i]->h, overX, overY);
+
+		if (state == CollisionState::INSIDE) {
+			//INSIDEãªã‚‰ã©ã“ã‹ã®éƒ¨å±‹ã«ã„ã‚‹ã¨ã„ã†ã“ã¨ãªã®ã§returnã§OK
+			isRoomLeft = false;
+			return;
+		}
+		else if (state == CollisionState::OVERLAP && !isRoomLeft) {
+			bool _overX = overX;
+			bool _overY = overY;
+			//ã‚‚ã—ã©ã“ã‹ã‹ã‚‰ã¯ã¿å‡ºãã†ã¨ã—ã¦ã‚‹ãªã‚‰å»Šä¸‹ã‚’ãƒã‚§ãƒƒã‚¯
+			for (int i = 0; i < corridors.size(); i++) {
+				//å»Šä¸‹ã«ã„ã‚‹ã‹ã©ã†ã‹ã‚’ç¢ºèªã™ã‚‹
+				CollisionState state = CheckRelation(px - pw / 2 + pvx, py - ph / 2 + pvy, pw, ph,
+					corridors[i]->x, corridors[i]->y, corridors[i]->w, corridors[i]->h, overX, overY);
+				if (state == CollisionState::INSIDE) {
+					isRoomLeft = true;
+					return;
+				}
+				else if (state == CollisionState::OVERLAP) {
+					break;
+				}
+			}
+			overX = _overX;
+			overY = _overY;
+			if (overX)m_player->SetVX(0);
+			if (overY)m_player->SetVY(0);
 			return;
 		}
 
-		//‘S•”’Ê‰ß‚µ‚½‚ç‚Ç‚±‚Ì•”‰®‚É‚à‚¢‚È‚¢‚Æ‚¢‚¤‚±‚Æ
-		//’Ê˜H‚ğŠm”F‚·‚é
+		//å…¨éƒ¨é€šéã—ãŸã‚‰ã©ã“ã®éƒ¨å±‹ã«ã‚‚ã„ãªã„ã¨ã„ã†ã“ã¨
+		//é€šè·¯ã‚’ç¢ºèªã™ã‚‹
 	}
-
-	for (int i = 0; i < corridors.size(); i++) {
-		//˜L‰º‚É‚¢‚é‚©‚Ç‚¤‚©‚ğŠm”F‚·‚é
-		if (IsInsideRect(px - pw / 2 + pvx, py - ph / 2 + pvy, pw, ph,
-			corridors[i]->x, corridors[i]->y, corridors[i]->w, corridors[i]->h)) {
-			return;
-		}
-	}
-
-	//‘S‚Ä’Ê‚è”²‚¯‚½‚Æ‚¢‚¤‚±‚Æ‚Í‘S‚Ä‚Ìrect‚©‚ç‚Í‚İo‚µ‚Ä‚¢‚é‚Æ‚¢‚¤‚±‚Æ
-	m_player->SetVX(0);
-	m_player->SetVY(0);
 }
 
 void StageManager::CheckNextRoom() {
@@ -99,18 +135,20 @@ void StageManager::CheckNextRoom() {
 	float ph = m_player->GetH();
 	float pvx = m_player->GetVX();
 	float pvy = m_player->GetVY();
-	if (IsInsideRect(px - pw / 2 + pvx, py - ph / 2 + pvy, pw, ph,
+	CollisionState state = CheckRelation(px - pw / 2 + pvx, py - ph / 2 + pvy, pw, ph,
 		rooms[nowRoomIndex]->x, rooms[nowRoomIndex]->y,
-		rooms[nowRoomIndex]->w, rooms[nowRoomIndex]->h)) {
-		//nowRoomIndex‚Ì•”‰®‚É‚¢‚é‚Æ‚¢‚¤‚±‚ÆB
+		rooms[nowRoomIndex]->w, rooms[nowRoomIndex]->h);
+	if (state == CollisionState::INSIDE) {
+		//nowRoomIndexã®éƒ¨å±‹ã«ã„ã‚‹ã¨ã„ã†ã“ã¨ã€‚
 		return;
 	}
 
-	//‚±‚±‚É‚Â‚­‚ÆAnowRoomIndex‚Ì•”‰®‚É‚¢‚È‚¢‚Æ‚¢‚¤‚±‚Æ
+	//ã“ã“ã«ã¤ãã¨ã€nowRoomIndexã®éƒ¨å±‹ã«ã„ãªã„ã¨ã„ã†ã“ã¨
 	for (int i = 0; i < rooms.size(); i++) {
-		//‚à‚µ‚Ç‚±‚©‚Ì•”‰®‚É‚¢‚½‚ç‚±‚ê‚ÅŠm”F‚Å‚«‚é.
-		if (IsInsideRect(px - pw / 2 + pvx, py - ph / 2 + pvy, pw, ph,
-			rooms[i]->x, rooms[i]->y, rooms[i]->w, rooms[i]->h)) {
+		//ã‚‚ã—ã©ã“ã‹ã®éƒ¨å±‹ã«ã„ãŸã‚‰ã“ã‚Œã§ç¢ºèªã§ãã‚‹.
+		CollisionState state = CheckRelation(px - pw / 2 + pvx, py - ph / 2 + pvy, pw, ph,
+			rooms[i]->x, rooms[i]->y, rooms[i]->w, rooms[i]->h);
+		if (state == CollisionState::INSIDE) {
 			nowRoomIndex = i;
 			ConnectRooms();
 			return;
@@ -190,26 +228,26 @@ void StageManager::CollectRooms(Node* node)
 
 void StageManager::CollectNextRooms() {
 
-	//Še•”‰®‚É‘Î‚µ‚Ä—×Ú‚·‚é•”‰®‚ğ’T‚·
+	//å„éƒ¨å±‹ã«å¯¾ã—ã¦éš£æ¥ã™ã‚‹éƒ¨å±‹ã‚’æ¢ã™
 	for (auto& main : rooms) {
 		main->nextRooms = std::vector<std::shared_ptr<RoomData>>();
 		for (auto& other : rooms) {
-			//QÆ‚ÌƒAƒhƒŒƒX‚ğ‚İ‚Ä©•ª©g‚©‚Ç‚¤‚©”»’è‚·‚é
+			//å‚ç…§ã®ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’ã¿ã¦è‡ªåˆ†è‡ªèº«ã‹ã©ã†ã‹åˆ¤å®šã™ã‚‹
 			if (&main == &other)continue;
 
-			// a ‚Ì‹«ŠE
+			// a ã®å¢ƒç•Œ
 			int aLeft = main->maxX;
 			int aRight = main->maxX + main->maxW;
 			int aTop = main->maxY;
 			int aBottom = main->maxY + main->maxH;
 
-			// b ‚Ì‹«ŠE
+			// b ã®å¢ƒç•Œ
 			int bLeft = other->maxX;
 			int bRight = other->maxX + other->maxW;
 			int bTop = other->maxY;
 			int bBottom = other->maxY + other->maxH;
 
-			// ¶‰E‚Å—×Úi‚’¼‚Éd‚È‚Á‚Ä‚¢‚é”ÍˆÍ‚ª‚ ‚éj
+			// å·¦å³ã§éš£æ¥ï¼ˆå‚ç›´ã«é‡ãªã£ã¦ã„ã‚‹ç¯„å›²ãŒã‚ã‚‹ï¼‰
 			if (aRight == bLeft && !(aBottom <= bTop || aTop >= bBottom)) {
 				main->nextRooms.emplace_back(other);
 				continue;
@@ -219,7 +257,7 @@ void StageManager::CollectNextRooms() {
 				continue;
 			}
 
-			// ã‰º‚Å—×Úi…•½‚Éd‚È‚Á‚Ä‚¢‚é”ÍˆÍ‚ª‚ ‚éj
+			// ä¸Šä¸‹ã§éš£æ¥ï¼ˆæ°´å¹³ã«é‡ãªã£ã¦ã„ã‚‹ç¯„å›²ãŒã‚ã‚‹ï¼‰
 			if (aBottom == bTop && !(aRight <= bLeft || aLeft >= bRight)) {
 				main->nextRooms.emplace_back(other);
 				continue;
@@ -233,14 +271,14 @@ void StageManager::CollectNextRooms() {
 }
 
 void StageManager::ConnectRooms() {
-	//‘S‚Ä‚Ì•”‰®‚É‘Î‚µ‚Ä
+	//å…¨ã¦ã®éƒ¨å±‹ã«å¯¾ã—ã¦
 	corridors.clear();
 	//for (int i = 0; i < rooms.size(); i++) {
-	//	//—×Ú‚·‚é•”‰®‚É’Ê˜H‚ğŠ|‚¯‚ç‚ê‚é‚©ƒ`ƒFƒbƒN
+	//	//éš£æ¥ã™ã‚‹éƒ¨å±‹ã«é€šè·¯ã‚’æ›ã‘ã‚‰ã‚Œã‚‹ã‹ãƒã‚§ãƒƒã‚¯
 	//	for (int j = i + 1; j < rooms.size(); j++) {
-	//		//‚±‚Ì•”‰®‚ª—×Ú‚·‚é•”‰®‚ÉŠÜ‚Ü‚ê‚Ä‚¢‚é‚©Šm”F
+	//		//ã“ã®éƒ¨å±‹ãŒéš£æ¥ã™ã‚‹éƒ¨å±‹ã«å«ã¾ã‚Œã¦ã„ã‚‹ã‹ç¢ºèª
 	//		if (ContainsRoomPtr(rooms[i]->nextRooms, rooms[j])) {
-	//			//ŠÜ‚Ü‚ê‚Ä‚¢‚é‚È‚ç’Ê˜H‚ğŠ|‚¯‚ç‚ê‚é‚©ƒ`ƒFƒbƒN
+	//			//å«ã¾ã‚Œã¦ã„ã‚‹ãªã‚‰é€šè·¯ã‚’æ›ã‘ã‚‰ã‚Œã‚‹ã‹ãƒã‚§ãƒƒã‚¯
 	//			CheckRoomOverlap(rooms[i], rooms[j]);
 	//		}
 	//	}
@@ -260,7 +298,7 @@ void StageManager::Draw()
 		py = m_player->GetY() - GameData::windowHeight / 2;
 	}
 
-	//‚à‚µ2‚ª‰Ÿ‚³‚ê‚½‚ç•”‰®‚ÌŒ³ƒTƒCƒY‚ğ•\¦‚·‚é
+	//ã‚‚ã—2ãŒæŠ¼ã•ã‚ŒãŸã‚‰éƒ¨å±‹ã®å…ƒã‚µã‚¤ã‚ºã‚’è¡¨ç¤ºã™ã‚‹
 	if (displayMaxRoomSize) {
 		for (auto& r : rooms)
 		{
@@ -272,13 +310,13 @@ void StageManager::Draw()
 	}
 
 
-	//’Ê˜H‚ğ•`‰æ‚·‚é
+	//é€šè·¯ã‚’æç”»ã™ã‚‹
 	for (auto& col : corridors) {
 		DrawBox(col->x - px, col->y - py, col->x + col->w - px, col->y + col->h - py,
 			GetColor(200, 200, 0), TRUE);
 	}
 
-	//•”‰®‚ğ•`‰æ‚·‚é
+	//éƒ¨å±‹ã‚’æç”»ã™ã‚‹
 	int count = 0;
 	for (auto& r : rooms)
 	{
@@ -296,11 +334,11 @@ void StageManager::Draw()
 		count++;*/
 	}
 
-	///////////////////////ˆÈ‰º‚ÍƒfƒoƒbƒO—p
+	///////////////////////ä»¥ä¸‹ã¯ãƒ‡ãƒãƒƒã‚°ç”¨
 
 	/*
 
-	//nowRoomIndex‚Ì•”‰®‚ğF•t‚«‚Å•\¦‚·‚é
+	//nowRoomIndexã®éƒ¨å±‹ã‚’è‰²ä»˜ãã§è¡¨ç¤ºã™ã‚‹
 	for (auto& r : rooms[nowRoomIndex]->nextRooms) {
 		DrawBox(r->x - px, r->y - py, r->x + r->w - px, r->y + r->h - py,
 			GetColor(255, 100, 100), TRUE);
@@ -320,26 +358,26 @@ void StageManager::Draw()
 
 
 // ----------------------------------------------------
-// 2‚Â‚Ì•”‰®‚ªX²‚Ü‚½‚ÍY²•ûŒü‚Åd‚È‚Á‚Ä‚¢‚é‚©‚ğ”»’è‚·‚éŠÖ”
-// d‚È‚è‚ªcorridorWidthˆÈã‚È‚çA1(X²•ûŒü)‚Ü‚½‚Í2(Y²•ûŒü)‚ğ•Ô‚·
-// ‚Ç‚¿‚ç‚Å‚à‚È‚¢ê‡‚Í0‚ğ•Ô‚·
+// 2ã¤ã®éƒ¨å±‹ãŒXè»¸ã¾ãŸã¯Yè»¸æ–¹å‘ã§é‡ãªã£ã¦ã„ã‚‹ã‹ã‚’åˆ¤å®šã™ã‚‹é–¢æ•°
+// é‡ãªã‚ŠãŒcorridorWidthä»¥ä¸Šãªã‚‰ã€1(Xè»¸æ–¹å‘)ã¾ãŸã¯2(Yè»¸æ–¹å‘)ã‚’è¿”ã™
+// ã©ã¡ã‚‰ã§ã‚‚ãªã„å ´åˆã¯0ã‚’è¿”ã™
 // ----------------------------------------------------
 int StageManager::CheckRoomOverlap(const std::shared_ptr<RoomData>& a,
 	const std::shared_ptr<RoomData>& b)
 {
-	if (!a || !b) return 0; // nullƒ`ƒFƒbƒN
+	if (!a || !b) return 0; // nullãƒã‚§ãƒƒã‚¯
 
-	// X²•ûŒü‚Ìd‚È‚è
+	// Xè»¸æ–¹å‘ã®é‡ãªã‚Š
 	int left = max(a->x, b->x);
 	int right = min(a->x + a->w, b->x + b->w);
 	int overlapX = right - left;
 
-	// Y²•ûŒü‚Ìd‚È‚è
+	// Yè»¸æ–¹å‘ã®é‡ãªã‚Š
 	int top = max(a->y, b->y);
 	int bottom = min(a->y + a->h, b->y + b->h);
 	int overlapY = bottom - top;
 
-	// X²•ûŒü‚Å\•ªd‚È‚Á‚Ä‚¢‚é
+	// Xè»¸æ–¹å‘ã§ååˆ†é‡ãªã£ã¦ã„ã‚‹
 	if (overlapX > (corridorWidth * wholeScale)) {
 		int lessY = (a->y + a->h / 2) <= (b->y + b->h / 2) ? (a->y + a->h / 2) : (b->y + b->h / 2);
 		int moreY = (a->y + a->h / 2) > (b->y + b->h / 2) ? (a->y + a->h / 2) : (b->y + b->h / 2);
@@ -351,7 +389,7 @@ int StageManager::CheckRoomOverlap(const std::shared_ptr<RoomData>& a,
 		);
 		return 1;
 	}
-	// Y²•ûŒü‚Å\•ªd‚È‚Á‚Ä‚¢‚é
+	// Yè»¸æ–¹å‘ã§ååˆ†é‡ãªã£ã¦ã„ã‚‹
 	else if (overlapY > (corridorWidth * wholeScale)) {
 		int lessX = (a->x + a->w / 2) <= (b->x + b->w / 2) ? (a->x + a->w / 2) : (b->x + b->w / 2);
 		int moreX = (a->x + a->w / 2) > (b->x + b->w / 2) ? (a->x + a->w / 2) : (b->x + b->w / 2);
@@ -364,6 +402,62 @@ int StageManager::CheckRoomOverlap(const std::shared_ptr<RoomData>& a,
 		return 2;
 	}
 
-	// ‚Ç‚¿‚ç‚Å‚à‚È‚¢
+	// ã©ã¡ã‚‰ã§ã‚‚ãªã„
 	return 0;
+}
+
+
+// ----------------------------------------------------
+// Player(px,py,pw,ph) ã¨ Room(rx,ry,rw,rh) ã®é–¢ä¿‚ã‚’åˆ¤å®šã™ã‚‹é–¢æ•°
+// ----------------------------------------------------
+CollisionState StageManager::CheckRelation(
+	float px, float py, float pw, float ph,
+	float rx, float ry, float rw, float rh,
+	bool& overlapX, bool& overlapY)
+{
+	// åˆæœŸåŒ–
+	overlapX = false;
+	overlapY = false;
+
+	float pLeft = px;
+	float pRight = px + pw;
+	float pTop = py;
+	float pBottom = py + ph;
+
+	float rLeft = rx;
+	float rRight = rx + rw;
+	float rTop = ry;
+	float rBottom = ry + rh;
+
+	// âœ… å®Œå…¨ã«éƒ¨å±‹ã®ä¸­
+	if (pLeft >= rLeft && pRight <= rRight &&
+		pTop >= rTop && pBottom <= rBottom)
+	{
+		return INSIDE;
+	}
+
+	// Xè»¸ãƒ»Yè»¸ã®é‡ãªã‚Šåˆ¤å®š
+	bool overlapXaxis = (pRight > rLeft) && (pLeft < rRight);
+	bool overlapYaxis = (pBottom > rTop) && (pTop < rBottom);
+
+	if (overlapXaxis && overlapYaxis) {
+		// Xæ–¹å‘ã«ã¯ã¿å‡ºã—ã¦ã„ã‚‹ã‹
+		if (pLeft < rLeft || pRight > rRight) {
+			overlapX = true;
+		}
+		// Yæ–¹å‘ã«ã¯ã¿å‡ºã—ã¦ã„ã‚‹ã‹
+		if (pTop < rTop || pBottom > rBottom) {
+			overlapY = true;
+		}
+		return OVERLAP;
+	}
+
+	// å®Œå…¨ã«å¤–
+	return OUTSIDE;
+}
+
+CollisionState StageManager::CheckRelation(float px, float py, float pw, float ph,
+	float rx, float ry, float rw, float rh) {
+	bool dummyX, dummyY;
+	return CheckRelation(px, py, pw, ph, rx, ry, rw, rh, dummyX, dummyY);
 }

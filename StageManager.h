@@ -9,6 +9,13 @@
 #include "Player.h"
 #include "InputState.h"
 
+enum CollisionState {
+	OUTSIDE = 0,  // 完全に外
+	INSIDE = 1,  // 完全に中
+	OVERLAP = 2   // 一部重なり
+};
+
+
 class StageManager
 {
 public:
@@ -45,6 +52,14 @@ private:
 	int CheckRoomOverlap(const std::shared_ptr<RoomData>& a,
 		const std::shared_ptr<RoomData>& b);
 
+	//プレイヤーと部屋がINSIDEかOVERLAPか取得する関数
+	CollisionState CheckRelation(float px, float py, float pw, float ph,
+		float rx, float ry, float rw, float rh,
+		bool& overlapX, bool& overlapY);
+	//はみ出しフラグなしバージョン
+	CollisionState CheckRelation(float px, float py, float pw, float ph,
+		float rx, float ry, float rw, float rh);
+
 	//部屋と通路の当たり判定をしている関数
 	void HitCheck();
 	void CheckNextRoom();
@@ -61,15 +76,6 @@ private:
 	//True:範囲内にいる　False:はみ出している
 	bool HitTest(float p1, float w1, float p2, float w2) {
 		return p2 < p1 && p1 + w1 < p2 + w2;
-	}
-
-	bool IsInsideRect(float ax, float ay, float aw, float ah,
-		float bx, float by, float bw, float bh)
-	{
-		return (ax >= bx &&
-			ay >= by &&
-			ax + aw <= bx + bw &&
-			ay + ah <= by + bh);
 	}
 
 
