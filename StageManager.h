@@ -34,6 +34,7 @@ private:
 
 	int stageWidth, stageHeight;
 	std::vector<std::shared_ptr<RoomData>> rooms;
+	std::vector<std::shared_ptr<CorridorData>> corridors;
 	Node* root;
 
 	Node* Split(Node* node, int depth);
@@ -41,6 +42,8 @@ private:
 	void CollectRooms(Node* node);
 	void CollectNextRooms();
 	void ConnectRooms();
+	int CheckRoomOverlap(const std::shared_ptr<RoomData>& a,
+		const std::shared_ptr<RoomData>& b);
 
 	//•”‰®‚Æ’Ê˜H‚Ì“–‚½‚è”»’è‚ğ‚µ‚Ä‚¢‚éŠÖ”
 	void HitCheck();
@@ -76,5 +79,14 @@ private:
 		float overlap1 = max(p1, p2);
 		float overlap2 = min(p1 + w1, p2 + w2);
 		return (overlap1 < overlap2);
+	}
+
+	bool ContainsRoomPtr(const std::vector<std::shared_ptr<RoomData>>& rooms,
+		const std::shared_ptr<RoomData>& data)
+	{
+		return std::any_of(rooms.begin(), rooms.end(),
+			[&](const std::shared_ptr<RoomData>& r) {
+				return r == data;  // “¯‚¶shared_ptr‚ğw‚µ‚Ä‚¢‚é‚©”äŠr
+			});
 	}
 };

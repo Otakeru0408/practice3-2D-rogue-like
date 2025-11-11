@@ -13,7 +13,6 @@ public:
 	int maxW, maxH;	//•”‰®‚Ì‚à‚Æ‚à‚Æ‚ÌÅ‘å‚ÌƒTƒCƒY
 	int index;
 	std::vector<std::shared_ptr<RoomData>> nextRooms;
-	std::vector<CorridorData> corridors;
 
 	RoomData(int _x = 0, int _y = 0, float _w = 0, float _h = 0,
 		int _mx = 0, int _my = 0, float _mw = 0, float _mh = 0)

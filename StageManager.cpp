@@ -34,7 +34,7 @@ void StageManager::Init()
 	CollectNextRooms();
 
 	//各部屋の隣接リストから通路を作成する
-	//ConnectRooms();
+	ConnectRooms();
 
 	//プレイヤーの初期位置を設定する
 	m_player->SetX(rooms[nowRoomIndex]->x + rooms[nowRoomIndex]->w / 2);
@@ -202,11 +202,19 @@ void StageManager::CollectNextRooms() {
 
 void StageManager::ConnectRooms() {
 	//全ての部屋に対して
-	for (int i = 0; i < rooms.size(); i++) {
-		//隣接する部屋に通路を掛けられるかチェック
-		for (int j = i + 1; j < rooms.size(); j++) {
-			//if (rooms[i].nextRooms.)
-		}
+	//for (int i = 0; i < rooms.size(); i++) {
+	//	//隣接する部屋に通路を掛けられるかチェック
+	//	for (int j = i + 1; j < rooms.size(); j++) {
+	//		//この部屋が隣接する部屋に含まれているか確認
+	//		if (ContainsRoomPtr(rooms[i]->nextRooms, rooms[j])) {
+	//			//含まれているなら通路を掛けられるかチェック
+	//			CheckRoomOverlap(rooms[i], rooms[j]);
+	//		}
+	//	}
+	//}
+	corridors.clear();
+	for (auto& room : rooms[nowRoomIndex]->nextRooms) {
+		CheckRoomOverlap(rooms[nowRoomIndex], room);
 	}
 }
 
@@ -233,11 +241,9 @@ void StageManager::Draw()
 
 
 	//通路を描画する
-	if (rooms[nowRoomIndex]->corridors.size() > 0) {
-		for (int i = 0; i < rooms[nowRoomIndex]->corridors.size(); i++) {
-			CorridorData data = rooms[nowRoomIndex]->corridors[i];
-			DrawBox(data.x - px, data.y - py, data.x + data.w - px, data.y + data.h - py, GetColor(150, 150, 150), TRUE);
-		}
+	for (auto& col : corridors) {
+		DrawBox(col->x - px, col->y - py, col->x + col->w - px, col->y + col->h - py,
+			GetColor(200, 200, 0), TRUE);
 	}
 
 	//部屋を描画する
@@ -277,13 +283,63 @@ void StageManager::Draw()
 			}
 			*/
 
-	DrawFormatString(50, 50, GetColor(0, 0, 0), "corridors:%d", rooms[nowRoomIndex]->corridors.size());
+			//DrawFormatString(50, 50, GetColor(0, 0, 0), "corridors:%d", rooms[nowRoomIndex]->corridors.size());
 	DrawFormatString(50, 100, GetColor(0, 0, 0), "pX:%f, pY;%f, pW:%f, pH:%f", m_player->GetX(), m_player->GetY(), m_player->GetW(), m_player->GetH());
 	DrawFormatString(50, 150, GetColor(0, 0, 0), "rX:%d, rY;%d, rW:%f, rH;%f", rooms[nowRoomIndex]->x, rooms[nowRoomIndex]->y,
 		rooms[nowRoomIndex]->w, rooms[nowRoomIndex]->h);
-	for (int i = 0; i < rooms[nowRoomIndex]->corridors.size(); i++) {
+	/*for (int i = 0; i < rooms[nowRoomIndex]->corridors.size(); i++) {
 		CorridorData d = rooms[nowRoomIndex]->corridors[i];
 		DrawFormatString(50, 200 + 50 * i, GetColor(100, 0, 0), "cX:%d, cY;%d, cW:%f, cH;%f",
 			d.x, d.y, d.w, d.h);
+	}*/
+}
+
+
+// ----------------------------------------------------
+// 2つの部屋がX軸またはY軸方向で重なっているかを判定する関数
+// 重なりがcorridorWidth以上なら、1(X軸方向)または2(Y軸方向)を返す
+// どちらでもない場合は0を返す
+// ----------------------------------------------------
+int StageManager::CheckRoomOverlap(const std::shared_ptr<RoomData>& a,
+	const std::shared_ptr<RoomData>& b)
+{
+	if (!a || !b) return 0; // nullチェック
+
+	// X軸方向の重なり
+	int left = max(a->x, b->x);
+	int right = min(a->x + a->w, b->x + b->w);
+	int overlapX = right - left;
+
+	// Y軸方向の重なり
+	int top = max(a->y, b->y);
+	int bottom = min(a->y + a->h, b->y + b->h);
+	int overlapY = bottom - top;
+
+	// X軸方向で十分重なっている
+	if (overlapX > corridorWidth) {
+		int lessY = a->y <= b->y ? a->y : b->y;
+		int moreY = a->y > b->y ? a->y : b->y;
+		corridors.emplace_back(
+			std::make_shared<CorridorData>(
+				left, lessY,
+				overlapX, moreY - lessY
+			)
+		);
+		return 1;
 	}
+	// Y軸方向で十分重なっている
+	else if (overlapY > corridorWidth) {
+		int lessX = a->x <= b->x ? a->x : b->x;
+		int moreX = a->x > b->x ? a->x : b->x;
+		corridors.emplace_back(
+			std::make_shared<CorridorData>(
+				lessX, top,
+				moreX - lessX, overlapY
+			)
+		);
+		return 2;
+	}
+
+	// どちらでもない
+	return 0;
 }
