@@ -68,6 +68,7 @@ private:
 	int nowRoomIndex = 0;
 	int corridorWidth = 50;
 	bool displayMaxRoomSize = false;
+	bool displayCorridorUpper = false;
 	float wholeScale;
 
 	bool isRoomLeft = false;

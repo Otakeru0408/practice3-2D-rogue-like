@@ -21,7 +21,7 @@ void StageManager::Init()
 	root = new Node(0, 0, stageWidth * wholeScale, stageHeight * wholeScale);
 
 	// 再帰的に分割
-	Split(root, 3); // 深さ4くらいまで分割
+	Split(root, 4); // 深さ4くらいまで分割
 
 	// 部屋の生成
 	CreateRoom(root);
@@ -50,12 +50,17 @@ void StageManager::Update(const InputState* input) {
 	if (input->IsKeyDown(KEY_INPUT_2)) {
 		displayMaxRoomSize = !displayMaxRoomSize;
 	}
+	if (input->IsKeyDown(KEY_INPUT_3)) {
+		displayCorridorUpper = !displayCorridorUpper;
+	}
+
+
+	//次の部屋に移動したかを検出する
+	CheckNextRoom();
 
 	//部屋や通路の壁の当たり判定
 	HitCheck();
 
-	//次の部屋に移動したかを検出する
-	CheckNextRoom();
 }
 
 void StageManager::HitCheck() {
@@ -80,12 +85,14 @@ void StageManager::HitCheck() {
 			CollisionState state = CheckRelation(px - pw / 2 + pvx, py - ph / 2 + pvy, pw, ph,
 				corridors[i]->x, corridors[i]->y, corridors[i]->w, corridors[i]->h, overX, overY);
 			if (state == CollisionState::INSIDE) {
-				return;
+				m_player->SetVX(_vx);
+				m_player->SetVY(_vy);
+				break;
 			}
 			else if (state == CollisionState::OVERLAP) {
 				if (overX)m_player->SetVX(0);
 				if (overY)m_player->SetVY(0);
-				break;
+				//break;
 			}
 		}
 	}
@@ -98,22 +105,27 @@ void StageManager::HitCheck() {
 		if (state == CollisionState::INSIDE) {
 			//INSIDEならどこかの部屋にいるということなのでreturnでOK
 			isRoomLeft = false;
+			m_player->SetVX(_vx);
+			m_player->SetVY(_vy);
 			return;
 		}
 		else if (state == CollisionState::OVERLAP && !isRoomLeft) {
 			bool _overX = overX;
 			bool _overY = overY;
 			//もしどこかからはみ出そうとしてるなら廊下をチェック
+			//
 			for (int i = 0; i < corridors.size(); i++) {
 				//廊下にいるかどうかを確認する
 				CollisionState state = CheckRelation(px - pw / 2 + pvx, py - ph / 2 + pvy, pw, ph,
 					corridors[i]->x, corridors[i]->y, corridors[i]->w, corridors[i]->h, overX, overY);
 				if (state == CollisionState::INSIDE) {
 					isRoomLeft = true;
+					m_player->SetVX(_vx);
+					m_player->SetVY(_vy);
 					return;
 				}
 				else if (state == CollisionState::OVERLAP) {
-					break;
+					//break;
 				}
 			}
 			overX = _overX;
@@ -135,7 +147,7 @@ void StageManager::CheckNextRoom() {
 	float ph = m_player->GetH();
 	float pvx = m_player->GetVX();
 	float pvy = m_player->GetVY();
-	CollisionState state = CheckRelation(px - pw / 2 + pvx, py - ph / 2 + pvy, pw, ph,
+	CollisionState state = CheckRelation(px, py, 1, 1,
 		rooms[nowRoomIndex]->x, rooms[nowRoomIndex]->y,
 		rooms[nowRoomIndex]->w, rooms[nowRoomIndex]->h);
 	if (state == CollisionState::INSIDE) {
@@ -146,10 +158,11 @@ void StageManager::CheckNextRoom() {
 	//ここにつくと、nowRoomIndexの部屋にいないということ
 	for (int i = 0; i < rooms.size(); i++) {
 		//もしどこかの部屋にいたらこれで確認できる.
-		CollisionState state = CheckRelation(px - pw / 2 + pvx, py - ph / 2 + pvy, pw, ph,
+		CollisionState state = CheckRelation(px, py, 1, 1,
 			rooms[i]->x, rooms[i]->y, rooms[i]->w, rooms[i]->h);
 		if (state == CollisionState::INSIDE) {
 			nowRoomIndex = i;
+			//isRoomLeft = false;
 			ConnectRooms();
 			return;
 		}
@@ -199,8 +212,8 @@ void StageManager::CreateRoom(Node* node)
 		int rh = std::max(4, node->h - (std::rand() % (node->h / 2 + 1)));*/
 		int randW = node->w - (std::rand() % (node->w / 2 + 1));
 		int randH = node->h - (std::rand() % (node->h / 2 + 1));
-		int rw = randW > corridorWidth ? randW : corridorWidth;
-		int rh = randH > corridorWidth ? randH : corridorWidth;
+		int rw = randW > (corridorWidth * wholeScale) ? randW : corridorWidth * wholeScale;
+		int rh = randH > (corridorWidth * wholeScale) ? randH : corridorWidth * wholeScale;
 		int rx = node->x + std::rand() % (node->w - rw + 1);
 		int ry = node->y + std::rand() % (node->h - rh + 1);
 
@@ -334,6 +347,26 @@ void StageManager::Draw()
 		count++;*/
 	}
 
+	//もし細長い部屋なら青く表示
+	/*for (auto& r : rooms) {
+		if (r->w < corridorWidth * wholeScale * 2
+			|| r->h < corridorWidth * wholeScale * 2) {
+			DrawBox(r->x - px, r->y - py, r->x + r->w - px, r->y + r->h - py,
+				GetColor(0, 200, 200), TRUE);
+		}
+	}*/
+
+	if (displayCorridorUpper) {
+		//通路を描画する
+		for (auto& col : corridors) {
+			DrawBox(col->x - px, col->y - py, col->x + col->w - px, col->y + col->h - py,
+				GetColor(200, 200, 0), TRUE);
+		}
+	}
+
+
+	DrawFormatString(50, 50, GetColor(0, 0, 0), "isRoomLeft:%d", isRoomLeft);
+
 	///////////////////////以下はデバッグ用
 
 	/*
@@ -379,26 +412,47 @@ int StageManager::CheckRoomOverlap(const std::shared_ptr<RoomData>& a,
 
 	// X軸方向で十分重なっている
 	if (overlapX > (corridorWidth * wholeScale)) {
-		int lessY = (a->y + a->h / 2) <= (b->y + b->h / 2) ? (a->y + a->h / 2) : (b->y + b->h / 2);
-		int moreY = (a->y + a->h / 2) > (b->y + b->h / 2) ? (a->y + a->h / 2) : (b->y + b->h / 2);
-		corridors.emplace_back(
-			std::make_shared<CorridorData>(
-				left + overlapX / 2 - (corridorWidth * wholeScale) / 2, lessY,
-				(corridorWidth * wholeScale), moreY - lessY
-			)
-		);
+		//Aが上かどうかを調べる
+		bool aIsUpper = a->y < b->y ? true : false;
+		if (aIsUpper) {
+			corridors.emplace_back(
+				std::make_shared<CorridorData>(
+					left + overlapX / 2 - (corridorWidth * wholeScale) / 2, a->y,
+					(corridorWidth * wholeScale), (b->y + b->h - a->y)
+				)
+			);
+		}
+		else {
+			corridors.emplace_back(
+				std::make_shared<CorridorData>(
+					left + overlapX / 2 - (corridorWidth * wholeScale) / 2, b->y,
+					(corridorWidth * wholeScale), (a->y + a->h - b->y)
+				)
+			);
+		}
+
 		return 1;
 	}
 	// Y軸方向で十分重なっている
 	else if (overlapY > (corridorWidth * wholeScale)) {
-		int lessX = (a->x + a->w / 2) <= (b->x + b->w / 2) ? (a->x + a->w / 2) : (b->x + b->w / 2);
-		int moreX = (a->x + a->w / 2) > (b->x + b->w / 2) ? (a->x + a->w / 2) : (b->x + b->w / 2);
-		corridors.emplace_back(
-			std::make_shared<CorridorData>(
-				lessX, top + overlapY / 2 - (corridorWidth * wholeScale) / 2,
-				moreX - lessX, (corridorWidth * wholeScale)
-			)
-		);
+		bool aIsUpper = a->x < b->x ? true : false;
+		if (aIsUpper) {
+			corridors.emplace_back(
+				std::make_shared<CorridorData>(
+					a->x, top + overlapY / 2 - (corridorWidth * wholeScale) / 2,
+					(b->x + b->w - a->x), (corridorWidth * wholeScale)
+				)
+			);
+		}
+		else {
+			corridors.emplace_back(
+				std::make_shared<CorridorData>(
+					b->x, top + overlapY / 2 - (corridorWidth * wholeScale) / 2,
+					(a->x + a->w - b->x), (corridorWidth * wholeScale)
+				)
+			);
+		}
+
 		return 2;
 	}
 
