@@ -287,14 +287,18 @@ void StageManager::Draw()
 		DrawBox(r->x - px, r->y - py, r->x + r->w - px, r->y + r->h - py,
 			GetColor(0, 0, 0), FALSE);
 
-		if (count == nowRoomIndex) {
+		/*if (count == nowRoomIndex) {
 			DrawBox(r->x - px, r->y - py, r->x + r->w - px, r->y + r->h - py,
 				GetColor(100, 100, 255), TRUE);
 			DrawBox(r->x - px, r->y - py, r->x + r->w - px, r->y + r->h - py,
 				GetColor(0, 0, 0), FALSE);
 		}
-		count++;
+		count++;*/
 	}
+
+	///////////////////////以下はデバッグ用
+
+	/*
 
 	//nowRoomIndexの部屋を色付きで表示する
 	for (auto& r : rooms[nowRoomIndex]->nextRooms) {
@@ -307,23 +311,11 @@ void StageManager::Draw()
 	//DrawFormatString(50, 50, GetColor(0, 0, 0), "nowRoomIndex:%d", nowRoomIndex);
 	DrawFormatString(50, 75, GetColor(0, 0, 0), "isRoomLeft:%d", isRoomLeft);
 
-	/*
-	if (px - pw / 2 + pvx > data.x && px + pw / 2 + pvx < data.x + data.w
-				&& py - ph / 2 + pvy > data.y && py + ph / 2 + pvy < data.y + data.h) {
-				isRoomLeft = true;
-				return;
-			}
-			*/
-
-			//DrawFormatString(50, 50, GetColor(0, 0, 0), "corridors:%d", rooms[nowRoomIndex]->corridors.size());
 	DrawFormatString(50, 100, GetColor(0, 0, 0), "pX:%f, pY;%f, pW:%f, pH:%f", m_player->GetX(), m_player->GetY(), m_player->GetW(), m_player->GetH());
 	DrawFormatString(50, 150, GetColor(0, 0, 0), "rX:%d, rY;%d, rW:%f, rH;%f", rooms[nowRoomIndex]->x, rooms[nowRoomIndex]->y,
 		rooms[nowRoomIndex]->w, rooms[nowRoomIndex]->h);
-	/*for (int i = 0; i < rooms[nowRoomIndex]->corridors.size(); i++) {
-		CorridorData d = rooms[nowRoomIndex]->corridors[i];
-		DrawFormatString(50, 200 + 50 * i, GetColor(100, 0, 0), "cX:%d, cY;%d, cW:%f, cH;%f",
-			d.x, d.y, d.w, d.h);
-	}*/
+
+		*/
 }
 
 
