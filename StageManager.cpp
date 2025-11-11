@@ -202,19 +202,16 @@ void StageManager::CollectNextRooms() {
 
 void StageManager::ConnectRooms() {
 	//全ての部屋に対して
-	//for (int i = 0; i < rooms.size(); i++) {
-	//	//隣接する部屋に通路を掛けられるかチェック
-	//	for (int j = i + 1; j < rooms.size(); j++) {
-	//		//この部屋が隣接する部屋に含まれているか確認
-	//		if (ContainsRoomPtr(rooms[i]->nextRooms, rooms[j])) {
-	//			//含まれているなら通路を掛けられるかチェック
-	//			CheckRoomOverlap(rooms[i], rooms[j]);
-	//		}
-	//	}
-	//}
 	corridors.clear();
-	for (auto& room : rooms[nowRoomIndex]->nextRooms) {
-		CheckRoomOverlap(rooms[nowRoomIndex], room);
+	for (int i = 0; i < rooms.size(); i++) {
+		//隣接する部屋に通路を掛けられるかチェック
+		for (int j = i + 1; j < rooms.size(); j++) {
+			//この部屋が隣接する部屋に含まれているか確認
+			if (ContainsRoomPtr(rooms[i]->nextRooms, rooms[j])) {
+				//含まれているなら通路を掛けられるかチェック
+				CheckRoomOverlap(rooms[i], rooms[j]);
+			}
+		}
 	}
 }
 
@@ -321,8 +318,8 @@ int StageManager::CheckRoomOverlap(const std::shared_ptr<RoomData>& a,
 		int moreY = a->y > b->y ? a->y : b->y;
 		corridors.emplace_back(
 			std::make_shared<CorridorData>(
-				left, lessY,
-				overlapX, moreY - lessY
+				left + overlapX / 2 - corridorWidth / 2, lessY,
+				corridorWidth, moreY - lessY
 			)
 		);
 		return 1;
@@ -333,8 +330,8 @@ int StageManager::CheckRoomOverlap(const std::shared_ptr<RoomData>& a,
 		int moreX = a->x > b->x ? a->x : b->x;
 		corridors.emplace_back(
 			std::make_shared<CorridorData>(
-				lessX, top,
-				moreX - lessX, overlapY
+				lessX, top + overlapY / 2 - corridorWidth / 2,
+				moreX - lessX, corridorWidth
 			)
 		);
 		return 2;
