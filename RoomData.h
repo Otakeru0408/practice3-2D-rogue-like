@@ -1,6 +1,7 @@
 // RoomData.h
 #pragma once
 #include <vector>
+#include <memory>
 #include "CorridorData.h"
 
 class RoomData
@@ -11,7 +12,7 @@ public:
 	int maxX, maxY;	//部屋のもともとの最大の位置
 	int maxW, maxH;	//部屋のもともとの最大のサイズ
 	int index;
-	std::vector<RoomData> nextRooms;
+	std::vector<std::shared_ptr<RoomData>> nextRooms;
 	std::vector<CorridorData> corridors;
 
 	RoomData(int _x = 0, int _y = 0, float _w = 0, float _h = 0,
