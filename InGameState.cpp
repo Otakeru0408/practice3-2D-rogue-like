@@ -27,6 +27,12 @@ void InGameState::Init() {
 	//Init‚Åm_player‚ğg—p‚µ‚Ä‚¢‚é‚Ì‚Å‚±‚±‚ÅÀs
 	m_stageManager->Init();
 	//UI‚ğì¬‚·‚é
+
+	/*auto gauge = std::make_shared<UIGauge>(
+		player->GetComponent<InputComponent>(),
+		player->GetComponent<TransformComponent>()
+	);
+	m_uiManager->AddElement(gauge);*/
 	/*
 	auto button = std::make_shared<UIButton>(
 		100, 100, 200, 100,

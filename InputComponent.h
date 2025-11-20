@@ -6,10 +6,14 @@ class InputComponent : public Component {
 private:
 	std::shared_ptr<TransformComponent> transform;
 	float moveSpeed;
+	float moveAccel;
+	float runningLimit;
+	float runningCount;
 
 public:
-	InputComponent(Entity* _parent, float speed)
-		:Component(_parent), moveSpeed(speed) {
+	InputComponent(Entity* _parent, float speed, float accel)
+		:Component(_parent), moveSpeed(speed), moveAccel(accel)
+		, runningLimit(2.0f), runningCount(0) {
 		transform = owner->GetComponent<TransformComponent>();
 	}
 	void Update(const InputState* input, float deltaTime) override {
@@ -24,6 +28,17 @@ public:
 			//それぞれのベクトルから移動量を計算
 			transform->vx = moveVec.x * deltaTime * moveSpeed;
 			transform->vy = moveVec.y * deltaTime * moveSpeed;
+
+			if (input->IsMouseDown(1)) {
+				runningCount = 0.0f;
+			}
+			if (input->IsMouseStay(1) && runningCount <= runningLimit) {
+				transform->vx *= moveAccel;
+				transform->vy *= moveAccel;
+				runningCount += deltaTime;
+			}
 		}
+
+
 	}
 };

@@ -53,6 +53,9 @@
     <ClCompile Include="StageManager.cpp">
       <Filter>0_メインファイル</Filter>
     </ClCompile>
+    <ClCompile Include="UIGauge.cpp">
+      <Filter>6_UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TitleState.h">
@@ -81,9 +84,6 @@
     </ClInclude>
     <ClInclude Include="UIButton.h">
       <Filter>6_UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UIManager.h">
-      <Filter>2_Stateインタフェース</Filter>
     </ClInclude>
     <ClInclude Include="PlayerData.h">
       <Filter>2_Stateインタフェース</Filter>
@@ -120,6 +120,12 @@
     </ClInclude>
     <ClInclude Include="CorridorData.h">
       <Filter>2_Stateインタフェース</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager.h">
+      <Filter>6_UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIGauge.h">
+      <Filter>6_UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

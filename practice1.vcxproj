@@ -142,6 +142,7 @@
     <ClCompile Include="ResultState.cpp" />
     <ClCompile Include="StageManager.cpp" />
     <ClCompile Include="TitleState.cpp" />
+    <ClCompile Include="UIGauge.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationComponent.h" />
@@ -165,6 +166,7 @@
     <ClInclude Include="TitleState.h" />
     <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="UIButton.h" />
+    <ClInclude Include="UIGauge.h" />
     <ClInclude Include="UIManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
