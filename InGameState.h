@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include "Player.h"
 #include "StageManager.h"
+#include "UIGauge.h"
 
 class GameManager;
 
@@ -29,4 +30,6 @@ private:
 	std::shared_ptr<Player> player;
 	std::vector<std::shared_ptr<Entity>> entities;
 	std::shared_ptr<StageManager> m_stageManager;
+	std::shared_ptr<UIGauge> m_gauge;
+	std::shared_ptr<InputComponent> m_playerInput;
 };

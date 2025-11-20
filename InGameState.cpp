@@ -22,17 +22,15 @@ void InGameState::Init() {
 
 	//PlayerをPlayerDataから作成する
 	player = std::make_shared<Player>(m_playerData);
+	m_playerInput = player->GetComponent<InputComponent>();
 
 	m_stageManager->m_player = player;
 	//Initでm_playerを使用しているのでここで実行
 	m_stageManager->Init();
 	//UIを作成する
 
-	/*auto gauge = std::make_shared<UIGauge>(
-		player->GetComponent<InputComponent>(),
-		player->GetComponent<TransformComponent>()
-	);
-	m_uiManager->AddElement(gauge);*/
+	m_gauge = std::make_shared<UIGauge>();
+	m_uiManager->AddElement(m_gauge);
 	/*
 	auto button = std::make_shared<UIButton>(
 		100, 100, 200, 100,
@@ -55,6 +53,9 @@ SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
 	}
 
 	m_stageManager->Update(input);
+
+	//ダッシュゲージのデータを渡す
+	m_gauge->SetRunningValue(m_playerInput->GetRunningValue());
 
 	//Spaceを押したときはゲームシーンへ移行する
 	if (moveState || input->IsKeyDown(KEY_INPUT_SPACE)) {

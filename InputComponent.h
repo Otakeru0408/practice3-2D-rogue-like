@@ -20,6 +20,9 @@ public:
 		transform->vx = 0;
 		transform->vy = 0;
 
+		if (input->IsMouseUp(1)) {
+			runningCount = 0.0f;
+		}
 		if (input->IsMouseStay(0)) {
 			//キャラの位置とマウスの位置を計算
 			VECTOR tPos = VGet(GameData::windowWidth / 2, GameData::windowHeight / 2, 0);
@@ -29,9 +32,6 @@ public:
 			transform->vx = moveVec.x * deltaTime * moveSpeed;
 			transform->vy = moveVec.y * deltaTime * moveSpeed;
 
-			if (input->IsMouseDown(1)) {
-				runningCount = 0.0f;
-			}
 			if (input->IsMouseStay(1) && runningCount <= runningLimit) {
 				transform->vx *= moveAccel;
 				transform->vy *= moveAccel;
@@ -41,4 +41,6 @@ public:
 
 
 	}
+
+	float GetRunningValue() { return (runningCount / runningLimit); }
 };
