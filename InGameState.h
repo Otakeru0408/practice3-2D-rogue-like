@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "StageManager.h"
 #include "UIGauge.h"
+#include "ExitDoor.h"
 
 class GameManager;
 

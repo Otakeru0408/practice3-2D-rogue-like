@@ -1,7 +1,7 @@
 #include "Player.h"
 
-Player::Player(PlayerData data)
-	:mp(0), w(0), h(0), scale(0.05f)
+Player::Player(PlayerData data, IGameState* panent)
+	:Entity(panent), mp(0), w(0), h(0), scale(0.05f)
 {
 	LoadPlayerData(data);
 	AddComponent(std::make_shared<DirectionComponent>(this));

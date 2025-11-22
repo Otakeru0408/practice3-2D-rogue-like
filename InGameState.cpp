@@ -21,7 +21,7 @@ void InGameState::Init() {
 	}
 
 	//PlayerをPlayerDataから作成する
-	player = std::make_shared<Player>(m_playerData);
+	player = std::make_shared<Player>(m_playerData, this);
 	m_playerInput = player->GetComponent<InputComponent>();
 
 	m_stageManager->m_player = player;
@@ -31,16 +31,10 @@ void InGameState::Init() {
 
 	m_gauge = std::make_shared<UIGauge>();
 	m_uiManager->AddElement(m_gauge);
-	/*
-	auto button = std::make_shared<UIButton>(
-		100, 100, 200, 100,
-		"Start",
-		[this]() {
-			moveState = true;
-		});
 
-	m_uiManager->AddElement(button);
-	*/
+
+	//出口のドアを作成・表示
+	entities.emplace_back(std::make_shared<ExitDoor>(this));
 }
 
 SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {

@@ -4,16 +4,18 @@
 
 #include "DxLib.h"
 #include "Component.h"
+#include "IGameState.h"
 #include "InputState.h"
 #include "GameData.h"
 
 class Entity {
 private:
 	std::vector<std::shared_ptr<Component>> components;
+	IGameState* parentScene;
 	bool alive;
 
 public:
-	Entity() : alive(true) {}
+	Entity(IGameState* parent) : alive(true), parentScene(parent) {}
 
 	virtual void Update(const InputState* input, float deltaTime) {
 		for (const auto& comp : components) {

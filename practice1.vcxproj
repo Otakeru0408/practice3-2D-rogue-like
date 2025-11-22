@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ExitDoor.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="InGameState.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="CorridorData.h" />
     <ClInclude Include="DirectionComponent.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="ExitDoor.h" />
     <ClInclude Include="GameData.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="HealthComponent.h" />
@@ -162,6 +164,7 @@
     <ClInclude Include="PlayerData.h" />
     <ClInclude Include="ResultState.h" />
     <ClInclude Include="RoomData.h" />
+    <ClInclude Include="SpriteRendererComponent.h" />
     <ClInclude Include="StageManager.h" />
     <ClInclude Include="TitleState.h" />
     <ClInclude Include="TransformComponent.h" />

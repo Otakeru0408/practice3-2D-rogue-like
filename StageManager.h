@@ -6,6 +6,7 @@
 #include <algorithm>
 #include "RoomData.h"
 #include "CorridorData.h"
+#include "Entity.h"
 #include "Player.h"
 #include "InputState.h"
 
@@ -40,7 +41,9 @@ private:
 	};
 
 	int stageWidth, stageHeight;
+	//部屋のデータ
 	std::vector<std::shared_ptr<RoomData>> rooms;
+	//廊下のデータ
 	std::vector<std::shared_ptr<CorridorData>> corridors;
 	Node* root;
 

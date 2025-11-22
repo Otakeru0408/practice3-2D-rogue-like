@@ -15,7 +15,7 @@
 
 class Player :public Entity {
 public:
-	Player(PlayerData data);
+	Player(PlayerData data, IGameState* panent);
 	~Player() = default;
 
 	void Update(const InputState* input, float deltaTime)override;

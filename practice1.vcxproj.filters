@@ -30,6 +30,9 @@
     <Filter Include="8_Entity">
       <UniqueIdentifier>{87c25e6f-57b7-485a-9c15-86fc728c13e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="9_RoomGenerate">
+      <UniqueIdentifier>{a9b369d3-5031-4251-82b9-29ccb75043b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -50,11 +53,14 @@
     <ClCompile Include="Player.cpp">
       <Filter>8_Entity</Filter>
     </ClCompile>
-    <ClCompile Include="StageManager.cpp">
-      <Filter>0_メインファイル</Filter>
-    </ClCompile>
     <ClCompile Include="UIGauge.cpp">
       <Filter>6_UI</Filter>
+    </ClCompile>
+    <ClCompile Include="StageManager.cpp">
+      <Filter>9_RoomGenerate</Filter>
+    </ClCompile>
+    <ClCompile Include="ExitDoor.cpp">
+      <Filter>0_メインファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -76,17 +82,11 @@
     <ClInclude Include="InputState.h">
       <Filter>2_Stateインタフェース</Filter>
     </ClInclude>
-    <ClInclude Include="GameData.h">
-      <Filter>2_Stateインタフェース</Filter>
-    </ClInclude>
     <ClInclude Include="IUIElement.h">
       <Filter>6_UI</Filter>
     </ClInclude>
     <ClInclude Include="UIButton.h">
       <Filter>6_UI</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerData.h">
-      <Filter>2_Stateインタフェース</Filter>
     </ClInclude>
     <ClInclude Include="Entity.h">
       <Filter>8_Entity</Filter>
@@ -109,23 +109,35 @@
     <ClInclude Include="InputComponent.h">
       <Filter>7_Component</Filter>
     </ClInclude>
-    <ClInclude Include="RoomData.h">
-      <Filter>2_Stateインタフェース</Filter>
-    </ClInclude>
-    <ClInclude Include="StageManager.h">
-      <Filter>2_Stateインタフェース</Filter>
-    </ClInclude>
     <ClInclude Include="TransformComponent.h">
       <Filter>7_Component</Filter>
-    </ClInclude>
-    <ClInclude Include="CorridorData.h">
-      <Filter>2_Stateインタフェース</Filter>
     </ClInclude>
     <ClInclude Include="UIManager.h">
       <Filter>6_UI</Filter>
     </ClInclude>
     <ClInclude Include="UIGauge.h">
       <Filter>6_UI</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomData.h">
+      <Filter>9_RoomGenerate</Filter>
+    </ClInclude>
+    <ClInclude Include="StageManager.h">
+      <Filter>9_RoomGenerate</Filter>
+    </ClInclude>
+    <ClInclude Include="CorridorData.h">
+      <Filter>9_RoomGenerate</Filter>
+    </ClInclude>
+    <ClInclude Include="GameData.h">
+      <Filter>0_メインファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerData.h">
+      <Filter>0_メインファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ExitDoor.h">
+      <Filter>2_Stateインタフェース</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteRendererComponent.h">
+      <Filter>2_Stateインタフェース</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
