@@ -3,12 +3,24 @@
 #include "TransformComponent.h"
 #include "DirectionComponent.h"
 #include "SpriteRendererComponent.h"
+#include "Player.h"
 
 class ExitDoor :public Entity {
 private:
+	TransformComponent* player_trans;
 public:
-	ExitDoor(IGameState* parent);
+	ExitDoor(IGameState* parent, Player* m_player);
 	~ExitDoor() = default;
 	void Update(const InputState* input, float deltaTime)override;
 	void Draw()override;
+
+	TransformComponent* GetPlayerTrans() {
+		return player_trans;
+	}
+	void SetPos(int x, int y) {
+		auto trans = GetComponent<TransformComponent>();
+		trans->x = x;
+		trans->y = y;
+	}
+
 };

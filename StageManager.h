@@ -25,6 +25,9 @@ public:
 	void Update(const InputState* input);
 	void Draw();    // DXライブラリで描画
 
+	//出口の配置場所を考える関数
+	void CulculateExitPos(float exit_width, float exit_height, int& exit_x, int& exit_y);
+
 	std::shared_ptr<Player> m_player;
 
 private:
@@ -66,6 +69,8 @@ private:
 	//部屋と通路の当たり判定をしている関数
 	void HitCheck();
 	void CheckNextRoom();
+
+
 
 	int indexVal = 0;
 	int nowRoomIndex = 0;

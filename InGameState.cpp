@@ -23,6 +23,7 @@ void InGameState::Init() {
 	//PlayerをPlayerDataから作成する
 	player = std::make_shared<Player>(m_playerData, this);
 	m_playerInput = player->GetComponent<InputComponent>();
+	m_playerTrans = player->GetComponent<TransformComponent>();
 
 	m_stageManager->m_player = player;
 	//Initでm_playerを使用しているのでここで実行
@@ -34,7 +35,19 @@ void InGameState::Init() {
 
 
 	//出口のドアを作成・表示
-	entities.emplace_back(std::make_shared<ExitDoor>(this));
+	auto door = std::make_shared<ExitDoor>(this, player.get());
+	int door_w = 0, door_h = 0;
+	GetGraphSize(door->GetComponent<SpriteRendererComponent>()->GetImageHandle(),
+		&door_w, &door_h);
+	float scale = door->GetComponent<SpriteRendererComponent>()->imageScale;
+	entities.emplace_back(door);
+
+	//ランダムな部屋の位置に出口を作成
+	int door_x, door_y;
+	m_stageManager->CulculateExitPos(door_w * scale, door_h * scale, door_x, door_y);
+
+
+	door->SetPos(door_x, door_y);
 }
 
 SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {

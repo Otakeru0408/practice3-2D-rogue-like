@@ -24,6 +24,18 @@ public:
 	bool LoadPlayer(const std::string& filename);
 	void SavePlayer(const PlayerData& player, const std::string& filename);
 
+	TransformComponent* GetPlayerTrans() {
+		return m_playerTrans.get();
+	}
+
+	float GetPX() {
+		return m_playerTrans->x;
+	}
+
+	float GetPY() {
+		return m_playerTrans->y;
+	}
+
 private:
 	int m_gameGraphHandle;
 	int m_gameFontHandle;
@@ -33,4 +45,5 @@ private:
 	std::shared_ptr<StageManager> m_stageManager;
 	std::shared_ptr<UIGauge> m_gauge;
 	std::shared_ptr<InputComponent> m_playerInput;
+	std::shared_ptr<TransformComponent> m_playerTrans;
 };

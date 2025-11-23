@@ -31,6 +31,10 @@ public:
 		}
 	}
 
+	IGameState* GetParent() {
+		return parentScene;
+	}
+
 	void AddComponent(std::shared_ptr<Component> component) {
 		components.emplace_back(component);
 	}
