@@ -3,6 +3,8 @@
 #include "TransformComponent.h"
 #include "DirectionComponent.h"
 #include "SpriteRendererComponent.h"
+#include "CorriderComponent.h"
+#include "AnimationComponent.h"
 #include "Player.h"
 
 class ExitDoor :public Entity {

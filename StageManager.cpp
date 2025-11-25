@@ -365,7 +365,7 @@ void StageManager::Draw()
 	}
 
 
-	DrawFormatString(50, 50, GetColor(0, 0, 0), "isRoomLeft:%d", isRoomLeft);
+	//DrawFormatString(50, 50, GetColor(0, 0, 0), "isRoomLeft:%d", isRoomLeft);
 
 	///////////////////////以下はデバッグ用
 

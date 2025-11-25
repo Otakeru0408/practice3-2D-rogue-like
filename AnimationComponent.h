@@ -52,4 +52,10 @@ public:
 		DrawRotaGraph(GameData::windowWidth / 2, GameData::windowHeight / 2, scale, 0.0f, frames[frame], TRUE);
 		//DrawFormatString(10, 300, GetColor(0, 0, 0), "deltaTime:%.2f", frameCount);
 	}
+
+	auto GetImageSize() {
+		int width, height;
+		GetGraphSize(animations[Direction::Up][0], &width, &height);
+		return std::make_tuple(width * scale, height * scale);
+	}
 };

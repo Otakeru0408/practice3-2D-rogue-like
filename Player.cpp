@@ -37,7 +37,12 @@ Player::Player(PlayerData data, IGameState* panent)
 
 	AddComponent(std::make_shared<InputComponent>(this, 300, 2.0f));
 
-
+	/*auto sprite = std::make_shared<SpriteRendererComponent>(
+		this, LoadGraph("Data/Mowarm-up1.png"),
+		RenderLayer::Player, GetComponent<TransformComponent>(), 0.05f
+	);
+	sprite->SetActive(false);
+	AddComponent(sprite);*/
 }
 
 

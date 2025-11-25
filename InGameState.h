@@ -6,6 +6,7 @@
 #include "StageManager.h"
 #include "UIGauge.h"
 #include "ExitDoor.h"
+#include "GridLine.h"
 
 class GameManager;
 
@@ -46,4 +47,5 @@ private:
 	std::shared_ptr<UIGauge> m_gauge;
 	std::shared_ptr<InputComponent> m_playerInput;
 	std::shared_ptr<TransformComponent> m_playerTrans;
+	std::shared_ptr<GridLine> m_GridLine;
 };

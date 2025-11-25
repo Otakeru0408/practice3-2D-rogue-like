@@ -136,8 +136,14 @@
     <ClInclude Include="ExitDoor.h">
       <Filter>2_Stateインタフェース</Filter>
     </ClInclude>
-    <ClInclude Include="SpriteRendererComponent.h">
+    <ClInclude Include="GridLine.h">
       <Filter>2_Stateインタフェース</Filter>
+    </ClInclude>
+    <ClInclude Include="CorriderComponent.h">
+      <Filter>7_Component</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteRendererComponent.h">
+      <Filter>7_Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
