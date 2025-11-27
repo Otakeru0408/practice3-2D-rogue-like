@@ -12,9 +12,11 @@ public:
 	float player_width, player_height;
 
 	//当たった時の関数コールバック
-	std::function<void()> OnHit;
+	std::function<void()> OnHitEnter;
+	std::function<void()> OnHitStay;
+	std::function<void()> OnHitExit;
 
-	CorridorComponent(Entity* owner) :Component(owner), isPlayerHitting(false)
+	CorridorComponent(Entity* owner) :Component(owner), isPlayerHitting(false), wasPlayerHitting(false)
 		, player_width(0), player_height(0), image_width(0), image_height(0) {
 		//自身の位置と幅高さを取得する
 		myTrans = owner->GetComponent<TransformComponent>().get();
@@ -46,37 +48,33 @@ public:
 		else {
 			isPlayerHitting = false;
 		}
+
+		//当たり判定があった時の処理
+		if (isPlayerHitting) {
+			if (wasPlayerHitting) {		//連続で当たり続けているとき
+				if (OnHitStay)OnHitStay();
+			}
+			else {						//当たり判定の最初のとき
+				if (OnHitEnter) OnHitEnter();
+			}
+		}
+		//当たり判定がないとき
+		else {
+			if (wasPlayerHitting) {
+				if (OnHitExit)OnHitExit();	//当たり判定を抜け出したとき
+			}
+		}
+
+
+		wasPlayerHitting = isPlayerHitting;
 	}
 
 	void Draw() {
-		if (isPlayerHitting) {
-
-		}
-
-		/*
-		DrawFormatString(10, 130, GetColor(0, 0, 0), "myx:%.2f,myy:%.2f",
-			myTrans->x, myTrans->y);
-		DrawFormatString(10, 150, GetColor(0, 0, 0), "diff_x:%.2f,diff_y:%.2f,isHit?:%d",
-			abs(player_trans->x - myTrans->x), abs(player_trans->y - myTrans->y),
-			isPlayerHitting);*/
-
-		int px = player_trans->x - GameData::windowWidth / 2;
-		int py = player_trans->y - GameData::windowHeight / 2;
-
-		DrawBox(myTrans->x - image_width / 2 - px, myTrans->y - image_height / 2 - py,
-			myTrans->x + image_width / 2 - px, myTrans->y + image_height / 2 - py,
-			GetColor(255, 0, 0), false);
-
-		/*DrawBox(player_trans->x - player_width / 2, player_trans->y - player_height / 2,
-			player_trans->x + player_width / 2, player_trans->y + player_height / 2,
-			GetColor(0, 255, 0), false);*/
-
-		DrawFormatString(10, 100, GetColor(0, 0, 0), "px:%.2f,py:%.2f,isHit:%d",
-			player_trans->x, player_trans->y, isPlayerHitting);
 	}
 private:
 	TransformComponent* myTrans;
 	bool isPlayerHitting;
+	bool wasPlayerHitting;
 	float image_width, image_height;
 	float sumRadius_horizontal = 0;
 	float sumRadius_vertical = 0;

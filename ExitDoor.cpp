@@ -3,6 +3,7 @@
 ExitDoor::ExitDoor(IGameState* parent, Player* m_player)
 	:Entity(parent)
 {
+	//ドアの画像をロード
 	int handle = LoadGraph("Data/ExitDoor.png");
 
 	auto trans = std::make_shared<TransformComponent>(this, GameData::windowWidth, GameData::windowHeight);
@@ -21,6 +22,9 @@ ExitDoor::ExitDoor(IGameState* parent, Player* m_player)
 		= m_player->GetComponent<AnimationComponent>()->GetImageSize();
 	AddComponent(corridor);
 
+	corridor->OnHitEnter = [parent]() {
+		parent->LoadNextScene();
+		};
 }
 
 void ExitDoor::Update(const InputState* input, float deltaTime) {

@@ -52,6 +52,10 @@ public:
 	}
 	virtual void Terminate() = 0;
 
+	void LoadNextScene() {
+		moveState = true;
+	}
+
 protected:
 	GameManager* m_gameManager;
 	std::shared_ptr<UIManager> m_uiManager;
