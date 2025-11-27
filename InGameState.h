@@ -7,6 +7,7 @@
 #include "UIGauge.h"
 #include "ExitDoor.h"
 #include "GridLine.h"
+#include "UIMiniMap.h"
 
 class GameManager;
 

@@ -14,7 +14,6 @@ public:
 	void Update()override;
 
 	void Draw()override;
-	bool IsVisible()const override;
 
 	void SetRunningValue(float val) { runningValue = val; }
 };

@@ -13,11 +13,10 @@ private:
 	int selectedColor = GetColor(200, 200, 200);
 	std::string m_text;
 	std::function<void()> m_onClick;
-	bool m_visible;
 public:
 	//RECTを使っているが、引数は{中心X、中心Y、幅、高さ}で取得したい
 	UIButton(int cx, int cy, int w, int h, const std::string& text, std::function<void()> onClick)
-		: m_text(text), m_onClick(onClick), m_visible(true) {
+		: m_text(text), m_onClick(onClick) {
 		m_rect.left = cx - w / 2;
 		m_rect.top = cy - h / 2;
 		m_rect.right = cx + w / 2;
@@ -25,7 +24,7 @@ public:
 	}
 
 	void Update() override {
-		if (!m_visible) return;
+		IUIElement::Update();
 
 		int x, y;
 		GetMousePoint(&x, &y);
@@ -55,7 +54,7 @@ public:
 	}
 
 	void Draw() override {
-		if (!m_visible) return;
+		IUIElement::Draw();
 		int w = m_rect.right - m_rect.left;
 		DrawBox(m_rect.left, m_rect.top, m_rect.right, m_rect.bottom,
 			nowColor, TRUE);
@@ -63,8 +62,6 @@ public:
 			0.5f, 0.5f, GetColor(0, 0, 0), m_text.c_str());
 	}
 
-	bool IsVisible() const override { return m_visible; }
-	void SetVisible(bool v) { m_visible = v; }
 	void SetColor(int c) { nowColor = c; }
 	void SetSelectedColor(int c) { selectedColor = c; }
 	void SetUnSelectedColor(int c) { unSelectedColor = c; }

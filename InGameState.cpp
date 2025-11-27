@@ -28,11 +28,6 @@ void InGameState::Init() {
 	m_stageManager->m_player = player;
 	//Initでm_playerを使用しているのでここで実行
 	m_stageManager->Init();
-	//UIを作成する
-
-	m_gauge = std::make_shared<UIGauge>();
-	m_uiManager->AddElement(m_gauge);
-
 
 	//出口のドアを作成・表示
 	auto door = std::make_shared<ExitDoor>(this, player.get());
@@ -43,9 +38,13 @@ void InGameState::Init() {
 	auto [door_w, door_h] = door->GetComponent<SpriteRendererComponent>()->GetImageSize();
 
 	m_stageManager->CulculateExitPos(door_w, door_h, door_x, door_y);
-
-
 	door->SetPos(door_x, door_y);
+
+
+	//UIを作成する
+	m_gauge = std::make_shared<UIGauge>();
+	m_uiManager->AddElement(m_gauge);
+	m_uiManager->AddElement(std::make_shared<UIMiniMap>(m_stageManager, player, 0, 0));
 
 	//デバッグ用のワールド罫線　重い処理なのであまり使わないほうがいい
 	m_GridLine = std::make_shared<GridLine>(this, player->GetComponent<TransformComponent>().get());

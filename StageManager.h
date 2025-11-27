@@ -29,6 +29,10 @@ public:
 	void CulculateExitPos(float exit_width, float exit_height, int& exit_x, int& exit_y);
 
 	std::shared_ptr<Player> m_player;
+	//部屋のデータ
+	std::vector<std::shared_ptr<RoomData>> rooms;
+	//廊下のデータ
+	std::vector<std::shared_ptr<CorridorData>> corridors;
 
 private:
 	struct Node
@@ -44,10 +48,6 @@ private:
 	};
 
 	int stageWidth, stageHeight;
-	//部屋のデータ
-	std::vector<std::shared_ptr<RoomData>> rooms;
-	//廊下のデータ
-	std::vector<std::shared_ptr<CorridorData>> corridors;
 	Node* root;
 
 	Node* Split(Node* node, int depth);

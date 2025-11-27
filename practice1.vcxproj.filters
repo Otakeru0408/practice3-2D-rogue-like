@@ -145,5 +145,8 @@
     <ClInclude Include="SpriteRendererComponent.h">
       <Filter>7_Component</Filter>
     </ClInclude>
+    <ClInclude Include="UIMiniMap.h">
+      <Filter>2_Stateインタフェース</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

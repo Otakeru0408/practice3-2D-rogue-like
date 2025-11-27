@@ -9,10 +9,11 @@ UIGauge::UIGauge()
 }
 
 void UIGauge::Update() {
-
+	IUIElement::Update();
 }
 
 void UIGauge::Draw() {
+	IUIElement::Draw();
 	DrawBox(x - w / 2, y - h / 2 + paddingY, x + w / 2, y + h / 2 + paddingY,
 		GetColor(0, 0, 0), TRUE);
 
@@ -21,8 +22,4 @@ void UIGauge::Draw() {
 
 	DrawBox(x - w / 2, y - h / 2 + paddingY, x + w / 2, y + h / 2 + paddingY,
 		GetColor(255, 255, 255), FALSE);
-}
-
-bool UIGauge::IsVisible()const {
-	return true;
 }
