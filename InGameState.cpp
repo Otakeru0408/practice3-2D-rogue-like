@@ -47,8 +47,9 @@ void InGameState::Init() {
 
 	door->SetPos(door_x, door_y);
 
+	//デバッグ用のワールド罫線　重い処理なのであまり使わないほうがいい
 	m_GridLine = std::make_shared<GridLine>(this, player->GetComponent<TransformComponent>().get());
-	entities.emplace_back(m_GridLine);
+	//entities.emplace_back(m_GridLine);
 }
 
 SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {

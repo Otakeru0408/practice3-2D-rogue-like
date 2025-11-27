@@ -33,8 +33,8 @@ public:
 	}
 
 	void Draw()override {
-		int px = player_trans->x;
-		int py = player_trans->y;
+		int px = player_trans->x - GameData::windowWidth / 2;
+		int py = player_trans->y - GameData::windowHeight / 2;
 		DrawRotaGraph(
 			static_cast<int>(transform->x) - px,
 			static_cast<int>(transform->y) - py,

@@ -39,6 +39,7 @@ void StageManager::Init()
 	//プレイヤーの初期位置を設定する
 	m_player->SetX(rooms[nowRoomIndex]->x + rooms[nowRoomIndex]->w / 2);
 	m_player->SetY(rooms[nowRoomIndex]->y + rooms[nowRoomIndex]->h / 2);
+
 }
 
 void StageManager::Update(const InputState* input) {
@@ -520,11 +521,15 @@ void StageManager::CulculateExitPos(float exit_width, float exit_height, int& ex
 	int count = 0;
 	bool canSetExitToRoom = false;
 	do {
+		//最初にランダムに1つ部屋を決める
 		int randomRoomNumber = GetRand(rooms.size() - 1);
+
+		//その部屋がドアの幅高さより大きいなら
 		if (rooms[randomRoomNumber]->w > exit_width &&
 			rooms[randomRoomNumber]->h > exit_height) {
-			exit_x = rooms[randomRoomNumber]->x + exit_width / 2 + GameData::windowWidth / 2;
-			exit_y = rooms[randomRoomNumber]->y + exit_height / 2 + GameData::windowHeight / 2;
+			//いったんドアのワールド座標を設定
+			exit_x = rooms[randomRoomNumber]->x + exit_width / 2;
+			exit_y = rooms[randomRoomNumber]->y + exit_height / 2;
 			//いまexit_x,yは部屋の左上にいるので、部屋の中途半端な位置にしたい
 			exit_x += GetRand(rooms[randomRoomNumber]->w - exit_width);
 			exit_y += GetRand(rooms[randomRoomNumber]->h - exit_height);

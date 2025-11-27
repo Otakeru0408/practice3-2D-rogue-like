@@ -52,8 +52,7 @@ public:
 		if (isPlayerHitting) {
 
 		}
-		DrawFormatString(10, 100, GetColor(0, 0, 0), "px:%.2f,py:%.2f",
-			player_trans->x, player_trans->y);
+
 		/*
 		DrawFormatString(10, 130, GetColor(0, 0, 0), "myx:%.2f,myy:%.2f",
 			myTrans->x, myTrans->y);
@@ -61,12 +60,19 @@ public:
 			abs(player_trans->x - myTrans->x), abs(player_trans->y - myTrans->y),
 			isPlayerHitting);*/
 
-		DrawBox(myTrans->x - image_width / 2 - player_trans->x, myTrans->y - image_height / 2 - player_trans->y,
-			myTrans->x + image_width / 2 - player_trans->x, myTrans->y + image_height / 2 - player_trans->y, GetColor(255, 0, 0), false);
+		int px = player_trans->x - GameData::windowWidth / 2;
+		int py = player_trans->y - GameData::windowHeight / 2;
 
-		DrawBox(player_trans->x - player_width / 2, player_trans->y - player_height / 2,
+		DrawBox(myTrans->x - image_width / 2 - px, myTrans->y - image_height / 2 - py,
+			myTrans->x + image_width / 2 - px, myTrans->y + image_height / 2 - py,
+			GetColor(255, 0, 0), false);
+
+		/*DrawBox(player_trans->x - player_width / 2, player_trans->y - player_height / 2,
 			player_trans->x + player_width / 2, player_trans->y + player_height / 2,
-			GetColor(0, 255, 0), false);
+			GetColor(0, 255, 0), false);*/
+
+		DrawFormatString(10, 100, GetColor(0, 0, 0), "px:%.2f,py:%.2f,isHit:%d",
+			player_trans->x, player_trans->y, isPlayerHitting);
 	}
 private:
 	TransformComponent* myTrans;

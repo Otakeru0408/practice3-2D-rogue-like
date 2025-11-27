@@ -21,8 +21,8 @@ public:
 	}
 
 	void Draw()override {
-		int px = player_trans->x;
-		int py = player_trans->y;
+		int px = player_trans->x - GameData::windowWidth / 2;
+		int py = player_trans->y - GameData::windowHeight / 2;
 		for (int i = 0; i < 100; i++) {
 			DrawLine(0 - px, 100 * i - py, 10000 - px, 100 * i - py, GetColor(0, 0, 0));
 			DrawFormatString(300 - px, 100 * i - py, GetColor(0, 0, 0), "%d", 100 * i);
