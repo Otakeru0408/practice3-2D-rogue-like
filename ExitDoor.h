@@ -24,5 +24,5 @@ public:
 		trans->x = x;
 		trans->y = y;
 	}
-
+	std::tuple<float, float, float, float> GetDoorXYWH();
 };

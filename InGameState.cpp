@@ -44,7 +44,10 @@ void InGameState::Init() {
 	//UIを作成する
 	m_gauge = std::make_shared<UIGauge>();
 	m_uiManager->AddElement(m_gauge);
-	m_uiManager->AddElement(std::make_shared<UIMiniMap>(m_stageManager, player, 0, 0));
+	auto miniMap = std::make_shared<UIMiniMap>(m_stageManager, player, 0, 0);
+	m_uiManager->AddElement(miniMap);
+	//ミニマップにドアの情報を渡す
+	miniMap->SetDoorPos(door->GetDoorXYWH());
 
 	//デバッグ用のワールド罫線　重い処理なのであまり使わないほうがいい
 	m_GridLine = std::make_shared<GridLine>(this, player->GetComponent<TransformComponent>().get());

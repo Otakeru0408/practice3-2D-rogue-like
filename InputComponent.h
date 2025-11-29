@@ -9,6 +9,7 @@ private:
 	float moveAccel;
 	float runningLimit;
 	float runningCount;
+	bool isPlayerRunning = false;
 
 public:
 	InputComponent(Entity* _parent, float speed, float accel)
@@ -38,7 +39,6 @@ public:
 				runningCount += deltaTime;
 			}
 		}
-
 
 	}
 

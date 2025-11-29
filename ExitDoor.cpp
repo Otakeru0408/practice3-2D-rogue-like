@@ -34,3 +34,10 @@ void ExitDoor::Update(const InputState* input, float deltaTime) {
 void ExitDoor::Draw() {
 	Entity::Draw();
 }
+
+std::tuple<float, float, float, float>  ExitDoor::GetDoorXYWH() {
+	TransformComponent* trans = GetComponent<TransformComponent>().get();
+	SpriteRendererComponent* sprite = GetComponent<SpriteRendererComponent>().get();
+	auto [w, h] = sprite->GetImageSize();
+	return std::make_tuple(trans->x, trans->y, w, h);
+}

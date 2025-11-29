@@ -14,7 +14,8 @@ class GameManager;
 class InGameState :public IGameState {
 public:
 	InGameState(GameManager* gameManager) :IGameState(gameManager)
-		, m_gameFontHandle(0), m_gameGraphHandle(0) {
+		, m_gameFontHandle(0), m_gameGraphHandle(0)
+	{
 	}
 	~InGameState()override = default;
 

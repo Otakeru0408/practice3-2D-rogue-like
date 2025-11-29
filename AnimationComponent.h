@@ -11,7 +11,7 @@ private:
 	std::shared_ptr<TransformComponent> transform;
 	int frame = 0;
 	float frameCount = 0;
-	float frameSpeed = 0.5f; // 何秒でアニメーションが進むか
+	float frameSpeed = 0.2f; // 何秒でアニメーションが進むか
 
 public:
 	//Playerで設定する値
@@ -57,5 +57,9 @@ public:
 		int width, height;
 		GetGraphSize(animations[Direction::Up][0], &width, &height);
 		return std::make_tuple(width * scale, height * scale);
+	}
+
+	void SetAnimationSpeed(float animSpeed) {
+		frameSpeed = animSpeed;
 	}
 };
