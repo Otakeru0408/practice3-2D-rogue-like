@@ -60,6 +60,9 @@
       <Filter>9_RoomGenerate</Filter>
     </ClCompile>
     <ClCompile Include="ExitDoor.cpp">
+      <Filter>8_Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="GemStone.cpp">
       <Filter>0_メインファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -133,9 +136,6 @@
     <ClInclude Include="PlayerData.h">
       <Filter>0_メインファイル</Filter>
     </ClInclude>
-    <ClInclude Include="ExitDoor.h">
-      <Filter>2_Stateインタフェース</Filter>
-    </ClInclude>
     <ClInclude Include="GridLine.h">
       <Filter>2_Stateインタフェース</Filter>
     </ClInclude>
@@ -146,6 +146,12 @@
       <Filter>7_Component</Filter>
     </ClInclude>
     <ClInclude Include="UIMiniMap.h">
+      <Filter>2_Stateインタフェース</Filter>
+    </ClInclude>
+    <ClInclude Include="ExitDoor.h">
+      <Filter>8_Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="GemStone.h">
       <Filter>2_Stateインタフェース</Filter>
     </ClInclude>
   </ItemGroup>

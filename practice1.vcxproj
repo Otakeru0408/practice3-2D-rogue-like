@@ -138,6 +138,7 @@
   <ItemGroup>
     <ClCompile Include="ExitDoor.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="GemStone.cpp" />
     <ClCompile Include="InGameState.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="ExitDoor.h" />
     <ClInclude Include="GameData.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GemStone.h" />
     <ClInclude Include="GridLine.h" />
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="IGameState.h" />

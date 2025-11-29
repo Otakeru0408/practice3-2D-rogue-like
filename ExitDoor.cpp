@@ -16,7 +16,7 @@ ExitDoor::ExitDoor(IGameState* parent, Player* m_player)
 
 	//コライダーを設定する
 	//TransformとSpriteRendererを割り当てる
-	auto corridor = std::make_shared<CorridorComponent>(this);
+	auto corridor = std::make_shared<CorridorComponent>(this, spriteRenderer->GetImageSize());
 	corridor->player_trans = m_player->GetComponent<TransformComponent>().get();
 	std::tie(corridor->player_width, corridor->player_height)
 		= m_player->GetComponent<AnimationComponent>()->GetImageSize();

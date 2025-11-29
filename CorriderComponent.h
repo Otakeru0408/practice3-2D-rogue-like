@@ -16,12 +16,11 @@ public:
 	std::function<void()> OnHitStay;
 	std::function<void()> OnHitExit;
 
-	CorridorComponent(Entity* owner) :Component(owner), isPlayerHitting(false), wasPlayerHitting(false)
+	CorridorComponent(Entity* owner, std::tuple<float, float> imageInfo) :Component(owner), isPlayerHitting(false), wasPlayerHitting(false)
 		, player_width(0), player_height(0), image_width(0), image_height(0) {
 		//Ž©g‚ÌˆÊ’u‚Æ•‚‚³‚ðŽæ“¾‚·‚é
 		myTrans = owner->GetComponent<TransformComponent>().get();
-		std::tie(image_width, image_height) = owner->GetComponent<SpriteRendererComponent>()
-			->GetImageSize();
+		std::tie(image_width, image_height) = imageInfo;
 
 	}
 	~CorridorComponent()override = default;
