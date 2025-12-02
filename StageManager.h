@@ -27,12 +27,17 @@ public:
 
 	//出口の配置場所を考える関数
 	void CulculateExitPos(float exit_width, float exit_height, int& exit_x, int& exit_y);
+	//宝石の配置場所を考える関数
+	void CulculateExitPosForGem(float exit_width, float exit_height, int& exit_x, int& exit_y);
 
 	std::shared_ptr<Player> m_player;
 	//部屋のデータ
 	std::vector<std::shared_ptr<RoomData>> rooms;
 	//廊下のデータ
 	std::vector<std::shared_ptr<CorridorData>> corridors;
+	//宝石の位置のデータ
+	std::vector<int> gemExistIndex;
+
 
 private:
 	struct Node

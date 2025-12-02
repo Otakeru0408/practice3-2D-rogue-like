@@ -40,6 +40,10 @@ void StageManager::Init()
 	m_player->SetX(rooms[nowRoomIndex]->x + rooms[nowRoomIndex]->w / 2);
 	m_player->SetY(rooms[nowRoomIndex]->y + rooms[nowRoomIndex]->h / 2);
 
+	//部屋数から宝石の配置のための配列を生成する(0初期化)
+	for (int i = 0; i < rooms.size(); i++) {
+		gemExistIndex.emplace_back(0);
+	}
 }
 
 void StageManager::Update(const InputState* input) {
@@ -534,6 +538,41 @@ void StageManager::CulculateExitPos(float exit_width, float exit_height, int& ex
 			exit_x += GetRand(rooms[randomRoomNumber]->w - exit_width);
 			exit_y += GetRand(rooms[randomRoomNumber]->h - exit_height);
 			canSetExitToRoom = true;
+			return;
+		}
+		count++;
+		if (count > 10)break;
+	} while (!canSetExitToRoom);
+	//設定できる部屋が見つかったか、10回の試行を終えたら終了
+
+	//見つからなかったら0で初期化
+	exit_x = rooms[nowRoomIndex]->x + exit_width / 2 + GameData::windowWidth / 2;
+	exit_y = rooms[nowRoomIndex]->y + exit_height / 2 + GameData::windowHeight / 2;
+}
+
+void StageManager::CulculateExitPosForGem(float exit_width, float exit_height, int& exit_x, int& exit_y) {
+	int count = 0;
+	bool canSetExitToRoom = false;
+
+
+	do {
+		//最初にランダムに1つ部屋を決める
+		int randomRoomNumber = GetRand(rooms.size() - 1);
+		if (gemExistIndex[randomRoomNumber] == 1)continue;
+
+		//その部屋がドアの幅高さより大きいなら
+		if (rooms[randomRoomNumber]->w > exit_width &&
+			rooms[randomRoomNumber]->h > exit_height) {
+			//いったんドアのワールド座標を設定
+			exit_x = rooms[randomRoomNumber]->x + exit_width / 2;
+			exit_y = rooms[randomRoomNumber]->y + exit_height / 2;
+			//いまexit_x,yは部屋の左上にいるので、部屋の中途半端な位置にしたい
+			exit_x += GetRand(rooms[randomRoomNumber]->w - exit_width);
+			exit_y += GetRand(rooms[randomRoomNumber]->h - exit_height);
+			canSetExitToRoom = true;
+
+			//そこに宝石がセットされることを保存しておく
+			gemExistIndex[randomRoomNumber] = 1;
 			return;
 		}
 		count++;

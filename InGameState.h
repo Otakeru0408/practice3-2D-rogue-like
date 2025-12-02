@@ -8,6 +8,7 @@
 #include "ExitDoor.h"
 #include "GridLine.h"
 #include "UIMiniMap.h"
+#include "GemStone.h"
 
 class GameManager;
 

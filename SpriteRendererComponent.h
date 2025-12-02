@@ -19,9 +19,12 @@ public:
 	TransformComponent* transform;
 	//プレイヤーの位置を確認できる。Entity側で設定する必要あり
 	TransformComponent* player_trans;
+	int multiplyColor;
 
-	SpriteRendererComponent(Entity* _parent, int handle, RenderLayer _layer, TransformComponent* trans, float scale)
+	SpriteRendererComponent(Entity* _parent, int handle, RenderLayer _layer,
+		TransformComponent* trans, float scale, int color = GetColor(255, 255, 255))
 		: Component(_parent), imageHandle(handle), transform(trans), layer(_layer), imageScale(scale)
+		, multiplyColor(color)
 	{
 		GetGraphSize(handle, &image_width, &image_height);
 	}
@@ -38,7 +41,7 @@ public:
 		DrawRotaGraph(
 			static_cast<int>(transform->x) - px,
 			static_cast<int>(transform->y) - py,
-			imageScale, 0, imageHandle, TRUE);
+			imageScale, 0, imageHandle, TRUE, multiplyColor);
 
 		/*DrawFormatString(10, 30, GetColor(0, 0, 0), "x:%d,y:%d", static_cast<int>(transform->x) - px,
 			static_cast<int>(transform->y) - py);*/

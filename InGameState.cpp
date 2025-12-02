@@ -40,6 +40,17 @@ void InGameState::Init() {
 	m_stageManager->CulculateExitPos(door_w, door_h, door_x, door_y);
 	door->SetPos(door_x, door_y);
 
+	int handle_for_size = LoadGraph("Data/GemStone1.png");
+	int gem_w, gem_h;
+	GetGraphSize(handle_for_size, &gem_w, &gem_h);
+
+	for (int i = 0; i < 5; i++) {
+		auto gem = std::make_shared<GemStone>(this, player.get());
+		entities.emplace_back(gem);
+		int gem_x, gem_y;
+		m_stageManager->CulculateExitPosForGem(gem_w, gem_h, gem_x, gem_y);
+		gem->SetPos(gem_x, gem_y);
+	}
 
 	//UI‚ğì¬‚·‚é
 	m_gauge = std::make_shared<UIGauge>();

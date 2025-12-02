@@ -10,7 +10,7 @@ ExitDoor::ExitDoor(IGameState* parent, Player* m_player)
 	AddComponent(trans);
 	AddComponent(std::make_shared<DirectionComponent>(this));
 	auto spriteRenderer = std::make_shared<SpriteRendererComponent>(this, handle, RenderLayer::BackgroundMid,
-		trans.get(), 0.2f);
+		trans.get(), 0.2f, GetColor(255, 0, 0));
 	AddComponent(spriteRenderer);
 	spriteRenderer->player_trans = m_player->GetComponent<TransformComponent>().get();
 
