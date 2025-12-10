@@ -6,7 +6,7 @@
 
 class GemStone :public Entity {
 public:
-	GemStone(IGameState* parent, Player* player);
+	GemStone(IGameState* parent, Player* player, int image_handle);
 	~GemStone() = default;
 
 	void Update(const InputState* input, float deltaTime)override;
@@ -22,6 +22,11 @@ public:
 		TransformComponent* myTrans = GetComponent<TransformComponent>().get();
 		return std::make_tuple(myTrans->x, myTrans->y);
 	}
+
+	float GetImageScale() {
+		return imageScale;
+	}
 private:
 	TransformComponent* player_trans;
+	float imageScale;
 };

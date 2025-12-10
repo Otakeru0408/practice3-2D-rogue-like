@@ -10,17 +10,19 @@
 #include "UIMiniMap.h"
 #include "GemStone.h"
 
+
 class GameManager;
 
 class InGameState :public IGameState {
 public:
 	InGameState(GameManager* gameManager) :IGameState(gameManager)
-		, m_gameFontHandle(0), m_gameGraphHandle(0)
+		, m_gameFontHandle(0), m_gameGraphHandle(0), max_gemNum(10)
 	{
 	}
 	~InGameState()override = default;
 
 	void Init()override;
+	void LoadData();
 	SceneTransition* Update(const InputState* input, float deltaTime)override;
 	void Draw()override;
 	void Terminate()override;
@@ -51,4 +53,8 @@ private:
 	std::shared_ptr<InputComponent> m_playerInput;
 	std::shared_ptr<TransformComponent> m_playerTrans;
 	std::shared_ptr<GridLine> m_GridLine;
+
+	int max_gemNum;
+	std::vector<int> gemImages;
+	std::vector < std::tuple<float, float>> gem_pos;
 };

@@ -4,6 +4,8 @@
 #include <utility>
 #include <cmath>
 #include <algorithm>
+#include <random>
+#include <numeric>  // iota
 #include "RoomData.h"
 #include "CorridorData.h"
 #include "Entity.h"
@@ -35,9 +37,10 @@ public:
 	std::vector<std::shared_ptr<RoomData>> rooms;
 	//廊下のデータ
 	std::vector<std::shared_ptr<CorridorData>> corridors;
-	//宝石の位置のデータ
-	std::vector<int> gemExistIndex;
-
+	//宝石をランダムに配置するための部屋番号の配列
+	std::vector<int> random_room_index;
+	//宝石ランダム配置に使用するカウント変数
+	int nowIndexOfRandomRoom = 0;
 
 private:
 	struct Node

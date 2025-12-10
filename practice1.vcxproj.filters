@@ -63,7 +63,7 @@
       <Filter>8_Entity</Filter>
     </ClCompile>
     <ClCompile Include="GemStone.cpp">
-      <Filter>0_メインファイル</Filter>
+      <Filter>8_Entity</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -152,7 +152,7 @@
       <Filter>8_Entity</Filter>
     </ClInclude>
     <ClInclude Include="GemStone.h">
-      <Filter>2_Stateインタフェース</Filter>
+      <Filter>8_Entity</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

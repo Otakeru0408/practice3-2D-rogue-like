@@ -40,10 +40,18 @@ void StageManager::Init()
 	m_player->SetX(rooms[nowRoomIndex]->x + rooms[nowRoomIndex]->w / 2);
 	m_player->SetY(rooms[nowRoomIndex]->y + rooms[nowRoomIndex]->h / 2);
 
-	//部屋数から宝石の配置のための配列を生成する(0初期化)
+	//宝石の配置のための配列を生成する(0初期化)
 	for (int i = 0; i < rooms.size(); i++) {
-		gemExistIndex.emplace_back(0);
+		random_room_index.emplace_back(0);
 	}
+
+	//部屋番号をシャッフルする
+	std::iota(random_room_index.begin(), random_room_index.end(), 0);
+
+	// シャッフル
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::shuffle(random_room_index.begin(), random_room_index.end(), gen);
 }
 
 void StageManager::Update(const InputState* input) {
@@ -551,16 +559,17 @@ void StageManager::CulculateExitPos(float exit_width, float exit_height, int& ex
 }
 
 void StageManager::CulculateExitPosForGem(float exit_width, float exit_height, int& exit_x, int& exit_y) {
-	int count = 0;
-	bool canSetExitToRoom = false;
+	//一応0初期化しとく
+	exit_x = 0;
+	exit_y = 0;
 
+	while (1) {
+		//インデックス更新
+		nowIndexOfRandomRoom = (nowIndexOfRandomRoom + 1) % rooms.size();
+		//インデックスから部屋番号を取得
+		int randomRoomNumber = random_room_index[nowIndexOfRandomRoom];
 
-	do {
-		//最初にランダムに1つ部屋を決める
-		int randomRoomNumber = GetRand(rooms.size() - 1);
-		if (gemExistIndex[randomRoomNumber] == 1)continue;
-
-		//その部屋がドアの幅高さより大きいなら
+		//その部屋のサイズが宝石よりも大きかったら
 		if (rooms[randomRoomNumber]->w > exit_width &&
 			rooms[randomRoomNumber]->h > exit_height) {
 			//いったんドアのワールド座標を設定
@@ -569,18 +578,8 @@ void StageManager::CulculateExitPosForGem(float exit_width, float exit_height, i
 			//いまexit_x,yは部屋の左上にいるので、部屋の中途半端な位置にしたい
 			exit_x += GetRand(rooms[randomRoomNumber]->w - exit_width);
 			exit_y += GetRand(rooms[randomRoomNumber]->h - exit_height);
-			canSetExitToRoom = true;
 
-			//そこに宝石がセットされることを保存しておく
-			gemExistIndex[randomRoomNumber] = 1;
 			return;
 		}
-		count++;
-		if (count > 10)break;
-	} while (!canSetExitToRoom);
-	//設定できる部屋が見つかったか、10回の試行を終えたら終了
-
-	//見つからなかったら0で初期化
-	exit_x = rooms[nowRoomIndex]->x + exit_width / 2 + GameData::windowWidth / 2;
-	exit_y = rooms[nowRoomIndex]->y + exit_height / 2 + GameData::windowHeight / 2;
+	}
 }

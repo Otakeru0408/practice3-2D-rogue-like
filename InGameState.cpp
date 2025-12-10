@@ -4,14 +4,13 @@
 #include "DxLib.h"
 
 void InGameState::Init() {
-	SetBackgroundColor(200, 200, 200);
-	//ご使用のパソコンに一時的にFontを読み込ませる
-	AddFontResourceEx("Data/YDWaosagi.otf", FR_PRIVATE, 0);
-	m_gameFontHandle = CreateFontToHandle("YDW あおさぎ R", 25, 3);
+	//最初にデータのロードを行う
+	LoadData();
 
 	m_stageManager = std::make_shared<StageManager>(GameData::windowWidth, GameData::windowHeight);
 
 	//プレイヤーのデータを設定
+	//TODO : この機能がいるかどうか検討
 	bool isLoaded = LoadPlayer("Data/savedata1.csv");
 	if (!isLoaded) {
 		m_playerData.hp = 100;
@@ -40,22 +39,25 @@ void InGameState::Init() {
 	m_stageManager->CulculateExitPos(door_w, door_h, door_x, door_y);
 	door->SetPos(door_x, door_y);
 
+	//gemの生成をする
 	int handle_for_size = LoadGraph("Data/GemStone1.png");
 	int gem_w, gem_h;
 	GetGraphSize(handle_for_size, &gem_w, &gem_h);
 
-	for (int i = 0; i < 5; i++) {
-		auto gem = std::make_shared<GemStone>(this, player.get());
+	for (int i = 0; i < max_gemNum; i++) {
+		auto gem = std::make_shared<GemStone>(this, player.get(), gemImages[i % 5]);
 		entities.emplace_back(gem);
 		int gem_x, gem_y;
-		m_stageManager->CulculateExitPosForGem(gem_w, gem_h, gem_x, gem_y);
+		float scale = gem->GetImageScale();
+		m_stageManager->CulculateExitPosForGem(gem_w * scale, gem_h * scale, gem_x, gem_y);
 		gem->SetPos(gem_x, gem_y);
+		gem_pos.emplace_back(std::make_tuple(gem_x, gem_y));
 	}
 
 	//UIを作成する
 	m_gauge = std::make_shared<UIGauge>();
 	m_uiManager->AddElement(m_gauge);
-	auto miniMap = std::make_shared<UIMiniMap>(m_stageManager, player, 0, 0);
+	auto miniMap = std::make_shared<UIMiniMap>(m_stageManager, player, 0, 0, gem_pos);
 	m_uiManager->AddElement(miniMap);
 	//ミニマップにドアの情報を渡す
 	miniMap->SetDoorPos(door->GetDoorXYWH());
@@ -63,6 +65,25 @@ void InGameState::Init() {
 	//デバッグ用のワールド罫線　重い処理なのであまり使わないほうがいい
 	m_GridLine = std::make_shared<GridLine>(this, player->GetComponent<TransformComponent>().get());
 	//entities.emplace_back(m_GridLine);
+}
+
+void InGameState::LoadData() {
+	SetBackgroundColor(200, 200, 200);
+	//ご使用のパソコンに一時的にFontを読み込ませる
+	AddFontResourceEx("Data/YDWaosagi.otf", FR_PRIVATE, 0);
+	m_gameFontHandle = CreateFontToHandle("YDW あおさぎ R", 25, 3);
+
+	int handle = 0;
+	for (int i = 1; i <= 5; i++) {
+		std::string fileName = "Data/gemStone" + std::to_string(i) + ".png";
+
+
+		handle = LoadGraph(fileName.c_str());
+		if (handle != 0) {
+			gemImages.emplace_back(handle);
+		}
+		handle = 0;
+	}
 }
 
 SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
@@ -100,6 +121,11 @@ void InGameState::Draw() {
 	}
 	//UIを表示するので最後に表示
 	IGameState::Draw();
+
+	for (int i = 0; i < gem_pos.size(); i++) {
+		auto [x, y] = gem_pos[i];
+		DrawFormatString(10, 300 + i * 30, GetColor(0, 0, 0), "%d: %.2f,%.2f", i, x, y);
+	}
 }
 
 void InGameState::Terminate() {
