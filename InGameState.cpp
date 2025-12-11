@@ -54,7 +54,7 @@ void InGameState::Init() {
 		m_stageManager->CulculateExitPosForGem(gem_w * scale, gem_h * scale, gem_x, gem_y);
 		gem->SetPos(gem_x, gem_y);
 		//gemの位置を保存する
-		gem_pos.emplace_back(std::make_tuple(gem_x, gem_y));
+		gem_pos.emplace_back(std::make_tuple(i, gem_x, gem_y));
 	}
 
 	//UIを作成する
@@ -100,9 +100,15 @@ SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
 	//もしも削除するものがあったら削除する
 	std::sort(deletePendingEntities.rbegin(), deletePendingEntities.rend());
 	for (int id : deletePendingEntities) {
+
 		entities.erase(entities.begin() + id);
 	}
 	deletePendingEntities.clear();
+	//削除されたGemのPosを削除する→MiniMap反映用
+	for (int id : deletedGemPos) {
+		DeleteGemPos(id);
+	}
+	deletedGemPos.clear();
 
 	m_stageManager->Update(input);
 
@@ -130,6 +136,11 @@ void InGameState::Draw() {
 	}
 	//UIを表示するので最後に表示
 	IGameState::Draw();
+
+	for (int i = 0; i < gem_pos.size(); i++) {
+		auto [id, x, y] = gem_pos[i];
+		DrawFormatString(10, 300 + i * 30, GetColor(0, 0, 0), "%d: %.2f,%.2f", id, x, y);
+	}
 }
 
 void InGameState::Terminate() {
@@ -169,21 +180,27 @@ void InGameState::SavePlayer(const PlayerData& player, const std::string& filena
 }
 
 void InGameState::OnGemStoneHit(int id) {
+	deletedGemPos.emplace_back(id);
 	for (int i = 0; i < entities.size(); i++) {
 		if (std::shared_ptr<GemStone> g = std::dynamic_pointer_cast<GemStone>(entities[i])) {
 			if (g->GetMyId() == id) {
 				deletePendingEntities.emplace_back(i);
+
 				return;
 			}
 		}
 	}
-	/*for (std::shared_ptr<Entity> e : entities) {
-		if (std::shared_ptr<GemStone> g = std::dynamic_pointer_cast<GemStone>(e)) {
-			if (g->GetMyId() == id) {
-				auto it = std::find(entities.begin(), entities.end(), e);
-				if (it != entities.end())deletePendingEntities.emplace_back(it);
-				return;
+}
+
+void InGameState::DeleteGemPos(int id) {
+	gem_pos.erase(
+		std::remove_if(
+			gem_pos.begin(),
+			gem_pos.end(),
+			[id](const std::tuple<int, float, float>& t) {
+				return std::get<0>(t) == id;  // 1番目の要素（int）が一致したら削除対象
 			}
-		}
-	}*/
+		),
+		gem_pos.end()
+	);
 }

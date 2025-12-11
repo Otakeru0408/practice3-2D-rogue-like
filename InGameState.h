@@ -43,6 +43,7 @@ public:
 	}
 
 	void OnGemStoneHit(int id);
+	void DeleteGemPos(int id);
 
 private:
 	int m_gameGraphHandle;
@@ -58,6 +59,7 @@ private:
 
 	int max_gemNum;
 	std::vector<int> gemImages;
-	std::vector < std::tuple<float, float>> gem_pos;
+	std::vector < std::tuple<int, float, float>> gem_pos;
 	std::vector<int> deletePendingEntities;
+	std::vector<int> deletedGemPos;
 };
