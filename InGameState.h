@@ -9,7 +9,7 @@
 #include "GridLine.h"
 #include "UIMiniMap.h"
 #include "GemStone.h"
-
+#include "Enemy.h"
 
 class GameManager;
 
@@ -17,6 +17,7 @@ class InGameState :public IGameState {
 public:
 	InGameState(GameManager* gameManager) :IGameState(gameManager)
 		, m_gameFontHandle(0), m_gameGraphHandle(0), max_gemNum(10)
+		, nowCollectCount(0)
 	{
 	}
 	~InGameState()override = default;
@@ -57,9 +58,11 @@ private:
 	std::shared_ptr<TransformComponent> m_playerTrans;
 	std::shared_ptr<GridLine> m_GridLine;
 
+	//ïÛèWÇﬂä÷åW
 	int max_gemNum;
 	std::vector<int> gemImages;
 	std::vector < std::tuple<int, float, float>> gem_pos;
 	std::vector<int> deletePendingEntities;
 	std::vector<int> deletedGemPos;
+	int nowCollectCount;
 };

@@ -12,10 +12,21 @@ private:
 	int frame = 0;
 	float frameCount = 0;
 	float frameSpeed = 0.2f; // 何秒でアニメーションが進むか
+	bool isOtherAnim = false;	//プレイヤーかそれ以外かでアニメーションの仕方を変える
 
 public:
 	//Playerで設定する値
 	float scale = 0.05f;
+	TransformComponent* player_trans;
+
+	//1だったらプレイヤー以外のアニメーションとして常に動かし続けたい
+	void SetAnimationMode(int i) {
+		if (i == 1)isOtherAnim = true;
+		else {
+			isOtherAnim = false;
+			//それ以外の処理...
+		}
+	}
 
 	AnimationComponent(Entity* e, float _scale)
 		:Component(e), scale(_scale) {
@@ -31,6 +42,7 @@ public:
 
 
 		bool moving = input->IsMouseStay(0);
+		if (isOtherAnim)moving = true;	//プレイヤー以外のアニメは常に動かす
 
 		if (moving) {
 			frameCount += deltaTime;
@@ -47,6 +59,16 @@ public:
 	void Draw() override {
 		if (!direction || !transform)return;
 		const auto& frames = animations[direction->dir];
+
+		if (isOtherAnim) {
+			int px = player_trans->x - GameData::windowWidth / 2;
+			int py = player_trans->y - GameData::windowHeight / 2;
+			DrawRotaGraph(
+				static_cast<int>(transform->x) - px,
+				static_cast<int>(transform->y) - py,
+				scale, 0, frames[frame], TRUE);
+			return;
+		}
 
 		//カメラ位置の計算
 		DrawRotaGraph(GameData::windowWidth / 2, GameData::windowHeight / 2, scale, 0.0f, frames[frame], TRUE);

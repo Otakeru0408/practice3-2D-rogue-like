@@ -65,6 +65,9 @@
     <ClCompile Include="GemStone.cpp">
       <Filter>8_Entity</Filter>
     </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>0_メインファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TitleState.h">
@@ -145,14 +148,17 @@
     <ClInclude Include="SpriteRendererComponent.h">
       <Filter>7_Component</Filter>
     </ClInclude>
-    <ClInclude Include="UIMiniMap.h">
-      <Filter>2_Stateインタフェース</Filter>
-    </ClInclude>
     <ClInclude Include="ExitDoor.h">
       <Filter>8_Entity</Filter>
     </ClInclude>
     <ClInclude Include="GemStone.h">
       <Filter>8_Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="UIMiniMap.h">
+      <Filter>6_UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>2_Stateインタフェース</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

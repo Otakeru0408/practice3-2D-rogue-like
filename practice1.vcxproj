@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="ExitDoor.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GemStone.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="CorriderComponent.h" />
     <ClInclude Include="CorridorData.h" />
     <ClInclude Include="DirectionComponent.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="ExitDoor.h" />
     <ClInclude Include="GameData.h" />

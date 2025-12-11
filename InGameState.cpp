@@ -28,6 +28,16 @@ void InGameState::Init() {
 	//Initでm_playerを使用しているのでここで実行
 	m_stageManager->Init();
 
+	//敵を生成
+	auto enemy = std::make_shared<Enemy>(this, player.get());
+	entities.emplace_back(enemy);
+	int enemy_w, enemy_h;
+	int enemy_handle = LoadGraph("Data/Rogue-Enemy1.png");
+	GetGraphSize(enemy_handle, &enemy_w, &enemy_h);
+	int enemy_x, enemy_y;
+	m_stageManager->CulculateRandomEntityPos(enemy_w, enemy_h, enemy_x, enemy_y);
+	enemy->SetPos(enemy_x, enemy_y);
+
 	//出口のドアを作成・表示
 	auto door = std::make_shared<ExitDoor>(this, player.get());
 	entities.emplace_back(door);
@@ -36,7 +46,7 @@ void InGameState::Init() {
 	int door_x, door_y;
 	auto [door_w, door_h] = door->GetComponent<SpriteRendererComponent>()->GetImageSize();
 
-	m_stageManager->CulculateExitPos(door_w, door_h, door_x, door_y);
+	m_stageManager->CulculateRandomEntityPos(door_w, door_h, door_x, door_y);
 	door->SetPos(door_x, door_y);
 
 	//gemの生成をする
@@ -51,7 +61,7 @@ void InGameState::Init() {
 		int gem_x, gem_y;
 		float scale = gem->GetImageScale();
 		//ランダムな部屋に配置する
-		m_stageManager->CulculateExitPosForGem(gem_w * scale, gem_h * scale, gem_x, gem_y);
+		m_stageManager->CulculateRandomEntityPos(gem_w * scale, gem_h * scale, gem_x, gem_y);
 		gem->SetPos(gem_x, gem_y);
 		//gemの位置を保存する
 		gem_pos.emplace_back(std::make_tuple(i, gem_x, gem_y));
@@ -102,6 +112,7 @@ SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
 	for (int id : deletePendingEntities) {
 
 		entities.erase(entities.begin() + id);
+		nowCollectCount++;
 	}
 	deletePendingEntities.clear();
 	//削除されたGemのPosを削除する→MiniMap反映用
@@ -137,10 +148,18 @@ void InGameState::Draw() {
 	//UIを表示するので最後に表示
 	IGameState::Draw();
 
-	for (int i = 0; i < gem_pos.size(); i++) {
-		auto [id, x, y] = gem_pos[i];
-		DrawFormatString(10, 300 + i * 30, GetColor(0, 0, 0), "%d: %.2f,%.2f", id, x, y);
-	}
+	//その他こまごましたUIを表示する
+	int margin = 10;
+	int height = 60;
+	int width = 600;
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+	SetFontSize(height);
+	DrawBox(0, GameData::windowHeight - (height + margin),
+		width + margin, GameData::windowHeight + (height + margin), GetColor(255, 255, 255), true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	DrawBox(0, GameData::windowHeight - (height + margin),
+		width + margin, GameData::windowHeight + (height + margin), GetColor(0, 0, 0), false);
+	DrawFormatString(margin, GameData::windowHeight - height, GetColor(0, 0, 0), "Collect Now : %d/%d", nowCollectCount, max_gemNum);
 }
 
 void InGameState::Terminate() {

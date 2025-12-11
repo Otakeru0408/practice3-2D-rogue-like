@@ -27,10 +27,8 @@ public:
 	void Update(const InputState* input);
 	void Draw();    // DXライブラリで描画
 
-	//出口の配置場所を考える関数
-	void CulculateExitPos(float exit_width, float exit_height, int& exit_x, int& exit_y);
-	//宝石の配置場所を考える関数
-	void CulculateExitPosForGem(float exit_width, float exit_height, int& exit_x, int& exit_y);
+	//エンティティ(exitDoor,gem,enemyなど)の配置場所を考える関数
+	void CulculateRandomEntityPos(float exit_width, float exit_height, int& exit_x, int& exit_y);
 
 	std::shared_ptr<Player> m_player;
 	//部屋のデータ
