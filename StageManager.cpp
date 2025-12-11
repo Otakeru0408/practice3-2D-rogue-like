@@ -535,6 +535,7 @@ void StageManager::CulculateExitPos(float exit_width, float exit_height, int& ex
 	do {
 		//最初にランダムに1つ部屋を決める
 		int randomRoomNumber = GetRand(rooms.size() - 1);
+		if (randomRoomNumber == nowRoomIndex)continue;
 
 		//その部屋がドアの幅高さより大きいなら
 		if (rooms[randomRoomNumber]->w > exit_width &&
@@ -568,6 +569,8 @@ void StageManager::CulculateExitPosForGem(float exit_width, float exit_height, i
 		nowIndexOfRandomRoom = (nowIndexOfRandomRoom + 1) % rooms.size();
 		//インデックスから部屋番号を取得
 		int randomRoomNumber = random_room_index[nowIndexOfRandomRoom];
+
+		if (randomRoomNumber == nowRoomIndex)continue;
 
 		//その部屋のサイズが宝石よりも大きかったら
 		if (rooms[randomRoomNumber]->w > exit_width &&

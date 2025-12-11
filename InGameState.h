@@ -42,6 +42,8 @@ public:
 		return m_playerTrans->y;
 	}
 
+	void OnGemStoneHit(int id);
+
 private:
 	int m_gameGraphHandle;
 	int m_gameFontHandle;
@@ -57,4 +59,5 @@ private:
 	int max_gemNum;
 	std::vector<int> gemImages;
 	std::vector < std::tuple<float, float>> gem_pos;
+	std::vector<int> deletePendingEntities;
 };

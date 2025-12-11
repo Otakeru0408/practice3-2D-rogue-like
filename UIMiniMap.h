@@ -59,7 +59,10 @@ public:
 		for (auto& [x, y] : gem_pos_ptr) {
 			DrawBox((x - icon_width / 2) * scale, (y - icon_width / 2) * scale,
 				(x + icon_width / 2) * scale, (y + icon_width / 2) * scale,
-				GetColor(0, 0, 0), true);
+				GetColor(0, 255, 0), true);
+			DrawBox((x - icon_width / 2) * scale, (y - icon_width / 2) * scale,
+				(x + icon_width / 2) * scale, (y + icon_width / 2) * scale,
+				GetColor(100, 100, 100), false);
 		}
 	}
 

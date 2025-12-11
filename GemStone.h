@@ -3,10 +3,13 @@
 #include "TransformComponent.h"
 #include "SpriteRendererComponent.h"
 #include "Player.h"
+#include "CorriderComponent.h"
+
+class InGameState;
 
 class GemStone :public Entity {
 public:
-	GemStone(IGameState* parent, Player* player, int image_handle);
+	GemStone(InGameState* parent, Player* player, int image_handle, int id);
 	~GemStone() = default;
 
 	void Update(const InputState* input, float deltaTime)override;
@@ -26,7 +29,10 @@ public:
 	float GetImageScale() {
 		return imageScale;
 	}
+
+	int GetMyId() { return myId; }
 private:
 	TransformComponent* player_trans;
 	float imageScale;
+	int myId;		//生成時にアタッチする
 };

@@ -44,13 +44,16 @@ void InGameState::Init() {
 	int gem_w, gem_h;
 	GetGraphSize(handle_for_size, &gem_w, &gem_h);
 
+	//宝をmax_gemNum分生成する
 	for (int i = 0; i < max_gemNum; i++) {
-		auto gem = std::make_shared<GemStone>(this, player.get(), gemImages[i % 5]);
+		auto gem = std::make_shared<GemStone>(this, player.get(), gemImages[i % 5], i);
 		entities.emplace_back(gem);
 		int gem_x, gem_y;
 		float scale = gem->GetImageScale();
+		//ランダムな部屋に配置する
 		m_stageManager->CulculateExitPosForGem(gem_w * scale, gem_h * scale, gem_x, gem_y);
 		gem->SetPos(gem_x, gem_y);
+		//gemの位置を保存する
 		gem_pos.emplace_back(std::make_tuple(gem_x, gem_y));
 	}
 
@@ -94,6 +97,12 @@ SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
 	for (auto entity : entities) {
 		entity->Update(input, deltaTime);
 	}
+	//もしも削除するものがあったら削除する
+	std::sort(deletePendingEntities.rbegin(), deletePendingEntities.rend());
+	for (int id : deletePendingEntities) {
+		entities.erase(entities.begin() + id);
+	}
+	deletePendingEntities.clear();
 
 	m_stageManager->Update(input);
 
@@ -121,11 +130,6 @@ void InGameState::Draw() {
 	}
 	//UIを表示するので最後に表示
 	IGameState::Draw();
-
-	for (int i = 0; i < gem_pos.size(); i++) {
-		auto [x, y] = gem_pos[i];
-		DrawFormatString(10, 300 + i * 30, GetColor(0, 0, 0), "%d: %.2f,%.2f", i, x, y);
-	}
 }
 
 void InGameState::Terminate() {
@@ -162,4 +166,24 @@ void InGameState::SavePlayer(const PlayerData& player, const std::string& filena
 	}
 	file << player.ToCSV() << "\n";
 	file.close();
+}
+
+void InGameState::OnGemStoneHit(int id) {
+	for (int i = 0; i < entities.size(); i++) {
+		if (std::shared_ptr<GemStone> g = std::dynamic_pointer_cast<GemStone>(entities[i])) {
+			if (g->GetMyId() == id) {
+				deletePendingEntities.emplace_back(i);
+				return;
+			}
+		}
+	}
+	/*for (std::shared_ptr<Entity> e : entities) {
+		if (std::shared_ptr<GemStone> g = std::dynamic_pointer_cast<GemStone>(e)) {
+			if (g->GetMyId() == id) {
+				auto it = std::find(entities.begin(), entities.end(), e);
+				if (it != entities.end())deletePendingEntities.emplace_back(it);
+				return;
+			}
+		}
+	}*/
 }
