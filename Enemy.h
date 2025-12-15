@@ -4,6 +4,7 @@
 #include "TransformComponent.h"
 #include "DirectionComponent.h"
 #include "AnimationComponent.h"
+#include "CorriderComponent.h"
 
 #include <math.h>
 
@@ -25,10 +26,13 @@ public:
 
 	int GetMyId() { return myId; }
 	auto GetPos() { return std::make_tuple(my_trans->x, my_trans->y); }
+	float GetImageScale() { return imageScale; }
 private:
 	float imageScale;
 	TransformComponent* player_trans;
 	TransformComponent* my_trans;
+	float moveSpeed_min;
+	float moveSpeed_max;
 	float moveSpeed;
 	int myId;
 };

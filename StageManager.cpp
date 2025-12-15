@@ -530,7 +530,7 @@ CollisionState StageManager::CheckRelation(float px, float py, float pw, float p
 }
 
 
-void StageManager::CulculateRandomEntityPos(float exit_width, float exit_height, int& exit_x, int& exit_y) {
+int StageManager::CulculateRandomEntityPos(float exit_width, float exit_height, int& exit_x, int& exit_y) {
 	//一応0初期化しとく
 	exit_x = 0;
 	exit_y = 0;
@@ -553,7 +553,9 @@ void StageManager::CulculateRandomEntityPos(float exit_width, float exit_height,
 			exit_x += GetRand(rooms[randomRoomNumber]->w - exit_width);
 			exit_y += GetRand(rooms[randomRoomNumber]->h - exit_height);
 
-			return;
+			return randomRoomNumber;
 		}
 	}
+
+	return -1;
 }

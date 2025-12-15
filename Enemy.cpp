@@ -2,7 +2,8 @@
 #include "Player.h"
 
 Enemy::Enemy(IGameState* parent, Player* player, int id)
-	:Entity(parent), imageScale(0.2f), moveSpeed(1.0f), myId(id)
+	:Entity(parent), imageScale(0.2f), moveSpeed_min(1.0f), moveSpeed_max(5.0f),
+	myId(id), moveSpeed(0)
 {
 	auto health = std::make_shared<HealthComponent>(this, 100);
 	AddComponent(health);
@@ -44,6 +45,16 @@ Enemy::Enemy(IGameState* parent, Player* player, int id)
 	anim->SetAnimationMode(1);	//1‚ð“n‚·‚Æí‚É“®‚«‘±‚¯‚é
 	player_trans = player->GetComponent<TransformComponent>().get();
 	anim->player_trans = player_trans;
+
+	auto corridor = std::make_shared<CorridorComponent>(this, anim->GetImageSize());
+	AddComponent(corridor);
+	corridor->player_trans = player_trans;
+	corridor->OnHitEnter = [parent, this]() {
+		//parent->
+		};
+
+	//“G‚ÌˆÚ“®‘¬“x‚ðƒ‰ƒ“ƒ_ƒ€‚É‚·‚é
+	moveSpeed = GetRand(moveSpeed_max - moveSpeed_min) + moveSpeed_min;
 }
 
 void Enemy::Update(const InputState* input, float deltaTime) {

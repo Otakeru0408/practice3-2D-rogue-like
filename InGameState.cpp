@@ -33,12 +33,24 @@ void InGameState::Init() {
 	int enemy_handle = LoadGraph("Data/Rogue-Enemy1.png");
 	GetGraphSize(enemy_handle, &enemy_w, &enemy_h);
 	int enemy_x, enemy_y;
+	std::vector<int> enemyRoomIndex;	//敵の配置された部屋のインデックス
+	for (int i = 0; i < max_enemyNum; i++) {
+		auto enemy = std::make_shared<Enemy>(this, player.get(), nowEnemyCount);
+		entities.emplace_back(enemy);
+		enemy_pos.emplace_back(std::make_tuple(nowEnemyCount++, enemy_x, enemy_y));
+		float enemy_scale = enemy->GetImageScale();
 
-	auto enemy = std::make_shared<Enemy>(this, player.get(), nowEnemyCount);
-	entities.emplace_back(enemy);
-	m_stageManager->CulculateRandomEntityPos(enemy_w, enemy_h, enemy_x, enemy_y);
-	enemy->SetPos(enemy_x, enemy_y);
-	enemy_pos.emplace_back(std::make_tuple(nowEnemyCount, enemy_x, enemy_y));
+		//できれば同じ個所に2体以上は重なってほしくない
+		do {
+			int decidedIndex = m_stageManager->CulculateRandomEntityPos(enemy_w * enemy_scale, enemy_h * enemy_scale, enemy_x, enemy_y);
+			enemy->SetPos(enemy_x, enemy_y);
+			if (std::count(enemyRoomIndex.begin(), enemyRoomIndex.end(), decidedIndex) <= 1) {
+				enemyRoomIndex.emplace_back(decidedIndex);
+				break;
+			}
+
+		} while (1);
+	}
 
 	//出口のドアを作成・表示
 	auto door = std::make_shared<ExitDoor>(this, player.get());
