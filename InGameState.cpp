@@ -29,14 +29,16 @@ void InGameState::Init() {
 	m_stageManager->Init();
 
 	//敵を生成
-	auto enemy = std::make_shared<Enemy>(this, player.get());
-	entities.emplace_back(enemy);
 	int enemy_w, enemy_h;
 	int enemy_handle = LoadGraph("Data/Rogue-Enemy1.png");
 	GetGraphSize(enemy_handle, &enemy_w, &enemy_h);
 	int enemy_x, enemy_y;
+
+	auto enemy = std::make_shared<Enemy>(this, player.get(), nowEnemyCount);
+	entities.emplace_back(enemy);
 	m_stageManager->CulculateRandomEntityPos(enemy_w, enemy_h, enemy_x, enemy_y);
 	enemy->SetPos(enemy_x, enemy_y);
+	enemy_pos.emplace_back(std::make_tuple(nowEnemyCount, enemy_x, enemy_y));
 
 	//出口のドアを作成・表示
 	auto door = std::make_shared<ExitDoor>(this, player.get());
@@ -70,7 +72,7 @@ void InGameState::Init() {
 	//UIを作成する
 	m_gauge = std::make_shared<UIGauge>();
 	m_uiManager->AddElement(m_gauge);
-	auto miniMap = std::make_shared<UIMiniMap>(m_stageManager, player, 0, 0, gem_pos);
+	auto miniMap = std::make_shared<UIMiniMap>(m_stageManager, player, 0, 0, gem_pos, enemy_pos);
 	m_uiManager->AddElement(miniMap);
 	//ミニマップにドアの情報を渡す
 	miniMap->SetDoorPos(door->GetDoorXYWH());
@@ -120,6 +122,17 @@ SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
 		DeleteGemPos(id);
 	}
 	deletedGemPos.clear();
+
+	//敵の位置情報を更新する
+	for (auto entity : entities) {
+		if (Enemy* enemy = dynamic_cast<Enemy*>(entity.get())) {
+			for (auto& [id, x, y] : enemy_pos) {
+				if (id == enemy->GetMyId()) {
+					std::tie(x, y) = enemy->GetPos();
+				}
+			}
+		}
+	}
 
 	m_stageManager->Update(input);
 

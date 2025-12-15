@@ -9,12 +9,13 @@
 class UIMiniMap :public IUIElement {
 public:
 	//StageManager,ミニマップの左上座標(x,y)
-	UIMiniMap(std::shared_ptr<StageManager> sm, std::shared_ptr<Player> player, int sx, int sy
-		, std::vector < std::tuple<int, float, float>>& gem_pos_info)
+	UIMiniMap(std::shared_ptr<StageManager> sm, std::shared_ptr<Player> player, int sx, int sy,
+		std::vector < std::tuple<int, float, float>>& gem_pos_info,
+		std::vector < std::tuple<int, float, float>>& enemy_pos_info)
 		:m_stageManager(sm), m_player(player)
 		, startX(sx), startY(sy), scale(0.1f), icon_width(100)
 		, doorX(0), doorY(0), doorW(0), doorH(0), isDoorFound(false)
-		, gem_pos_ptr(gem_pos_info)
+		, gem_pos_ptr(gem_pos_info), enemy_pos_ptr(enemy_pos_info)
 	{
 
 	}
@@ -64,6 +65,15 @@ public:
 				(x + icon_width / 2) * scale, (y + icon_width / 2) * scale,
 				GetColor(100, 100, 100), false);
 		}
+
+		for (auto& [id, x, y] : enemy_pos_ptr) {
+			DrawBox((x - icon_width / 2) * scale, (y - icon_width / 2) * scale,
+				(x + icon_width / 2) * scale, (y + icon_width / 2) * scale,
+				GetColor(100, 0, 100), true);
+			DrawBox((x - icon_width / 2) * scale, (y - icon_width / 2) * scale,
+				(x + icon_width / 2) * scale, (y + icon_width / 2) * scale,
+				GetColor(100, 100, 100), false);
+		}
 	}
 
 	void SetDoorPos(std::tuple<float, float, float, float> doorInfo) {
@@ -78,4 +88,5 @@ private:
 	int icon_width;
 	bool isDoorFound;
 	std::vector<std::tuple<int, float, float>>& gem_pos_ptr;
+	std::vector<std::tuple<int, float, float>>& enemy_pos_ptr;
 };

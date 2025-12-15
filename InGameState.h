@@ -17,7 +17,8 @@ class InGameState :public IGameState {
 public:
 	InGameState(GameManager* gameManager) :IGameState(gameManager)
 		, m_gameFontHandle(0), m_gameGraphHandle(0), max_gemNum(10)
-		, nowCollectCount(0)
+		, nowCollectCount(0), max_enemyNum(5), enemyGenerateTime(5.0f)
+		, nowEnemyCount(0)
 	{
 	}
 	~InGameState()override = default;
@@ -65,4 +66,10 @@ private:
 	std::vector<int> deletePendingEntities;
 	std::vector<int> deletedGemPos;
 	int nowCollectCount;
+
+	//“GŠÖŒW
+	int max_enemyNum;
+	float enemyGenerateTime;	//‰½•b‚²‚Æ‚É“G‚ª¶¬‚³‚ê‚é‚©
+	int nowEnemyCount;
+	std::vector < std::tuple<int, float, float>> enemy_pos;
 };
