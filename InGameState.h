@@ -44,8 +44,12 @@ public:
 		return m_playerTrans->y;
 	}
 
+	//‚¨•óŠÖŒW
 	void OnGemStoneHit(int id);
 	void DeleteGemPos(int id);
+
+	//“GŠÖŒW
+	void OnEnemyHit(int id);
 
 private:
 	int m_gameGraphHandle;

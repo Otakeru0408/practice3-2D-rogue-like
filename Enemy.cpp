@@ -1,7 +1,7 @@
 #include "Enemy.h"
 #include "Player.h"
 
-Enemy::Enemy(IGameState* parent, Player* player, int id)
+Enemy::Enemy(InGameState* parent, Player* player, int id)
 	:Entity(parent), imageScale(0.2f), moveSpeed_min(1.0f), moveSpeed_max(5.0f),
 	myId(id), moveSpeed(0)
 {
@@ -50,7 +50,7 @@ Enemy::Enemy(IGameState* parent, Player* player, int id)
 	AddComponent(corridor);
 	corridor->player_trans = player_trans;
 	corridor->OnHitEnter = [parent, this]() {
-		//parent->
+		parent->OnEnemyHit(myId);
 		};
 
 	//“G‚ÌˆÚ“®‘¬“x‚ðƒ‰ƒ“ƒ_ƒ€‚É‚·‚é

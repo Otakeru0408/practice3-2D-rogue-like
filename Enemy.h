@@ -9,10 +9,11 @@
 #include <math.h>
 
 class Player;
+class InGameState;
 
 class Enemy :public Entity {
 public:
-	Enemy(IGameState* parent, Player* player, int id);
+	Enemy(InGameState* parent, Player* player, int id);
 	~Enemy() = default;
 
 	void Update(const InputState* input, float deltaTime)override;

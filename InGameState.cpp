@@ -248,3 +248,14 @@ void InGameState::DeleteGemPos(int id) {
 		gem_pos.end()
 	);
 }
+
+void InGameState::OnEnemyHit(int id) {
+	for (int i = 0; i < entities.size(); i++) {
+		if (std::shared_ptr<Enemy> g = std::dynamic_pointer_cast<Enemy>(entities[i])) {
+			if (g->GetMyId() == id) {
+				moveState = true;
+				return;
+			}
+		}
+	}
+}
