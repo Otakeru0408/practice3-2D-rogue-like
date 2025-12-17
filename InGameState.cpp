@@ -29,28 +29,9 @@ void InGameState::Init() {
 	m_stageManager->Init();
 
 	//敵を生成
-	int enemy_w, enemy_h;
 	int enemy_handle = LoadGraph("Data/Rogue-Enemy1.png");
 	GetGraphSize(enemy_handle, &enemy_w, &enemy_h);
-	int enemy_x, enemy_y;
-	std::vector<int> enemyRoomIndex;	//敵の配置された部屋のインデックス
-	for (int i = 0; i < max_enemyNum; i++) {
-		auto enemy = std::make_shared<Enemy>(this, player.get(), nowEnemyCount);
-		entities.emplace_back(enemy);
-		enemy_pos.emplace_back(std::make_tuple(nowEnemyCount++, enemy_x, enemy_y));
-		float enemy_scale = enemy->GetImageScale();
-
-		//できれば同じ個所に2体以上は重なってほしくない
-		do {
-			int decidedIndex = m_stageManager->CulculateRandomEntityPos(enemy_w * enemy_scale, enemy_h * enemy_scale, enemy_x, enemy_y);
-			enemy->SetPos(enemy_x, enemy_y);
-			if (std::count(enemyRoomIndex.begin(), enemyRoomIndex.end(), decidedIndex) <= 1) {
-				enemyRoomIndex.emplace_back(decidedIndex);
-				break;
-			}
-
-		} while (1);
-	}
+	GenerateEnemy();		//まずは1体生成する
 
 	//出口のドアを作成・表示
 	auto door = std::make_shared<ExitDoor>(this, player.get());
@@ -111,9 +92,30 @@ void InGameState::LoadData() {
 		}
 		handle = 0;
 	}
+
 }
 
 SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
+	//最初にカウントダウンをする
+	if (startCountdownElapsedTime <= gameStartCountDownTime) {
+		//ただし最初に数フレーム待つべき
+		if (nowWaitFrame <= waitFrame) {
+			nowWaitFrame++;
+		}
+		else {
+			//数フレーム待ったらカウントダウン開始
+			startCountdownElapsedTime += deltaTime;
+		}
+		return new SceneTransition{ TransitionType::None, nullptr };
+	}
+	//適切なタイミングで敵を随時生成する
+	nowElapsedTimeForEnemy += deltaTime;
+	if (nowElapsedTimeForEnemy >= enemyGenerateTime
+		&& nowEnemyCount < max_enemyNum) {
+		nowElapsedTimeForEnemy = 0.0f;
+		GenerateEnemy();
+	}
+
 	IGameState::Update(input, deltaTime);
 
 	//このシーンに存在する全てのEntityの更新をする
@@ -185,6 +187,35 @@ void InGameState::Draw() {
 	DrawBox(0, GameData::windowHeight - (height + margin),
 		width + margin, GameData::windowHeight + (height + margin), GetColor(0, 0, 0), false);
 	DrawFormatString(margin, GameData::windowHeight - height, GetColor(0, 0, 0), "Collect Now : %d/%d", nowCollectCount, max_gemNum);
+
+
+	//最初のカウントダウン中なら
+	if (startCountdownElapsedTime <= gameStartCountDownTime) {
+		//最初に数フレーム待たせる必要がある→カウントダウンの数値が早すぎる
+		if (nowWaitFrame <= waitFrame) {
+			return;
+		}
+		SetFontSize(500);
+		//cd_w = GetDrawStringWidthToHandle("0", lstrlen("0"), m_gameFontHandle);
+
+		//文字を回転させる 小数点以下を取り出すことで、各文字の0.0～0.9を取り出せる
+		float oneCharSize = (startCountdownElapsedTime - std::floor(startCountdownElapsedTime));
+		cd_rotRate = oneCharSize * rotSpeed;
+		if (cd_rotRate >= 1.0f)cd_rotRate = 1.0f;
+		float cd_rotAngle = Easing::Calculate(
+			DX_PI_F / 6.0, 2 * DX_PI_F + DX_PI_F / 6.0, cd_rotRate, EaseType::EaseIn, 2.0f
+		);
+		float cd_Scale = Easing::Calculate(
+			0.0f, 1.0f, cd_rotRate, EaseType::EaseIn
+		);
+
+		DrawRotaFormatString(cd_x + 10, cd_y + 10, cd_Scale, cd_Scale, 100, 250,
+			cd_rotAngle, GetColor(0, 0, 0), 0, 0,
+			"%d", (int)(gameStartCountDownTime - startCountdownElapsedTime) + 1);
+		DrawRotaFormatString(cd_x, cd_y, cd_Scale, cd_Scale, 100, 250,
+			cd_rotAngle, GetColor(200, 0, 0), 0, 0,
+			"%d", (int)(gameStartCountDownTime - startCountdownElapsedTime) + 1);
+	}
 }
 
 void InGameState::Terminate() {
@@ -258,4 +289,23 @@ void InGameState::OnEnemyHit(int id) {
 			}
 		}
 	}
+}
+
+void InGameState::GenerateEnemy() {
+	int enemy_x, enemy_y;
+	auto enemy = std::make_shared<Enemy>(this, player.get(), nowEnemyCount);
+	entities.emplace_back(enemy);
+	enemy_pos.emplace_back(std::make_tuple(nowEnemyCount++, enemy_x, enemy_y));
+	float enemy_scale = enemy->GetImageScale();
+
+	//できれば同じ個所に2体以上は重なってほしくない
+	do {
+		int decidedIndex = m_stageManager->CulculateRandomEntityPos(enemy_w * enemy_scale, enemy_h * enemy_scale, enemy_x, enemy_y);
+		enemy->SetPos(enemy_x, enemy_y);
+		if (std::count(enemyRoomIndex.begin(), enemyRoomIndex.end(), decidedIndex) <= 1) {
+			enemyRoomIndex.emplace_back(decidedIndex);
+			break;
+		}
+
+	} while (1);
 }

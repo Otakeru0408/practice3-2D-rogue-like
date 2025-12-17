@@ -160,5 +160,8 @@
     <ClInclude Include="Enemy.h">
       <Filter>2_Stateインタフェース</Filter>
     </ClInclude>
+    <ClInclude Include="Easing.h">
+      <Filter>2_Stateインタフェース</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -10,6 +10,7 @@
 #include "UIMiniMap.h"
 #include "GemStone.h"
 #include "Enemy.h"
+#include "Easing.h"
 
 class GameManager;
 
@@ -18,7 +19,8 @@ public:
 	InGameState(GameManager* gameManager) :IGameState(gameManager)
 		, m_gameFontHandle(0), m_gameGraphHandle(0), max_gemNum(10)
 		, nowCollectCount(0), max_enemyNum(5), enemyGenerateTime(5.0f)
-		, nowEnemyCount(0)
+		, nowEnemyCount(0), gameStartCountDownTime(3), startCountdownElapsedTime(0)
+		, cd_rotRate(0), waitFrame(5), nowWaitFrame(0)
 	{
 	}
 	~InGameState()override = default;
@@ -31,6 +33,7 @@ public:
 
 	bool LoadPlayer(const std::string& filename);
 	void SavePlayer(const PlayerData& player, const std::string& filename);
+	void GenerateEnemy();
 
 	TransformComponent* GetPlayerTrans() {
 		return m_playerTrans.get();
@@ -72,8 +75,24 @@ private:
 	int nowCollectCount;
 
 	//敵関係
+	int enemy_w, enemy_h;
 	int max_enemyNum;
 	float enemyGenerateTime;	//何秒ごとに敵が生成されるか
+	float nowElapsedTimeForEnemy;
 	int nowEnemyCount;
 	std::vector < std::tuple<int, float, float>> enemy_pos;
+	std::vector<int> enemyRoomIndex;	//敵の配置された部屋のインデックス
+
+
+	//スタート時のカウントダウン用
+	float gameStartCountDownTime;		//何秒のカウントダウンにするか
+	float startCountdownElapsedTime;	//0秒から何秒カウントダウンしているか
+	float cd_rotRate;
+	int waitFrame;						//最初に数フレーム待たせないといけないので
+	int nowWaitFrame;
+	int cd_w = 200;
+	int cd_h = 100;
+	int cd_x = GameData::windowWidth / 2;
+	int cd_y = GameData::windowHeight / 2;
+	float rotSpeed = 2.0f;
 };
