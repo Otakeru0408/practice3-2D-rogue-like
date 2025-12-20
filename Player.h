@@ -72,7 +72,6 @@ public:
 		}
 	}
 
-
 	PlayerData SavePlayerData();
 private:
 	int mp;
@@ -82,4 +81,5 @@ private:
 
 	void LoadPlayerData(PlayerData data);
 	std::shared_ptr<TransformComponent> m_Trans;
+	std::shared_ptr<AnimationComponent> m_anim;
 };

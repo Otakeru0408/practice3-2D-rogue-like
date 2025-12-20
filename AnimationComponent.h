@@ -57,7 +57,9 @@ public:
 	}
 
 	void Draw() override {
-		if (!direction || !transform)return;
+
+		if (!direction || !transform || !player_trans)return;
+
 		const auto& frames = animations[direction->dir];
 
 		if (isOtherAnim) {

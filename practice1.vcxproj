@@ -178,6 +178,7 @@
     <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="UIButton.h" />
     <ClInclude Include="UIGauge.h" />
+    <ClInclude Include="UIInvisibleButton.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="UIMiniMap.h" />
   </ItemGroup>

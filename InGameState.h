@@ -54,6 +54,10 @@ public:
 	//敵関係
 	void OnEnemyHit(int id);
 
+	//透明化ボタンの関数
+	void OnInvisibleButtonPressed();
+	void OnInvisibleButtonFinished();
+
 private:
 	int m_gameGraphHandle;
 	int m_gameFontHandle;
@@ -65,6 +69,7 @@ private:
 	std::shared_ptr<InputComponent> m_playerInput;
 	std::shared_ptr<TransformComponent> m_playerTrans;
 	std::shared_ptr<GridLine> m_GridLine;
+	std::shared_ptr<UIButton> invisibleButton;
 
 	//宝集め関係
 	int max_gemNum;
@@ -95,4 +100,9 @@ private:
 	int cd_x = GameData::windowWidth / 2;
 	int cd_y = GameData::windowHeight / 2;
 	float rotSpeed = 2.0f;
+
+	//透明化ボタン用
+	float reuseInvisibleCount = 3.0f;	//3秒まったらもう一度使える
+	float invisibleElapsedTime = 0.0f;
+
 };

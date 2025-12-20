@@ -163,5 +163,8 @@
     <ClInclude Include="Easing.h">
       <Filter>2_Stateインタフェース</Filter>
     </ClInclude>
+    <ClInclude Include="UIInvisibleButton.h">
+      <Filter>2_Stateインタフェース</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -20,7 +20,8 @@ public:
 
 	void Draw() {
 		for (auto& e : m_elements) {
-			e->Draw();
+			if (e->IsVisible())
+				e->Draw();
 		}
 	}
 

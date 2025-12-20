@@ -15,7 +15,9 @@ private:
 	bool alive;
 
 public:
-	Entity(IGameState* parent) : alive(true), parentScene(parent) {}
+	bool isActive;
+
+	Entity(IGameState* parent) : alive(true), isActive(true), parentScene(parent) {}
 
 	virtual void Update(const InputState* input, float deltaTime) {
 		for (const auto& comp : components) {

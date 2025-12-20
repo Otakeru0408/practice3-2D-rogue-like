@@ -34,6 +34,8 @@ Player::Player(PlayerData data, IGameState* panent)
 		GetGraphSize(animVec[0], &w, &h);
 	}
 	AddComponent(anim);
+	anim->player_trans = GetComponent<TransformComponent>().get();
+	m_anim = anim;
 
 	AddComponent(std::make_shared<InputComponent>(this, 300, 2.0f));
 
@@ -47,6 +49,10 @@ Player::Player(PlayerData data, IGameState* panent)
 
 
 void Player::Update(const InputState* input, float deltaTime) {
+	//アニメーションの表示を切り替える
+	if (isActive)m_anim->SetActive(true);
+	else m_anim->SetActive(false);
+
 	Entity::Update(input, deltaTime);
 }
 

@@ -17,7 +17,8 @@ public:
 	std::function<void()> OnHitExit;
 
 	CorridorComponent(Entity* owner, std::tuple<float, float> imageInfo) :Component(owner), isPlayerHitting(false), wasPlayerHitting(false)
-		, player_width(0), player_height(0), image_width(0), image_height(0) {
+		, player_width(0), player_height(0), image_width(0), image_height(0)
+	{
 		//自身の位置と幅高さを取得する
 		myTrans = owner->GetComponent<TransformComponent>().get();
 		std::tie(image_width, image_height) = imageInfo;
@@ -26,6 +27,8 @@ public:
 	~CorridorComponent()override = default;
 
 	void Update(const InputState* input, float deltaTime)override {
+		if (!player_trans->GetOwner()->isActive)return;
+
 		if (sumRadius_horizontal == 0 || sumRadius_vertical == 0) {
 			//自身とプレイヤーの半分の合計を算出
 			sumRadius_horizontal = (player_width + image_width) / 2.0f;

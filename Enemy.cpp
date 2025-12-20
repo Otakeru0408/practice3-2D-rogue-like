@@ -49,6 +49,8 @@ Enemy::Enemy(InGameState* parent, Player* player, int id)
 	auto corridor = std::make_shared<CorridorComponent>(this, anim->GetImageSize());
 	AddComponent(corridor);
 	corridor->player_trans = player_trans;
+	std::tie(corridor->player_width, corridor->player_height)
+		= player->GetComponent<AnimationComponent>()->GetImageSize();
 	corridor->OnHitEnter = [parent, this]() {
 		parent->OnEnemyHit(myId);
 		};

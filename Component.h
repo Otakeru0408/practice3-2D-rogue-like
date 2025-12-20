@@ -17,4 +17,5 @@ public:
 
 	bool GetActive() { return isActive; }
 	void SetActive(bool b) { isActive = b; }
+	Entity* GetOwner() { return owner; }
 };

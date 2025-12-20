@@ -69,6 +69,14 @@ void InGameState::Init() {
 	m_uiManager->AddElement(miniMap);
 	//ミニマップにドアの情報を渡す
 	miniMap->SetDoorPos(door->GetDoorXYWH());
+	//透明化ボタンを作成
+	invisibleButton = std::make_shared<UIButton>(
+		GameData::windowWidth * 0.1f, GameData::windowHeight * 0.8f, 200, 100,
+		"Start",
+		[this]() {
+			OnInvisibleButtonPressed();
+		});
+	m_uiManager->AddElement(invisibleButton);
 
 	//デバッグ用のワールド罫線　重い処理なのであまり使わないほうがいい
 	m_GridLine = std::make_shared<GridLine>(this, player->GetComponent<TransformComponent>().get());
@@ -152,6 +160,14 @@ SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
 
 	//ダッシュゲージのデータを渡す
 	m_gauge->SetRunningValue(m_playerInput->GetRunningValue());
+
+	//透明化ボタンの処理
+	if (!invisibleButton->IsVisible()) {
+		invisibleElapsedTime += deltaTime;
+		if (invisibleElapsedTime >= reuseInvisibleCount) {
+			OnInvisibleButtonFinished();
+		}
+	}
 
 	//Spaceを押したときはゲームシーンへ移行する
 	if (moveState || input->IsKeyDown(KEY_INPUT_SPACE)) {
@@ -308,4 +324,15 @@ void InGameState::GenerateEnemy() {
 		}
 
 	} while (1);
+}
+
+void InGameState::OnInvisibleButtonPressed() {
+	player->isActive = false;
+	invisibleButton->SetVisible(false);
+	invisibleElapsedTime = 0.0f;
+}
+
+void InGameState::OnInvisibleButtonFinished() {
+	player->isActive = true;
+	invisibleButton->SetVisible(true);
 }
