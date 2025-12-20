@@ -36,4 +36,5 @@ private:
 	float moveSpeed_max;
 	float moveSpeed;
 	int myId;
+	std::shared_ptr<CorridorComponent> m_col;
 };

@@ -27,7 +27,6 @@ public:
 	~CorridorComponent()override = default;
 
 	void Update(const InputState* input, float deltaTime)override {
-		if (!player_trans->GetOwner()->isActive)return;
 
 		if (sumRadius_horizontal == 0 || sumRadius_vertical == 0) {
 			//自身とプレイヤーの半分の合計を算出

@@ -72,7 +72,7 @@ void InGameState::Init() {
 	//“§–¾‰»ƒ{ƒ^ƒ“‚ğì¬
 	invisibleButton = std::make_shared<UIButton>(
 		GameData::windowWidth * 0.1f, GameData::windowHeight * 0.8f, 200, 100,
-		"Start",
+		"InVisible!",
 		[this]() {
 			OnInvisibleButtonPressed();
 		});

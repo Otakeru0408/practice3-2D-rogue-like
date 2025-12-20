@@ -54,12 +54,16 @@ Enemy::Enemy(InGameState* parent, Player* player, int id)
 	corridor->OnHitEnter = [parent, this]() {
 		parent->OnEnemyHit(myId);
 		};
+	m_col = corridor;
 
 	//敵の移動速度をランダムにする
 	moveSpeed = GetRand(moveSpeed_max - moveSpeed_min) + moveSpeed_min;
 }
 
 void Enemy::Update(const InputState* input, float deltaTime) {
+	if (!player_trans->GetOwner()->isActive) m_col->SetActive(false);
+	else m_col->SetActive(true);
+
 	Entity::Update(input, deltaTime);
 
 	//TODO : 移動処理をコンポーネントにするか検討
