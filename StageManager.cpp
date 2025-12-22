@@ -147,6 +147,12 @@ void StageManager::HitCheck() {
 			if (overY)m_player->SetVY(0);
 			return;
 		}
+		//部屋に入ってきている途中
+		else if (state == CollisionState::OVERLAP && isRoomLeft) {
+			if (overX)m_player->SetVX(_vx);
+			if (overY)m_player->SetVY(_vy);
+			return;
+		}
 
 		//全部通過したらどこの部屋にもいないということ
 		//通路を確認する
