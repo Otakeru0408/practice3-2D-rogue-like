@@ -30,6 +30,8 @@ public:
 		return imageScale;
 	}
 
+	int GetImageHandle();
+
 	int GetMyId() { return myId; }
 private:
 	TransformComponent* player_trans;

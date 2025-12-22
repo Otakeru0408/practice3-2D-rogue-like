@@ -8,6 +8,12 @@ class TitleState;
 class InGameState;
 class ResultState;
 
+struct ResultData {
+	bool isClear = false;
+	int numOfGems = 0;
+	float elapsedTime = 0.0f;
+};
+
 class GameManager {
 public:
 	GameManager();
@@ -28,6 +34,9 @@ public:
 	{
 		m_isGameFinished = true;
 	}
+
+	//public•Ï”
+	ResultData resultData;
 
 private:
 	//std::unique_ptr<IGameState> m_currentState;

@@ -66,7 +66,7 @@
       <Filter>8_Entity</Filter>
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
-      <Filter>0_メインファイル</Filter>
+      <Filter>8_Entity</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -139,9 +139,6 @@
     <ClInclude Include="PlayerData.h">
       <Filter>0_メインファイル</Filter>
     </ClInclude>
-    <ClInclude Include="GridLine.h">
-      <Filter>2_Stateインタフェース</Filter>
-    </ClInclude>
     <ClInclude Include="CorriderComponent.h">
       <Filter>7_Component</Filter>
     </ClInclude>
@@ -157,14 +154,17 @@
     <ClInclude Include="UIMiniMap.h">
       <Filter>6_UI</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h">
+    <ClInclude Include="UIInvisibleButton.h">
       <Filter>2_Stateインタフェース</Filter>
     </ClInclude>
     <ClInclude Include="Easing.h">
-      <Filter>2_Stateインタフェース</Filter>
+      <Filter>8_Entity</Filter>
     </ClInclude>
-    <ClInclude Include="UIInvisibleButton.h">
-      <Filter>2_Stateインタフェース</Filter>
+    <ClInclude Include="Enemy.h">
+      <Filter>8_Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="GridLine.h">
+      <Filter>8_Entity</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -7,11 +7,13 @@
 #include "AnimationComponent.h"
 #include "Player.h"
 
+class InGameState;
+
 class ExitDoor :public Entity {
 private:
 	TransformComponent* player_trans;
 public:
-	ExitDoor(IGameState* parent, Player* m_player);
+	ExitDoor(InGameState* parent, Player* m_player);
 	~ExitDoor() = default;
 	void Update(const InputState* input, float deltaTime)override;
 	void Draw()override;

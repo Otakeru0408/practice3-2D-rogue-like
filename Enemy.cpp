@@ -2,7 +2,7 @@
 #include "Player.h"
 
 Enemy::Enemy(InGameState* parent, Player* player, int id)
-	:Entity(parent), imageScale(0.2f), moveSpeed_min(1.0f), moveSpeed_max(5.0f),
+	:Entity(parent), imageScale(0.2f), moveSpeed_min(1.0f), moveSpeed_max(4.0f),
 	myId(id), moveSpeed(0)
 {
 	auto health = std::make_shared<HealthComponent>(this, 100);

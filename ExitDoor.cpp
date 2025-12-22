@@ -1,6 +1,6 @@
 #include "ExitDoor.h"
 
-ExitDoor::ExitDoor(IGameState* parent, Player* m_player)
+ExitDoor::ExitDoor(InGameState* parent, Player* m_player)
 	:Entity(parent)
 {
 	//ドアの画像をロード
@@ -23,7 +23,7 @@ ExitDoor::ExitDoor(IGameState* parent, Player* m_player)
 	AddComponent(corridor);
 
 	corridor->OnHitEnter = [parent]() {
-		parent->LoadNextScene();
+		parent->OnDoorHit();
 		};
 }
 

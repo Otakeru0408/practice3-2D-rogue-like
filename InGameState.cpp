@@ -71,7 +71,8 @@ void InGameState::Init() {
 	miniMap->SetDoorPos(door->GetDoorXYWH());
 	//透明化ボタンを作成
 	invisibleButton = std::make_shared<UIButton>(
-		GameData::windowWidth * 0.1f, GameData::windowHeight * 0.8f, 200, 100,
+		150, GameData::windowHeight - 200,
+		200, 100,
 		"InVisible!",
 		[this]() {
 			OnInvisibleButtonPressed();
@@ -81,6 +82,9 @@ void InGameState::Init() {
 	//デバッグ用のワールド罫線　重い処理なのであまり使わないほうがいい
 	m_GridLine = std::make_shared<GridLine>(this, player->GetComponent<TransformComponent>().get());
 	//entities.emplace_back(m_GridLine);
+	for (int i = 0; i < max_gemNum; i++) {
+		gainedGems.emplace_back(gemEmptyImage);
+	}
 }
 
 void InGameState::LoadData() {
@@ -100,7 +104,11 @@ void InGameState::LoadData() {
 		}
 		handle = 0;
 	}
-
+	gemEmptyImage = LoadGraph("Data/gemStoneEmpty.png");
+	int w, h;
+	GetGraphSize(gemEmptyImage, &w, &h);
+	width_gemEmptyImage = w * emptyImageScale;
+	height_gemEmptyImage = h * emptyImageScale;
 }
 
 SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
@@ -113,9 +121,13 @@ SceneTransition* InGameState::Update(const InputState* input, float deltaTime) {
 		else {
 			//数フレーム待ったらカウントダウン開始
 			startCountdownElapsedTime += deltaTime;
+			startCount = 0.0f;
 		}
 		return new SceneTransition{ TransitionType::None, nullptr };
 	}
+	//ゲームプレイ時間を計測
+	startCount += deltaTime;
+
 	//適切なタイミングで敵を随時生成する
 	nowElapsedTimeForEnemy += deltaTime;
 	if (nowElapsedTimeForEnemy >= enemyGenerateTime
@@ -192,7 +204,17 @@ void InGameState::Draw() {
 	IGameState::Draw();
 
 	//その他こまごましたUIを表示する
-	int margin = 10;
+
+	int startX = 10;
+	int startY = 10;
+	for (int i = 0; i < max_gemNum; i++) {
+		DrawRotaGraph(startX + width_gemEmptyImage * 0.5f + i * width_gemEmptyImage,
+			GameData::windowHeight - height_gemEmptyImage * 0.5f - startY,
+			emptyImageScale
+			, 0.0f, gainedGems[i], TRUE);
+	}
+
+	/*int margin = 10;
 	int height = 60;
 	int width = 600;
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
@@ -202,7 +224,7 @@ void InGameState::Draw() {
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	DrawBox(0, GameData::windowHeight - (height + margin),
 		width + margin, GameData::windowHeight + (height + margin), GetColor(0, 0, 0), false);
-	DrawFormatString(margin, GameData::windowHeight - height, GetColor(0, 0, 0), "Collect Now : %d/%d", nowCollectCount, max_gemNum);
+	DrawFormatString(margin, GameData::windowHeight - height, GetColor(0, 0, 0), "Collect Now : %d/%d", nowCollectCount, max_gemNum);*/
 
 
 	//最初のカウントダウン中なら
@@ -271,11 +293,17 @@ void InGameState::SavePlayer(const PlayerData& player, const std::string& filena
 }
 
 void InGameState::OnGemStoneHit(int id) {
+	//GemPosの該当のものを消す合図
 	deletedGemPos.emplace_back(id);
+
+	//Entityのなかから探して削除する合図
 	for (int i = 0; i < entities.size(); i++) {
 		if (std::shared_ptr<GemStone> g = std::dynamic_pointer_cast<GemStone>(entities[i])) {
 			if (g->GetMyId() == id) {
 				deletePendingEntities.emplace_back(i);
+
+				//獲得した宝のhandleをセット
+				gainedGems[nowGainedGemIndex++] = g->GetImageHandle();
 
 				return;
 			}
@@ -296,10 +324,23 @@ void InGameState::DeleteGemPos(int id) {
 	);
 }
 
+void InGameState::OnDoorHit() {
+	m_gameManager->resultData.isClear = true;
+	m_gameManager->resultData.numOfGems = nowGainedGemIndex;
+	m_gameManager->resultData.elapsedTime = startCount;
+
+	//遷移処理
+	moveState = true;
+}
+
 void InGameState::OnEnemyHit(int id) {
 	for (int i = 0; i < entities.size(); i++) {
 		if (std::shared_ptr<Enemy> g = std::dynamic_pointer_cast<Enemy>(entities[i])) {
 			if (g->GetMyId() == id) {
+				m_gameManager->resultData.isClear = false;
+				m_gameManager->resultData.numOfGems = nowGainedGemIndex;
+				m_gameManager->resultData.elapsedTime = startCount;
+
 				moveState = true;
 				return;
 			}

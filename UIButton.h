@@ -13,6 +13,9 @@ private:
 	int selectedColor = GetColor(200, 200, 200);
 	std::string m_text;
 	std::function<void()> m_onClick;
+	std::function<void()> m_onHover;
+	std::function<void()> m_onClickRelease;
+	bool prevMouseButton = false;
 public:
 	//RECTを使っているが、引数は{中心X、中心Y、幅、高さ}で取得したい
 	UIButton(int cx, int cy, int w, int h, const std::string& text, std::function<void()> onClick)
@@ -34,6 +37,7 @@ public:
 		//ボタンの色を更新する
 		nowColor = hovering ? selectedColor : unSelectedColor;
 
+
 		// フォーカス処理
 		if (hovering && !m_focused) {
 			m_focused = true;
@@ -47,10 +51,31 @@ public:
 			if (OnFocusExit) OnFocusExit();
 		}
 
+
+		bool isClick = GetAsyncKeyState(VK_LBUTTON) & 0x8000;
+
 		// クリック処理
-		if (hovering && GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
-			if (m_onClick) m_onClick();
+		/*
+		ホバーかつクリックしてない
+		ホバーかつクリックしてる
+		ホバーかつクリック離した
+		*/
+		if (hovering) {
+			//クリックしてない
+			if (!isClick && !prevMouseButton) {
+				if (m_onHover)m_onHover();
+			}
+			//クリック離した
+			else if (!isClick && prevMouseButton) {
+				if (m_onClickRelease)m_onClickRelease();
+			}
+			//クリックしてる間
+			else if (isClick) {
+				if (m_onClick) m_onClick();
+			}
 		}
+
+		prevMouseButton = isClick;
 	}
 
 	void Draw() override {
@@ -65,6 +90,13 @@ public:
 	void SetColor(int c) { nowColor = c; }
 	void SetSelectedColor(int c) { selectedColor = c; }
 	void SetUnSelectedColor(int c) { unSelectedColor = c; }
+
+	void SetOnHoverCallBack(std::function<void()> cb) {
+		m_onHover = std::move(cb);
+	}
+	void SetOnClickReleaseCallBack(std::function<void()> cb) {
+		m_onClickRelease = std::move(cb);
+	}
 
 	bool HitTest(int mx, int my) {
 		return (m_rect.left <= mx && m_rect.right >= mx && m_rect.top <= my && m_rect.bottom >= my);

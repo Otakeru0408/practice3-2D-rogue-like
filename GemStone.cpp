@@ -31,3 +31,7 @@ void GemStone::Update(const InputState* input, float deltaTime) {
 void GemStone::Draw() {
 	Entity::Draw();
 }
+
+int GemStone::GetImageHandle() {
+	return GetComponent<SpriteRendererComponent>()->imageHandle;
+}

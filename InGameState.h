@@ -20,7 +20,7 @@ public:
 		, m_gameFontHandle(0), m_gameGraphHandle(0), max_gemNum(10)
 		, nowCollectCount(0), max_enemyNum(5), enemyGenerateTime(5.0f)
 		, nowEnemyCount(0), gameStartCountDownTime(3), startCountdownElapsedTime(0)
-		, cd_rotRate(0), waitFrame(5), nowWaitFrame(0)
+		, cd_rotRate(0), waitFrame(5), nowWaitFrame(0), emptyImageScale(0.2f)
 	{
 	}
 	~InGameState()override = default;
@@ -54,6 +54,9 @@ public:
 	//敵関係
 	void OnEnemyHit(int id);
 
+	//ドア関係
+	void OnDoorHit();
+
 	//透明化ボタンの関数
 	void OnInvisibleButtonPressed();
 	void OnInvisibleButtonFinished();
@@ -70,10 +73,17 @@ private:
 	std::shared_ptr<TransformComponent> m_playerTrans;
 	std::shared_ptr<GridLine> m_GridLine;
 	std::shared_ptr<UIButton> invisibleButton;
+	float startCount;		//クリアまで何秒かかったかの計測用
 
 	//宝集め関係
 	int max_gemNum;
 	std::vector<int> gemImages;
+	std::vector<int> gainedGems;
+	int nowGainedGemIndex;
+	int gemEmptyImage;
+	float width_gemEmptyImage;
+	float height_gemEmptyImage;
+	float emptyImageScale;
 	std::vector < std::tuple<int, float, float>> gem_pos;
 	std::vector<int> deletePendingEntities;
 	std::vector<int> deletedGemPos;
