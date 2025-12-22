@@ -149,6 +149,7 @@ void StageManager::HitCheck() {
 		}
 		//部屋に入ってきている途中
 		else if (state == CollisionState::OVERLAP && isRoomLeft) {
+
 			if (overX)m_player->SetVX(_vx);
 			if (overY)m_player->SetVY(_vy);
 			return;

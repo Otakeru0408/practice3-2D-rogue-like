@@ -71,7 +71,7 @@ void InGameState::Init() {
 	miniMap->SetDoorPos(door->GetDoorXYWH());
 	//“§–¾‰»ƒ{ƒ^ƒ“‚ğì¬
 	invisibleButton = std::make_shared<UIButton>(
-		150, GameData::windowHeight - 200,
+		GameData::windowWidth / 2, 50,
 		200, 100,
 		"InVisible!",
 		[this]() {
