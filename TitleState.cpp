@@ -42,13 +42,26 @@ void TitleState::Draw() {
 	SetFontSize(60);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
 
-	//Šp“x‚ðŒvŽZ
-	float angle = DX_PI_F / 180.0f * -30.0f;
+	float divideAngle = 30.0f;
+	int divideNum = 360.0f / 30.0f;
+	for (int i = 0; i < divideNum; i++) {
+		//Šp“x‚ðŒvŽZ
+		float angle = DX_PI_F / 180.0f * (i * divideAngle);
 
-	//•\Ž¦À•W‚ð’†S‚É‚·‚é‚½‚ßŒvŽZ
-	float nx =
-		DrawRotaStringToHandle(50, GameData::windowHeight / 2, 1.0f, 1.0f, 1.0f, 1.0f, angle,
+		DrawRotaStringToHandle(150, GameData::windowHeight / 2, 1.0f, 1.0f,
+			-100.0f, 0.0f, angle,
 			GetColor(255, 255, 255), m_titleFontHandle, 0, 0, "Rogue like Game");
+	}
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 10);
+	for (int i = 0; i < divideNum; i++) {
+		//Šp“x‚ðŒvŽZ
+		float angle = DX_PI_F / 180.0f * (i * divideAngle);
+
+		DrawRotaStringToHandle(500, GameData::windowHeight / 4, 1.0f, 1.0f,
+			-100.0f, 0.0f, angle,
+			GetColor(255, 255, 255), m_titleFontHandle, 0, 0, "Rogue like Game");
+	}
+
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	IGameState::Draw();
 }

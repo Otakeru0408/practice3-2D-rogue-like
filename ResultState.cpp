@@ -13,7 +13,7 @@ void ResultState::Init() {
 	//UIÇçÏê¨Ç∑ÇÈ
 	auto button = std::make_shared<UIButton>(
 		GameData::windowWidth / 2, GameData::windowHeight * 0.8f, 200, 100,
-		"Start",
+		"Retry",
 		[this]() {
 			isClick = true;
 		});
@@ -63,8 +63,8 @@ void ResultState::Draw() {
 	GameData::DrawStringWithAnchor(50, 50, 0, 0.0f, GetColor(0, 0, 0),
 		"YOUR Result:");
 
-	DrawBox(480, startY + 25, 580, startY + 75, GetColor(255, 255, 255), TRUE);
-	DrawBox(430, startY + 80, 580, startY + 130, GetColor(255, 255, 255), TRUE);
+	DrawBox(480, startY + 25, 590, startY + 75, GetColor(255, 255, 255), TRUE);
+	DrawBox(430, startY + 80, 590, startY + 130, GetColor(255, 255, 255), TRUE);
 
 	SetFontSize(70);
 	GameData::DrawStringWithAnchor(startX, startY - 100, 0, 0.5f, resultColor,
