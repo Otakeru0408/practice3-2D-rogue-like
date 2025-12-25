@@ -31,7 +31,7 @@ void InGameState::Init() {
 	//敵を生成
 	int enemy_handle = LoadGraph("Data/Rogue-Enemy1.png");
 	GetGraphSize(enemy_handle, &enemy_w, &enemy_h);
-	GenerateEnemy();		//まずは1体生成する
+	if (max_enemyNum > 0)GenerateEnemy();		//まずは1体生成する
 
 	//出口のドアを作成・表示
 	auto door = std::make_shared<ExitDoor>(this, player.get());

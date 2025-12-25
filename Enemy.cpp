@@ -2,7 +2,7 @@
 #include "Player.h"
 
 Enemy::Enemy(InGameState* parent, Player* player, int id)
-	:Entity(parent), imageScale(0.2f), moveSpeed_min(1.0f), moveSpeed_max(4.0f),
+	:Entity(parent), imageScale(0.2f), moveSpeed_min(100.0f), moveSpeed_max(200.0f),
 	myId(id), moveSpeed(0)
 {
 	auto health = std::make_shared<HealthComponent>(this, 100);
@@ -71,8 +71,8 @@ void Enemy::Update(const InputState* input, float deltaTime) {
 	float diff_y = player_trans->y - my_trans->y;
 
 	float length = sqrt(diff_x * diff_x + diff_y * diff_y);
-	my_trans->vx = (diff_x / length) * moveSpeed;
-	my_trans->vy = (diff_y / length) * moveSpeed;
+	my_trans->vx = (diff_x / length) * deltaTime * moveSpeed;
+	my_trans->vy = (diff_y / length) * deltaTime * moveSpeed;
 }
 
 void Enemy::Draw() {
